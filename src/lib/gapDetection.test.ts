@@ -1,0 +1,87 @@
+import { describe, it, expect } from 'vitest'
+import { detectGaps } from './gapDetection'
+import type { TripEvent } from '../types/trip'
+
+function makeEvent(overrides: Partial<TripEvent>): TripEvent {
+  return {
+    id: 'default-id',
+    destinationId: 'dest-1',
+    type: 'transport',
+    title: 'Event',
+    place: 'Somewhere',
+    date: '2026-03-15',
+    time: '10:00',
+    createdAt: '2026-03-01T00:00:00Z',
+    ...overrides,
+  }
+}
+
+describe('detectGaps', () => {
+  it('returns no gaps when there are no events', () => {
+    expect(detectGaps([])).toEqual([])
+  })
+
+  it('returns no gaps when there is only one accommodation', () => {
+    const events = [makeEvent({ type: 'accommodation', title: 'Hotel A' })]
+    expect(detectGaps(events)).toEqual([])
+  })
+
+  it('returns no gaps when two accommodations have transport between them', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train', date: '2026-03-18', time: '09:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+    ]
+    expect(detectGaps(events)).toEqual([])
+  })
+
+  it('returns a gap when two accommodations have no transport between them', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+    ]
+    const gaps = detectGaps(events)
+    expect(gaps).toHaveLength(1)
+    expect(gaps[0].afterEventId).toBe('acc-1')
+    expect(gaps[0].beforeEventId).toBe('acc-2')
+    expect(gaps[0].message).toContain('Hotel A')
+    expect(gaps[0].message).toContain('Hotel B')
+  })
+
+  it('returns multiple gaps for multiple consecutive accommodation pairs without transport', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+      makeEvent({ id: 'acc-3', type: 'accommodation', title: 'Hotel C', date: '2026-03-21', time: '12:00' }),
+    ]
+    expect(detectGaps(events)).toHaveLength(2)
+  })
+
+  it('does not count transport at exactly the same time as first accommodation as "between"', () => {
+    // Transport at A's exact timestamp is NOT strictly greater → still a gap
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Bus', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+    ]
+    expect(detectGaps(events)).toHaveLength(1)
+  })
+
+  it('ignores ticket and restaurant events when detecting gaps', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'tick-1', type: 'ticket', title: 'Museum', date: '2026-03-17', time: '10:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+    ]
+    expect(detectGaps(events)).toHaveLength(1)
+  })
+
+  it('works correctly when events are given out of order', () => {
+    const events = [
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train', date: '2026-03-18', time: '09:00' }),
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+    ]
+    expect(detectGaps(events)).toEqual([])
+  })
+})
