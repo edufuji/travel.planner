@@ -24,5 +24,21 @@
     --destructive-foreground: 210 40% 98%;
     --ring: 215 20.2% 65.1%;
     --radius: 0.5rem;
+
+    /* TripMate design tokens */
+    --primary: #FF6B35;
+    --primary-dark: #C75B2A;
+    --primary-light: #F7C59F;
+    --background: #FEFAF6;
+    --foreground: #1A0A00;
+    --muted: #78716C;
+    --input-bg: #F5F0EB;
+    --border: #E5E0DB;
   }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
 }
