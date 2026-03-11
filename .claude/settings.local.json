@@ -1,4 +1,11 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(printf 'y\\\\n')",
+      "Bash(pnpm create:*)",
+      "Bash(pnpm install:*)"
+    ]
+  },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true
   }

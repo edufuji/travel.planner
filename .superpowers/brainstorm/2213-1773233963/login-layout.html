@@ -1,0 +1,59 @@
+<h2>Which login screen layout do you prefer?</h2>
+<p class="subtitle">How the login form is presented to the user</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="centered" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #ff6b35 0%, #f7c59f 60%, #efefd0 100%); min-height: 200px; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; padding: 16px;">
+      <div style="background: rgba(255,255,255,0.92); border-radius: 16px; padding: 28px 32px; width: 220px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); text-align: center;">
+        <div style="font-size: 22px; font-weight: 700; color: #1a0a00; margin-bottom: 4px;">✈ TripMate</div>
+        <div style="font-size: 11px; color: #888; margin-bottom: 16px;">Plan your adventure</div>
+        <div style="background: #f5f0eb; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 11px; color: #999; text-align: left;">Email</div>
+        <div style="background: #f5f0eb; border-radius: 6px; padding: 8px; margin-bottom: 14px; font-size: 11px; color: #999; text-align: left;">Password</div>
+        <div style="background: #ff6b35; color: white; border-radius: 8px; padding: 9px; font-size: 12px; font-weight: 600;">Sign In</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Centered Card</h3>
+      <p>Full-screen travel photo background with a floating frosted-glass card centered on screen. Clean and focused.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="split" onclick="toggleSelect(this)">
+    <div class="card-image" style="min-height: 200px; border-radius: 8px 8px 0 0; overflow: hidden; display: flex;">
+      <div style="flex: 1; background: linear-gradient(160deg, #ff6b35, #c75b2a); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; color: white;">
+        <div style="font-size: 28px; margin-bottom: 8px;">🌍</div>
+        <div style="font-size: 14px; font-weight: 700;">Explore the world</div>
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 4px; text-align: center;">Plan trips without limits</div>
+      </div>
+      <div style="flex: 1; background: #fefaf6; display: flex; flex-direction: column; justify-content: center; padding: 16px;">
+        <div style="font-size: 13px; font-weight: 700; color: #1a0a00; margin-bottom: 12px;">Welcome back</div>
+        <div style="background: #f5f0eb; border-radius: 6px; padding: 7px; margin-bottom: 6px; font-size: 10px; color: #999;">Email</div>
+        <div style="background: #f5f0eb; border-radius: 6px; padding: 7px; margin-bottom: 10px; font-size: 10px; color: #999;">Password</div>
+        <div style="background: #ff6b35; color: white; border-radius: 6px; padding: 8px; font-size: 10px; font-weight: 600; text-align: center;">Sign In</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Split Screen</h3>
+      <p>Left panel: brand visuals, tagline, hero illustration. Right panel: clean login form. Modern SaaS-style feel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="fullscreen" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(160deg, #c75b2a 0%, #ff6b35 40%, #f7a86e 100%); min-height: 200px; border-radius: 8px 8px 0 0; display: flex; flex-direction: column; justify-content: space-between; padding: 20px;">
+      <div style="color: white; font-size: 18px; font-weight: 800; letter-spacing: -0.5px;">✈ TripMate</div>
+      <div>
+        <div style="color: white; font-size: 20px; font-weight: 700; margin-bottom: 4px;">Your next adventure<br/>starts here.</div>
+        <div style="height: 1px; background: rgba(255,255,255,0.3); margin: 12px 0;"></div>
+        <div style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 8px; margin-bottom: 7px; font-size: 10px; color: rgba(255,255,255,0.8);">Email address</div>
+        <div style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 8px; margin-bottom: 10px; font-size: 10px; color: rgba(255,255,255,0.8);">Password</div>
+        <div style="background: white; color: #c75b2a; border-radius: 8px; padding: 9px; font-size: 11px; font-weight: 700; text-align: center;">Sign In</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Full Gradient Immersion</h3>
+      <p>The entire screen is the brand — warm gradient fills everything, with the form embedded directly. Bold and immersive, no background photo needed.</p>
+    </div>
+  </div>
+
+</div>
