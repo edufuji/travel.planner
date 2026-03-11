@@ -44,6 +44,12 @@ Add the core trip-planning feature: users can create **Destinations** (trip cont
 
 export type EventType = 'transport' | 'accommodation' | 'ticket' | 'restaurant'
 
+// UI label → EventType mapping (used in AddEventSheet type selector pills):
+//   "Transport" → 'transport'
+//   "Stay"      → 'accommodation'
+//   "Ticket"    → 'ticket'
+//   "Food"      → 'restaurant'
+
 export interface TripEvent {
   id: string            // uuid v4
   destinationId: string
@@ -74,6 +80,8 @@ export interface Destination {
 interface TripsState {
   destinations: Destination[]
   addDestination: (d: Omit<Destination, 'id' | 'events' | 'createdAt'>) => void
+  // Note: updateDestination intentionally omits 'events' — events are managed
+  // via addEvent / updateEvent / deleteEvent only.
   updateDestination: (id: string, patch: Partial<Omit<Destination, 'id' | 'events'>>) => void
   deleteDestination: (id: string) => void
   addEvent: (destinationId: string, e: Omit<TripEvent, 'id' | 'destinationId' | 'createdAt'>) => void
@@ -87,13 +95,20 @@ interface TripsState {
 Runs as a pure function — `detectGaps(events: TripEvent[]): GapWarning[]`
 
 **Algorithm:**
-1. Filter events to only `accommodation` type.
-2. Sort all events by date+time.
-3. For each consecutive pair of accommodation events: find the first one's checkout time (same date+time as the event) and the second one's check-in.
-4. If there is no `transport` event with a date+time **between** the first accommodation date+time and the second accommodation date+time → produce a `GapWarning`.
+
+> **Note:** `TripEvent` has no separate checkout date/time. The event's `date+time` represents the check-in of an accommodation. Gap detection works on check-in timestamps only — it asks "is there any transport registered between these two check-ins?"
+
+1. Sort all events ascending by `date` + `time` (lexicographic on `YYYY-MM-DD HH:mm` is sufficient).
+2. Extract only `accommodation` events from the sorted list.
+3. For each consecutive pair of accommodation events `(A, B)`:
+   - Find any `transport` event whose `date+time` is strictly greater than A's `date+time` and strictly less than B's `date+time`.
+   - If no such transport event exists → produce a `GapWarning` with `afterEventId = A.id`, `beforeEventId = B.id`.
+4. Return all produced `GapWarning[]`.
 
 ```ts
 // src/lib/gapDetection.ts
+// Note: GapWarning is defined here (not in src/types/trip.ts) because it is
+// a result type of the detection function and not a stored data type.
 export interface GapWarning {
   afterEventId: string   // the accommodation event before the gap
   beforeEventId: string  // the accommodation event after the gap
@@ -132,7 +147,7 @@ Updated `src/App.tsx`:
 
 | Route | Component | Notes |
 |-------|-----------|-------|
-| `/` | `<Navigate to="/trips">` | Redirect |
+| `/` | `<Navigate to="/trips" replace />` | Redirect (replace prevents broken back-button loop) |
 | `/login` | `LoginPage` | Phase 1 (unchanged) |
 | `/trips` | `TripsPage` | Destinations list |
 | `/trips/:id` | `TripDetailPage` | Timeline for one destination |
@@ -155,7 +170,7 @@ Updated `src/App.tsx`:
 - Gap badge: orange `⚠️ GAP` if `detectGaps(destination.events).length > 0`
 - OK badge: green `✓ OK` if events exist and no gaps
 - No badge: if destination has 0 events
-- Long press or swipe-right → shows delete option (confirm dialog before delete)
+- Long press or swipe-right → shows delete option. Confirmation uses `window.confirm("Delete this destination and all its events?")` — no custom dialog component needed.
 - Tap row → navigate to `/trips/:id`
 
 **Empty state:** If no destinations, show a centered illustration placeholder + "Plan your first trip" CTA that opens the New Destination sheet.
@@ -217,7 +232,7 @@ Slides up. Same dismiss behavior.
 
 **CTA:** "Add to Timeline" (create mode) / "Save Changes" (edit mode). Full width, primary orange.
 
-**Delete (edit mode only):** "Delete event" text link in red below the CTA.
+**Delete (edit mode only):** "Delete event" text link in red below the CTA. Confirmation uses `window.confirm("Delete this event?")` before removing.
 
 **Validation:**
 - Title, Place, Date, Time required
@@ -241,9 +256,10 @@ No functionality. Bottom nav shows Profile tab as active.
 ```
 src/
   types/
-    trip.ts                      Create  — Destination + TripEvent + GapWarning types
+    trip.ts                      Create  — Destination + TripEvent types (not GapWarning — see gapDetection.ts)
   stores/
     tripsStore.ts                Create  — Zustand store with persist middleware
+    tripsStore.test.ts           Create  — unit tests for store actions and localStorage persistence
   lib/
     gapDetection.ts              Create  — detectGaps() pure function
     gapDetection.test.ts         Create  — unit tests for gap logic
@@ -253,7 +269,7 @@ src/
     BottomNav.tsx                Create  — 2-tab nav (Trips, Profile)
     DestinationRow.tsx           Create  — single row in destinations list
     TimelineEvent.tsx            Create  — single event card in timeline
-    GapWarning.tsx               Create  — orange gap warning card
+    GapWarningCard.tsx           Create  — orange gap warning card (named GapWarningCard to avoid collision with GapWarning interface from gapDetection.ts)
     GooglePlacesInput.tsx        Create  — Google Places Autocomplete input
     sheets/
       NewDestinationSheet.tsx    Create  — bottom sheet: create destination
@@ -315,6 +331,13 @@ If the key is missing, the Place field falls back to a plain text input. The app
 - `TripDetailPage.test.tsx` — renders events sorted by date/time, renders GAP warning card between correct events
 - `AddEventSheet.test.tsx` — form validation (title required, place required, date required, time required, value optional numeric)
 
+**Store tests** (`tripsStore.test.ts` — create this file):
+- `addDestination` creates a destination with correct id, emoji, and empty events array
+- `deleteDestination` removes the destination and all its events
+- `addEvent` appends to the correct destination's events
+- `deleteEvent` removes only the specified event
+- Persist: after calling store actions, the stored value in `localStorage` under `tripmate-trips` reflects the updated state
+
 **Not tested:** `GooglePlacesInput` (requires real API key / external SDK — skip in unit tests, mock with plain input)
 
 ---
@@ -332,7 +355,7 @@ If the key is missing, the Place field falls back to a plain text input. The app
 9. Delete an event → removed from timeline
 10. Delete a destination → removed from list
 11. Refresh page → all data persists (localStorage)
-12. Google Places field: typing an address shows autocomplete suggestions (requires API key)
-13. Google Places field: without API key, shows plain text input (fallback)
+12. Google Places field: without API key (`VITE_GOOGLE_MAPS_API_KEY` unset), shows plain text input (fallback — testable without secrets)
+13. Google Places field: with a valid API key set, typing an address shows autocomplete suggestions
 14. `pnpm exec vitest run` → all tests pass
 15. `pnpm build` → TypeScript compiles cleanly
