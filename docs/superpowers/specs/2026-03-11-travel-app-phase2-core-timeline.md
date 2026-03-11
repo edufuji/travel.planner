@@ -85,7 +85,7 @@ interface TripsState {
   updateDestination: (id: string, patch: Partial<Omit<Destination, 'id' | 'events'>>) => void
   deleteDestination: (id: string) => void
   addEvent: (destinationId: string, e: Omit<TripEvent, 'id' | 'destinationId' | 'createdAt'>) => void
-  updateEvent: (destinationId: string, eventId: string, patch: Partial<Omit<TripEvent, 'id' | 'destinationId'>>) => void
+  updateEvent: (destinationId: string, eventId: string, patch: Partial<Omit<TripEvent, 'id' | 'destinationId' | 'createdAt'>>) => void
   deleteEvent: (destinationId: string, eventId: string) => void
 }
 ```
@@ -117,6 +117,8 @@ export interface GapWarning {
 
 export function detectGaps(events: TripEvent[]): GapWarning[]
 ```
+
+`detectGaps` receives the full events array so it can build human-readable `message` strings using event titles (e.g., "No transport between Shinjuku Granbell check-in and Hotel Gracery check-in"). The message is constructed inside `detectGaps` — the rendering component (`GapWarningCard`) reads `warning.message` directly and does not compose text itself.
 
 This function is pure (no side effects) and fully unit-tested.
 
