@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import LoginPage from './LoginPage'
@@ -93,9 +93,9 @@ describe('LoginPage', () => {
       target: { value: 'password123' },
     })
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
-    vi.advanceTimersByTime(1000)
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: /sign in/i })).not.toBeDisabled()
-    )
+    await act(async () => {
+      vi.advanceTimersByTime(1000)
+    })
+    expect(screen.getByRole('button', { name: /sign in/i })).not.toBeDisabled()
   })
 })
