@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import AddEventSheet from './AddEventSheet'
 import { useTripsStore } from '@/stores/tripsStore'
 import type { TripEvent } from '@/types/trip'
@@ -21,6 +21,7 @@ function renderSheet(props: Partial<React.ComponentProps<typeof AddEventSheet>> 
 }
 
 beforeEach(() => {
+  vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', '')
   useTripsStore.setState({
     destinations: [{
       id: DEST_ID,
@@ -32,6 +33,10 @@ beforeEach(() => {
       createdAt: '',
     }],
   })
+})
+
+afterEach(() => {
+  vi.unstubAllEnvs()
 })
 
 describe('AddEventSheet', () => {

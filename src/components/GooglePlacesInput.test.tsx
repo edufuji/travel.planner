@@ -14,6 +14,7 @@ afterEach(() => {
 
 describe('GooglePlacesInput', () => {
   it('renders fallback input when no API key is set', () => {
+    vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', '')
     const onChange = vi.fn()
     const { getByTestId } = render(
       <GooglePlacesInput value="" onChange={onChange} />
@@ -23,7 +24,10 @@ describe('GooglePlacesInput', () => {
 
   it('renders Places input (not fallback) when API key is set', () => {
     vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'test-key')
-    vi.stubGlobal('google', { maps: { places: { Autocomplete: vi.fn(() => ({ addListener: vi.fn() })) } } })
+    const AutocompleteClass = class {
+      addListener = vi.fn()
+    }
+    vi.stubGlobal('google', { maps: { places: { Autocomplete: AutocompleteClass } } })
     const { getByTestId } = render(
       <GooglePlacesInput value="" onChange={vi.fn()} />
     )
@@ -34,20 +38,20 @@ describe('GooglePlacesInput', () => {
     vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'test-key')
 
     let placeChangedCb: (() => void) | undefined
-    const mockAc = {
-      addListener: vi.fn((event: string, cb: () => void) => {
+    class MockAutocomplete {
+      addListener = vi.fn((event: string, cb: () => void) => {
         if (event === 'place_changed') placeChangedCb = cb
-      }),
-      getPlace: vi.fn(() => ({
+      })
+      getPlace = vi.fn(() => ({
         name: 'Tokyo Tower',
         place_id: 'ChIJplace123',
         geometry: {
           location: { lat: () => 35.6586, lng: () => 139.7454 },
         },
-      })),
+      }))
     }
     vi.stubGlobal('google', {
-      maps: { places: { Autocomplete: vi.fn(() => mockAc) } },
+      maps: { places: { Autocomplete: MockAutocomplete } },
     })
 
     const onChange = vi.fn()
@@ -66,18 +70,18 @@ describe('GooglePlacesInput', () => {
     vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'test-key')
 
     let placeChangedCb: (() => void) | undefined
-    const mockAc = {
-      addListener: vi.fn((event: string, cb: () => void) => {
+    class MockAutocomplete {
+      addListener = vi.fn((event: string, cb: () => void) => {
         if (event === 'place_changed') placeChangedCb = cb
-      }),
-      getPlace: vi.fn(() => ({
+      })
+      getPlace = vi.fn(() => ({
         name: 'Some Place',
         place_id: 'abc',
         geometry: undefined,
-      })),
+      }))
     }
     vi.stubGlobal('google', {
-      maps: { places: { Autocomplete: vi.fn(() => mockAc) } },
+      maps: { places: { Autocomplete: MockAutocomplete } },
     })
 
     const onChange = vi.fn()

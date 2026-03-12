@@ -43,6 +43,7 @@ describe('MapView', () => {
   })
 
   it('shows map-unavailable when VITE_GOOGLE_MAPS_API_KEY is not set', () => {
+    vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', '')
     render(<MapView events={[]} gaps={[]} onEdit={() => {}} />)
     expect(screen.getByTestId('map-unavailable')).toBeInTheDocument()
     expect(screen.getByText(/Map unavailable — add VITE_GOOGLE_MAPS_API_KEY/)).toBeInTheDocument()
