@@ -13,6 +13,10 @@ import BottomNav from '@/components/BottomNav'
 import type { TripEvent } from '@/types/trip'
 import type { View } from '@/components/ViewToggle'
 
+type RenderItem =
+  | { kind: 'event'; event: TripEvent }
+  | { kind: 'gap'; message: string; key: string }
+
 export default function TripDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -41,10 +45,6 @@ export default function TripDetailPage() {
     `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`)
   )
   const gaps = detectGaps(sortedEvents)
-
-  type RenderItem =
-    | { kind: 'event'; event: TripEvent }
-    | { kind: 'gap'; message: string; key: string }
 
   const items: RenderItem[] = []
   sortedEvents.forEach(event => {
