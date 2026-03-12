@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/formatDate'
 import type { TripEvent, EventType } from '@/types/trip'
 
 const TYPE_COLORS: Record<EventType, string> = {
@@ -35,7 +36,7 @@ export default function TimelineEvent({ event, onEdit }: Props) {
         role="button"
         aria-label={`Edit ${event.title}`}
       >
-        <div className="text-[10px] text-muted">{event.date} · {event.time}</div>
+        <div className="text-[10px] text-muted">{formatDate(event.date)} · {event.time}</div>
         <div className="font-semibold text-foreground text-sm mt-0.5">{event.title}</div>
         <div className="text-[10px] text-muted mt-0.5">
           {TYPE_LABELS[event.type]}

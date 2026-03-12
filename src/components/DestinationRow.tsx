@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { detectGaps } from '@/lib/gapDetection'
+import { formatDate } from '@/lib/formatDate'
 import type { Destination } from '@/types/trip'
 
 interface Props {
@@ -32,7 +33,7 @@ export default function DestinationRow({ destination, onDelete }: Props) {
       <div className="flex-1 min-w-0">
         <div className="font-bold text-foreground text-sm truncate">{destination.title}</div>
         <div className="text-xs text-muted">
-          {destination.startDate} – {destination.endDate}
+          {formatDate(destination.startDate)} – {formatDate(destination.endDate)}
         </div>
       </div>
       {hasGaps && (
