@@ -42,6 +42,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
   const [value, setValue] = useState('')
   const [notes, setNotes] = useState('')
   const [errors, setErrors] = useState<FormErrors>({})
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   const isEdit = !!editEvent
 
@@ -66,6 +67,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       setNotes('')
     }
     setErrors({})
+    setConfirmDelete(false)
   }, [open, editEvent])
 
   function validate(): FormErrors {
@@ -105,10 +107,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
   }
 
   function handleDelete() {
-    if (window.confirm('Delete this event?')) {
-      deleteEvent(destinationId, editEvent!.id)
-      onClose()
-    }
+    setConfirmDelete(true)
   }
 
   const inputClass = (hasError?: string) =>
@@ -224,7 +223,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         </button>
 
         {/* Delete (edit mode only) */}
-        {isEdit && (
+        {isEdit && !confirmDelete && (
           <button
             type="button"
             onClick={handleDelete}
@@ -232,6 +231,24 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           >
             Delete event
           </button>
+        )}
+        {isEdit && confirmDelete && (
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => { deleteEvent(destinationId, editEvent!.id); onClose() }}
+              className="flex-1 bg-red-500 text-white rounded-xl py-3 text-sm font-bold hover:bg-red-600 transition-colors"
+            >
+              Confirm delete
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(false)}
+              className="flex-1 bg-input-bg text-foreground rounded-xl py-3 text-sm font-bold hover:bg-border transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
         )}
       </form>
     </BottomSheet>

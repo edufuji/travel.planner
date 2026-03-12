@@ -16,10 +16,12 @@ export default function GooglePlacesInput({ value, onChange, placeholder, classN
   useEffect(() => {
     if (!apiKey || !inputRef.current) return
 
+    let isMounted = true
+
     setOptions({ key: apiKey, v: 'weekly' })
 
     importLibrary('places').then(() => {
-      if (!inputRef.current) return
+      if (!isMounted || !inputRef.current) return
       const ac = new google.maps.places.Autocomplete(inputRef.current, {
         fields: ['name', 'place_id'],
       })
@@ -30,6 +32,8 @@ export default function GooglePlacesInput({ value, onChange, placeholder, classN
     }).catch(() => {
       // Silently fall back — plain text input still works
     })
+
+    return () => { isMounted = false }
   }, [])  // eslint-disable-line react-hooks/exhaustive-deps
 
   // No API key: plain controlled input — always rendered in tests

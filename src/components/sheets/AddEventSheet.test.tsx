@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import AddEventSheet from './AddEventSheet'
 import { useTripsStore } from '@/stores/tripsStore'
 import type { TripEvent } from '@/types/trip'
@@ -108,5 +108,36 @@ describe('AddEventSheet', () => {
     renderSheet({ editEvent })
     expect(screen.getByText('Save Changes')).toBeInTheDocument()
     expect(screen.getByText('Delete event')).toBeInTheDocument()
+  })
+
+  it('deletes event when delete is confirmed', () => {
+    const deleteEvent = vi.fn()
+    useTripsStore.setState({
+      destinations: [{
+        id: DEST_ID,
+        title: 'Japan',
+        emoji: '✈️',
+        startDate: '2026-03-15',
+        endDate: '2026-04-02',
+        events: [],
+        createdAt: '',
+      }],
+      deleteEvent,
+    })
+    const editEvent: TripEvent = {
+      id: 'ev-1',
+      destinationId: DEST_ID,
+      type: 'transport',
+      title: 'Flight',
+      place: 'GRU',
+      date: '2026-03-15',
+      time: '10:00',
+      createdAt: '',
+    }
+    renderSheet({ editEvent })
+    fireEvent.click(screen.getByText('Delete event'))
+    expect(screen.getByText('Confirm delete')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Confirm delete'))
+    expect(deleteEvent).toHaveBeenCalledWith(DEST_ID, 'ev-1')
   })
 })
