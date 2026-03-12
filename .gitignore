@@ -25,3 +25,8 @@ dist-ssr
 
 # Git worktrees
 .worktrees
+
+# Local environment secrets
+.env
+.env.local
+.env*.local
