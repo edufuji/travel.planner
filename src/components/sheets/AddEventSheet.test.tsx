@@ -1,0 +1,112 @@
+import { render, screen, fireEvent } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { describe, it, expect, beforeEach } from 'vitest'
+import AddEventSheet from './AddEventSheet'
+import { useTripsStore } from '@/stores/tripsStore'
+import type { TripEvent } from '@/types/trip'
+
+const DEST_ID = 'dest-1'
+
+function renderSheet(props: Partial<React.ComponentProps<typeof AddEventSheet>> = {}) {
+  return render(
+    <MemoryRouter>
+      <AddEventSheet
+        open={true}
+        onClose={() => {}}
+        destinationId={DEST_ID}
+        {...props}
+      />
+    </MemoryRouter>
+  )
+}
+
+beforeEach(() => {
+  useTripsStore.setState({
+    destinations: [{
+      id: DEST_ID,
+      title: 'Japan',
+      emoji: '✈️',
+      startDate: '2026-03-15',
+      endDate: '2026-04-02',
+      events: [],
+      createdAt: '',
+    }],
+  })
+})
+
+describe('AddEventSheet', () => {
+  it('renders type selector pills: Transport, Stay, Ticket, Food', () => {
+    renderSheet()
+    expect(screen.getByText('Transport')).toBeInTheDocument()
+    expect(screen.getByText('Stay')).toBeInTheDocument()
+    expect(screen.getByText('Ticket')).toBeInTheDocument()
+    expect(screen.getByText('Food')).toBeInTheDocument()
+  })
+
+  it('renders "Add to Timeline" button in create mode', () => {
+    renderSheet()
+    expect(screen.getByText('Add to Timeline')).toBeInTheDocument()
+  })
+
+  it('shows Title required error when submitting empty form', () => {
+    renderSheet()
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(screen.getByText('Title is required')).toBeInTheDocument()
+  })
+
+  it('shows Place required error when submitting empty form', () => {
+    renderSheet()
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(screen.getByText('Place is required')).toBeInTheDocument()
+  })
+
+  it('shows Date required error when submitting empty form', () => {
+    renderSheet()
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(screen.getByText('Date is required')).toBeInTheDocument()
+  })
+
+  it('shows Time required error when submitting empty form', () => {
+    renderSheet()
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(screen.getByText('Time is required')).toBeInTheDocument()
+  })
+
+  it('shows value error when a non-positive number is entered', () => {
+    renderSheet()
+    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
+    fireEvent.change(document.querySelector('input[type="time"]') as HTMLInputElement, { target: { value: '10:00' } })
+    fireEvent.change(screen.getByPlaceholderText('Cost (optional)'), { target: { value: '-5' } })
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(screen.getByText('Must be a positive number')).toBeInTheDocument()
+  })
+
+  it('does not show required errors when all required fields are filled', () => {
+    renderSheet()
+    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
+    fireEvent.change(document.querySelector('input[type="time"]') as HTMLInputElement, { target: { value: '10:00' } })
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(screen.queryByText('Title is required')).not.toBeInTheDocument()
+    expect(screen.queryByText('Place is required')).not.toBeInTheDocument()
+  })
+
+  it('shows "Save Changes" and "Delete event" in edit mode', () => {
+    const editEvent: TripEvent = {
+      id: 'ev-1',
+      destinationId: DEST_ID,
+      type: 'transport',
+      title: 'Flight',
+      place: 'GRU',
+      date: '2026-03-15',
+      time: '10:00',
+      createdAt: '',
+    }
+    renderSheet({ editEvent })
+    expect(screen.getByText('Save Changes')).toBeInTheDocument()
+    expect(screen.getByText('Delete event')).toBeInTheDocument()
+  })
+})
