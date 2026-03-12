@@ -140,4 +140,35 @@ describe('AddEventSheet', () => {
     fireEvent.click(screen.getByText('Confirm delete'))
     expect(deleteEvent).toHaveBeenCalledWith(DEST_ID, 'ev-1')
   })
+
+  it('passes lat and lng to the store when submitting with coordinates', () => {
+    const addEvent = vi.fn()
+    useTripsStore.setState({
+      destinations: [{
+        id: DEST_ID,
+        title: 'Japan',
+        emoji: '✈️',
+        startDate: '2026-03-15',
+        endDate: '2026-04-02',
+        events: [],
+        createdAt: '',
+      }],
+      addEvent,
+    })
+
+    renderSheet()
+
+    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    // Simulate GooglePlacesInput onChange called with lat/lng
+    // The fallback input triggers onChange(value) only, so we test via store mock
+    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
+    fireEvent.change(document.querySelector('input[type="time"]') as HTMLInputElement, { target: { value: '10:00' } })
+    fireEvent.click(screen.getByText('Add to Timeline'))
+
+    expect(addEvent).toHaveBeenCalledWith(
+      DEST_ID,
+      expect.objectContaining({ title: 'My Flight', place: 'Tokyo' })
+    )
+  })
 })

@@ -1,9 +1,13 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import TripDetailPage from './TripDetailPage'
 import { useTripsStore } from '@/stores/tripsStore'
 import type { Destination, TripEvent } from '@/types/trip'
+
+vi.mock('@/components/MapView', () => ({
+  default: () => <div data-testid="map-view">MapView</div>,
+}))
 
 const DEST_ID = 'dest-1'
 
@@ -112,5 +116,40 @@ describe('TripDetailPage', () => {
     })
     renderPage()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('renders Timeline view by default (ViewToggle Timeline button is active)', () => {
+    useTripsStore.setState({ destinations: [makeDest()] })
+    renderPage()
+    const timelineBtn = screen.getByText('Timeline').closest('button')
+    expect(timelineBtn).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.queryByTestId('map-view')).not.toBeInTheDocument()
+  })
+
+  it('clicking Map in ViewToggle shows MapView and hides timeline content', () => {
+    useTripsStore.setState({
+      destinations: [makeDest({
+        events: [makeEvent({ id: 'ev-1', title: 'Flight GRU→NRT' })],
+      })],
+    })
+    renderPage()
+    expect(screen.getByText('Flight GRU→NRT')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Map'))
+    expect(screen.getByTestId('map-view')).toBeInTheDocument()
+    expect(screen.queryByText('Flight GRU→NRT')).not.toBeInTheDocument()
+  })
+
+  it('clicking Timeline in ViewToggle restores timeline after switching to Map', () => {
+    useTripsStore.setState({
+      destinations: [makeDest({
+        events: [makeEvent({ id: 'ev-1', title: 'Flight GRU→NRT' })],
+      })],
+    })
+    renderPage()
+    fireEvent.click(screen.getByText('Map'))
+    expect(screen.getByTestId('map-view')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Timeline'))
+    expect(screen.queryByTestId('map-view')).not.toBeInTheDocument()
+    expect(screen.getByText('Flight GRU→NRT')).toBeInTheDocument()
   })
 })

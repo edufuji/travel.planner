@@ -37,6 +37,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
   const [title, setTitle] = useState('')
   const [place, setPlace] = useState('')
   const [placeId, setPlaceId] = useState<string | undefined>()
+  const [lat, setLat] = useState<number | undefined>()
+  const [lng, setLng] = useState<number | undefined>()
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
   const [value, setValue] = useState('')
@@ -52,6 +54,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       setTitle(editEvent.title)
       setPlace(editEvent.place)
       setPlaceId(editEvent.placeId)
+      setLat(editEvent.lat)
+      setLng(editEvent.lng)
       setDate(editEvent.date)
       setTime(editEvent.time)
       setValue(editEvent.value?.toString() ?? '')
@@ -61,6 +65,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       setTitle('')
       setPlace('')
       setPlaceId(undefined)
+      setLat(undefined)
+      setLng(undefined)
       setDate('')
       setTime('')
       setValue('')
@@ -92,6 +98,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       title: title.trim(),
       place: place.trim(),
       placeId,
+      lat,
+      lng,
       date,
       time,
       value: value !== '' ? Number(value) : undefined,
@@ -153,7 +161,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         <div>
           <GooglePlacesInput
             value={place}
-            onChange={(p, id) => { setPlace(p); setPlaceId(id) }}
+            onChange={(p, id, lat, lng) => { setPlace(p); setPlaceId(id); setLat(lat); setLng(lng) }}
             placeholder="📍 Search place"
             className={inputClass(errors.place)}
           />

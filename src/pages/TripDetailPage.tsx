@@ -1,12 +1,21 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { Calendar, ChevronLeft } from 'lucide-react'
 import { useTripsStore } from '@/stores/tripsStore'
 import { detectGaps } from '@/lib/gapDetection'
+import { formatDate } from '@/lib/formatDate'
 import TimelineEvent from '@/components/TimelineEvent'
 import GapWarningCard from '@/components/GapWarningCard'
+import ViewToggle from '@/components/ViewToggle'
+import MapView from '@/components/MapView'
 import AddEventSheet from '@/components/sheets/AddEventSheet'
 import BottomNav from '@/components/BottomNav'
 import type { TripEvent } from '@/types/trip'
+import type { View } from '@/components/ViewToggle'
+
+type RenderItem =
+  | { kind: 'event'; event: TripEvent }
+  | { kind: 'gap'; message: string; key: string }
 
 export default function TripDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -14,6 +23,7 @@ export default function TripDetailPage() {
   const destination = useTripsStore(s => s.destinations.find(d => d.id === id))
   const [sheetOpen, setSheetOpen] = useState(false)
   const [editEvent, setEditEvent] = useState<TripEvent | undefined>()
+  const [view, setView] = useState<View>('timeline')
 
   if (!destination) {
     return (
@@ -36,10 +46,6 @@ export default function TripDetailPage() {
   )
   const gaps = detectGaps(sortedEvents)
 
-  type RenderItem =
-    | { kind: 'event'; event: TripEvent }
-    | { kind: 'gap'; message: string; key: string }
-
   const items: RenderItem[] = []
   sortedEvents.forEach(event => {
     items.push({ kind: 'event', event })
@@ -60,21 +66,23 @@ export default function TripDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <button
           onClick={() => navigate('/trips')}
-          className="text-muted text-sm font-medium shrink-0"
+          className="flex items-center gap-1 text-primary text-sm font-semibold shrink-0 px-2 py-1 rounded-lg hover:bg-primary/10 active:bg-primary/20 transition-colors"
         >
-          ‹ Trips
+          <ChevronLeft size={16} />
+          Trips
         </button>
         <div className="flex-1 min-w-0">
           <h1 className="text-lg font-extrabold text-foreground truncate">
             {destination.emoji} {destination.title}
           </h1>
-          <p className="text-xs text-muted">
-            {destination.startDate} – {destination.endDate} · {destination.events.length} event{destination.events.length !== 1 ? 's' : ''}
+          <p className="text-xs text-muted flex items-center gap-1">
+            <Calendar size={11} aria-hidden="true" />
+            {formatDate(destination.startDate)} – {formatDate(destination.endDate)} · {destination.events.length} event{destination.events.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
@@ -86,33 +94,41 @@ export default function TripDetailPage() {
         </button>
       </div>
 
-      {/* Timeline */}
-      <div className="px-4">
-        {sortedEvents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center pt-20 text-center">
-            <div className="text-4xl mb-3" aria-hidden="true">📅</div>
-            <p className="text-sm text-muted">No events yet. Tap + to add your first.</p>
-          </div>
-        ) : (
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-[5px] top-2 bottom-2 w-0.5 bg-border" aria-hidden="true" />
-            <div className="space-y-3 pl-5">
-              {items.map((item) =>
-                item.kind === 'event' ? (
-                  <TimelineEvent
-                    key={item.event.id}
-                    event={item.event}
-                    onEdit={openEditSheet}
-                  />
-                ) : (
-                  <GapWarningCard key={item.key} message={item.message} />
-                )
-              )}
-            </div>
-          </div>
-        )}
+      {/* View Toggle */}
+      <div className="px-4 pb-3">
+        <ViewToggle active={view} onChange={setView} />
       </div>
+
+      {/* Body */}
+      {view === 'timeline' ? (
+        <div className="flex-1 overflow-auto px-4">
+          {sortedEvents.length === 0 ? (
+            <div className="flex flex-col items-center justify-center pt-20 text-center">
+              <div className="text-4xl mb-3" aria-hidden="true">📅</div>
+              <p className="text-sm text-muted">No events yet. Tap + to add your first.</p>
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="absolute left-[5px] top-2 bottom-2 w-0.5 bg-border" aria-hidden="true" />
+              <div className="space-y-3 pl-5">
+                {items.map((item) =>
+                  item.kind === 'event' ? (
+                    <TimelineEvent
+                      key={item.event.id}
+                      event={item.event}
+                      onEdit={openEditSheet}
+                    />
+                  ) : (
+                    <GapWarningCard key={item.key} message={item.message} />
+                  )
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <MapView events={sortedEvents} gaps={gaps} onEdit={openEditSheet} />
+      )}
 
       <AddEventSheet
         open={sheetOpen}
