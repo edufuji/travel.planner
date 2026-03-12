@@ -15,7 +15,7 @@ export const TYPE_COLORS: Record<EventType, string> = {
   restaurant: '#F59E0B',
 }
 
-export const GAP_COLOR = '#FF8C00'
+export const GAP_COLOR = '#C75B2A'
 
 export function buildMapSegments(
   sortedEvents: TripEvent[],

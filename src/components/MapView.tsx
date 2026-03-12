@@ -16,6 +16,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const markersRef = useRef<google.maps.Marker[]>([])
   const polylinesRef = useRef<google.maps.Polyline[]>([])
+  const onEditRef = useRef(onEdit)
   const [error, setError] = useState(false)
 
   const positionedEvents = events.filter(
@@ -23,6 +24,8 @@ export default function MapView({ events, gaps, onEdit }: Props) {
       e.lat !== undefined && e.lng !== undefined
   )
   const missingCoordCount = events.length - positionedEvents.length
+
+  useEffect(() => { onEditRef.current = onEdit }, [onEdit])
 
   useEffect(() => {
     if (!apiKey || !mapRef.current) return
@@ -67,7 +70,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
               scale: 8,
             },
           })
-          marker.addListener('click', () => onEdit(event))
+          marker.addListener('click', () => onEditRef.current(event))
           markersRef.current.push(marker)
           bounds.extend({ lat: event.lat, lng: event.lng })
         })
