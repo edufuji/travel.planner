@@ -262,6 +262,7 @@ Tests:
 - Shows `data-testid="map-no-location-banner"` when events lack coords
 - Creates a `Polyline` for each segment (verify count matches `buildMapSegments` output)
 - Calls `onEdit` when a marker's click listener fires
+- Shows `data-testid="map-error"` when `importLibrary` rejects
 
 ### `src/pages/TripDetailPage.test.tsx` additions
 
