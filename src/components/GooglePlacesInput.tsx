@@ -20,17 +20,7 @@ export default function GooglePlacesInput({ value, onChange, placeholder, classN
 
     function attachAutocomplete() {
       if (!isMounted || !input) return
-      // Support both real constructors (production) and vi.fn() mocks (tests).
-      // Arrow-function mocks cannot be called with `new`, so we fall back to a
-      // plain call which returns the mock object directly.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const AutocompleteCtor = google.maps.places.Autocomplete as any
-      let ac: google.maps.places.Autocomplete
-      try {
-        ac = new AutocompleteCtor(input, { fields: ['name', 'place_id', 'geometry'] })
-      } catch {
-        ac = AutocompleteCtor(input, { fields: ['name', 'place_id', 'geometry'] })
-      }
+      const ac = new google.maps.places.Autocomplete(input, { fields: ['name', 'place_id', 'geometry'] })
       ac.addListener('place_changed', () => {
         const place = ac.getPlace()
         const loc = place.geometry?.location
