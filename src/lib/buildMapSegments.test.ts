@@ -59,7 +59,7 @@ describe('buildMapSegments', () => {
     const segments = buildMapSegments(events, gaps)
     expect(segments).toHaveLength(1)
     expect(segments[0].isGap).toBe(true)
-    expect(segments[0].color).toBe('#C75B2A')
+    expect(segments[0].color).toBe('#FF8C00')
   })
 
   it('detects gap correctly when gap afterEventId points to positioned event a (inclusive boundary)', () => {
@@ -110,5 +110,18 @@ describe('buildMapSegments', () => {
     expect(segments).toHaveLength(2)
     expect(segments[0].isGap).toBe(false)  // a→b: no gap
     expect(segments[1].isGap).toBe(true)   // b→c: gap
+  })
+
+  it('unpositioned event in gap range does NOT cause false gap when no gap warning exists', () => {
+    // acc-A and acc-B are positioned; unpositioned event falls between them in datetime
+    // but NO gap warnings are passed → segment should have isGap: false
+    const events = [
+      makeEvent({ id: 'acc-A', type: 'accommodation', lat: 10.0, lng: 20.0, date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'unpos', type: 'ticket', date: '2026-03-16', time: '12:00' }),  // no coords
+      makeEvent({ id: 'acc-B', type: 'accommodation', lat: 11.0, lng: 21.0, date: '2026-03-18', time: '15:00' }),
+    ]
+    const segments = buildMapSegments(events, [])
+    expect(segments).toHaveLength(1)
+    expect(segments[0].isGap).toBe(false)
   })
 })

@@ -8,7 +8,7 @@ export interface MapSegment {
   isGap: boolean   // true → render as dashed orange polyline
 }
 
-const TYPE_COLORS: Record<EventType, string> = {
+export const TYPE_COLORS: Record<EventType, string> = {
   transport: '#4A90D9',
   accommodation: '#7C3AED',
   ticket: '#059669',
@@ -51,7 +51,7 @@ export function buildMapSegments(
       segments.push({
         from: { lat: a.lat, lng: a.lng },
         to: { lat: b.lat, lng: b.lng },
-        color: '#C75B2A',
+        color: '#FF8C00',
         isGap: true,
       })
     } else {
