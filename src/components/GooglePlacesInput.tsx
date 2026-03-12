@@ -16,10 +16,7 @@ export default function GooglePlacesInput({ value, onChange, placeholder, classN
   useEffect(() => {
     if (!apiKey || !inputRef.current) return
 
-    setOptions({
-      key: apiKey,
-      v: 'weekly',
-    })
+    setOptions({ key: apiKey, v: 'weekly' })
 
     importLibrary('places').then(() => {
       if (!inputRef.current) return
