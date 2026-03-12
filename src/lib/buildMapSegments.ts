@@ -15,6 +15,8 @@ export const TYPE_COLORS: Record<EventType, string> = {
   restaurant: '#F59E0B',
 }
 
+export const GAP_COLOR = '#FF8C00'
+
 export function buildMapSegments(
   sortedEvents: TripEvent[],
   gaps: GapWarning[]
@@ -27,10 +29,14 @@ export function buildMapSegments(
 
   if (positioned.length < 2) return []
 
-  // Lookup for all events (including unpositioned) by id — needed for gap detection
-  const eventById = new Map<string, TripEvent>(sortedEvents.map(e => [e.id, e]))
-
   const segments: MapSegment[] = []
+
+  // Lookup for all events (including unpositioned) by id — needed for gap detection.
+  // String comparison works correctly here because date is YYYY-MM-DD and time is HH:mm,
+  // so lexicographic order matches chronological order.
+  const eventById = gaps.length > 0
+    ? new Map<string, TripEvent>(sortedEvents.map(e => [e.id, e]))
+    : null
 
   for (let i = 0; i < positioned.length - 1; i++) {
     const a = positioned[i]
@@ -40,28 +46,19 @@ export function buildMapSegments(
 
     // A gap warning g applies to this segment if g.afterEventId points to an event
     // with datetime in [aDateTime, bDateTime)
-    const hasGap = gaps.some(g => {
+    const hasGap = eventById !== null && gaps.some(g => {
       const refEvent = eventById.get(g.afterEventId)
       if (!refEvent) return false
       const refDateTime = `${refEvent.date} ${refEvent.time}`
       return refDateTime >= aDateTime && refDateTime < bDateTime
     })
 
-    if (hasGap) {
-      segments.push({
-        from: { lat: a.lat, lng: a.lng },
-        to: { lat: b.lat, lng: b.lng },
-        color: '#FF8C00',
-        isGap: true,
-      })
-    } else {
-      segments.push({
-        from: { lat: a.lat, lng: a.lng },
-        to: { lat: b.lat, lng: b.lng },
-        color: TYPE_COLORS[a.type],
-        isGap: false,
-      })
-    }
+    segments.push({
+      from: { lat: a.lat, lng: a.lng },
+      to:   { lat: b.lat, lng: b.lng },
+      color: hasGap ? GAP_COLOR : TYPE_COLORS[a.type],
+      isGap: hasGap,
+    })
   }
 
   return segments

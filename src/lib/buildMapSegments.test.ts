@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildMapSegments } from './buildMapSegments'
+import { buildMapSegments, GAP_COLOR } from './buildMapSegments'
 import type { TripEvent } from '../types/trip'
 import type { GapWarning } from './gapDetection'
 
@@ -12,7 +12,7 @@ function makeEvent(overrides: Partial<TripEvent>): TripEvent {
     place: 'Somewhere',
     date: '2026-03-15',
     time: '10:00',
-    createdAt: '',
+    createdAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
   }
 }
@@ -59,10 +59,10 @@ describe('buildMapSegments', () => {
     const segments = buildMapSegments(events, gaps)
     expect(segments).toHaveLength(1)
     expect(segments[0].isGap).toBe(true)
-    expect(segments[0].color).toBe('#FF8C00')
+    expect(segments[0].color).toBe(GAP_COLOR)
   })
 
-  it('detects gap correctly when gap afterEventId points to positioned event a (inclusive boundary)', () => {
+  it('marks segment as gap when the gap warning directly references the starting endpoint', () => {
     // afterEventId === 'acc-1' which IS event a (has coords)
     // aDateTime = '2026-03-15 14:00', bDateTime = '2026-03-18 15:00'
     // acc-1 datetime = '2026-03-15 14:00' which equals aDateTime → >= passes → gap detected
