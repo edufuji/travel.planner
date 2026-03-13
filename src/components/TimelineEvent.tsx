@@ -21,6 +21,18 @@ interface Props {
 }
 
 export default function TimelineEvent({ event, onEdit }: Props) {
+  const timeDisplay =
+    event.type === 'transport' && event.arrivalTime
+      ? `🛫 ${event.time} · 🛬 ${event.arrivalTime}`
+      : event.time
+
+  const placeDisplay =
+    event.type === 'transport' && event.placeTo
+      ? `📍 ${event.place} → ${event.placeTo}`
+      : event.place
+        ? `📍 ${event.place}`
+        : null
+
   return (
     <div className="relative">
       {/* Colored dot on the vertical line */}
@@ -36,8 +48,11 @@ export default function TimelineEvent({ event, onEdit }: Props) {
         role="button"
         aria-label={`Edit ${event.title}`}
       >
-        <div className="text-[10px] text-muted">{formatDate(event.date)} · {event.time}</div>
+        <div className="text-[10px] text-muted">{formatDate(event.date)} · {timeDisplay}</div>
         <div className="font-semibold text-foreground text-sm mt-0.5">{event.title}</div>
+        {placeDisplay && (
+          <div className="text-[10px] text-muted mt-0.5">{placeDisplay}</div>
+        )}
         <div className="text-[10px] text-muted mt-0.5">
           {TYPE_LABELS[event.type]}
           {event.value != null ? ` · ${event.value}` : ''}
