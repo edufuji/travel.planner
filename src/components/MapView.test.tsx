@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import MapView from './MapView'
 import type { TripEvent } from '@/types/trip'
@@ -25,7 +25,9 @@ function makeEvent(overrides: Partial<TripEvent>): TripEvent {
 function stubGoogleMaps() {
   vi.stubGlobal('google', {
     maps: {
-      Map: vi.fn(function () { return { fitBounds: vi.fn(), setCenter: vi.fn() } }),
+      Map: vi.fn(function () {
+        return { fitBounds: vi.fn(), setCenter: vi.fn(), panTo: vi.fn(), setZoom: vi.fn() }
+      }),
       Marker: vi.fn(function () { return { addListener: vi.fn(), setMap: vi.fn() } }),
       Polyline: vi.fn(function () { return { setMap: vi.fn() } }),
       LatLngBounds: vi.fn(function () { return { extend: vi.fn(), isEmpty: vi.fn(function () { return false }) } }),
@@ -124,6 +126,61 @@ describe('MapView', () => {
 
       expect(screen.getByTestId('map-error')).toBeInTheDocument()
       expect(screen.getByText('Failed to load map')).toBeInTheDocument()
+    })
+
+    it('sidebar renders event titles', async () => {
+      const events = [
+        makeEvent({ id: 'a', title: 'My Flight', lat: 35.0, lng: 139.0 }),
+      ]
+      render(<MapView events={events} gaps={[]} onEdit={() => {}} />)
+      await act(async () => {})
+      expect(screen.getByText('My Flight')).toBeInTheDocument()
+    })
+
+    it('clicking sidebar item calls map.panTo with event coordinates', async () => {
+      let capturedPanTo: ReturnType<typeof vi.fn> | null = null
+      vi.mocked(google.maps.Map).mockImplementation(function () {
+        const panTo = vi.fn()
+        capturedPanTo = panTo
+        return { fitBounds: vi.fn(), setCenter: vi.fn(), panTo, setZoom: vi.fn() }
+      })
+      const events = [
+        makeEvent({ id: 'a', title: 'My Flight', lat: 35.0, lng: 139.0 }),
+      ]
+      render(<MapView events={events} gaps={[]} onEdit={() => {}} />)
+      await act(async () => {})
+
+      fireEvent.click(screen.getByRole('button', { name: 'My Flight' }))
+      expect(capturedPanTo).toHaveBeenCalledWith({ lat: 35.0, lng: 139.0 })
+    })
+
+    it('clicking sidebar item with no coordinates does not throw', async () => {
+      const events = [
+        makeEvent({ id: 'a', title: 'No Coords Event' }),  // no lat/lng
+      ]
+      render(<MapView events={events} gaps={[]} onEdit={() => {}} />)
+      await act(async () => {})
+
+      expect(() =>
+        fireEvent.click(screen.getByRole('button', { name: 'No Coords Event' }))
+      ).not.toThrow()
+    })
+
+    it('transport event with latTo/lngTo renders two markers', async () => {
+      const events = [
+        makeEvent({
+          id: 'a',
+          type: 'transport',
+          lat: 35.0,
+          lng: 139.0,
+          latTo: 10.0,
+          lngTo: 10.0,
+        }),
+      ]
+      render(<MapView events={events} gaps={[]} onEdit={() => {}} />)
+      await act(async () => {})
+
+      expect(google.maps.Marker).toHaveBeenCalledTimes(2)
     })
   })
 })

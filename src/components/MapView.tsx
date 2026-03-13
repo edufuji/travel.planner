@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
 import { buildMapSegments, GAP_COLOR, TYPE_COLORS } from '@/lib/buildMapSegments'
+import { useTimelineGroups } from '@/lib/useTimelineGroups'
 import type { TripEvent } from '@/types/trip'
 import type { GapWarning } from '@/lib/gapDetection'
 
@@ -25,7 +26,16 @@ export default function MapView({ events, gaps, onEdit }: Props) {
   )
   const missingCoordCount = events.length - positionedEvents.length
 
+  const groups = useTimelineGroups(events, gaps)
+
   useEffect(() => { onEditRef.current = onEdit }, [onEdit])
+
+  const handleSidebarClick = (event: TripEvent) => {
+    if (event.lat !== undefined && event.lng !== undefined && mapInstanceRef.current) {
+      mapInstanceRef.current.panTo({ lat: event.lat, lng: event.lng })
+      mapInstanceRef.current.setZoom(14)
+    }
+  }
 
   useEffect(() => {
     if (!apiKey || !mapRef.current) return
@@ -73,6 +83,29 @@ export default function MapView({ events, gaps, onEdit }: Props) {
           marker.addListener('click', () => onEditRef.current(event))
           markersRef.current.push(marker)
           bounds.extend({ lat: event.lat, lng: event.lng })
+
+          // Arrival pin for transport events with destination coords
+          if (
+            event.type === 'transport' &&
+            event.latTo !== undefined &&
+            event.lngTo !== undefined
+          ) {
+            const arrivalMarker = new google.maps.Marker({
+              position: { lat: event.latTo, lng: event.lngTo },
+              map,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: TYPE_COLORS[event.type],
+                fillOpacity: 0.6,
+                strokeColor: '#ffffff',
+                strokeWeight: 2,
+                scale: 6,
+              },
+            })
+            arrivalMarker.addListener('click', () => onEditRef.current(event))
+            markersRef.current.push(arrivalMarker)
+            bounds.extend({ lat: event.latTo, lng: event.lngTo })
+          }
         })
 
         const segments = buildMapSegments(events, gaps)
@@ -153,16 +186,49 @@ export default function MapView({ events, gaps, onEdit }: Props) {
   }
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col relative">
-      <div ref={mapRef} className="flex-1 min-h-0" />
-      {missingCoordCount > 0 && (
-        <div
-          data-testid="map-no-location-banner"
-          className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs text-center py-2"
-        >
-          {missingCoordCount} event(s) not shown — no location data
-        </div>
-      )}
+    <div className="flex-1 min-h-0 flex flex-row relative">
+      {/* Left sidebar */}
+      <div className="w-[38%] min-h-0 overflow-y-auto bg-surface border-r border-border flex flex-col">
+        {groups.map(group => (
+          <div key={group.date}>
+            <div className="px-3 py-1 text-xs font-semibold text-muted bg-input-bg sticky top-0">
+              {group.label}
+            </div>
+            {group.items.map(item => {
+              if (item.kind === 'gap') {
+                return (
+                  <div key={item.key} className="px-3 py-1 text-xs text-warning">
+                    {item.message}
+                  </div>
+                )
+              }
+              return (
+                <button
+                  key={item.event.id}
+                  aria-label={item.event.title}
+                  onClick={() => handleSidebarClick(item.event)}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-input-bg transition-colors truncate"
+                >
+                  {item.event.title}
+                </button>
+              )
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* Map area */}
+      <div className="flex-1 min-h-0 relative">
+        <div ref={mapRef} className="w-full h-full" />
+        {missingCoordCount > 0 && (
+          <div
+            data-testid="map-no-location-banner"
+            className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs text-center py-2"
+          >
+            {missingCoordCount} event(s) not shown — no location data
+          </div>
+        )}
+      </div>
     </div>
   )
 }
