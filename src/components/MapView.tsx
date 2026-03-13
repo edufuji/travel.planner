@@ -1,11 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
-import { buildMapSegments, GAP_COLOR, TYPE_COLORS } from '@/lib/buildMapSegments'
+import { Plane, BedDouble, Ticket, Utensils, Footprints } from 'lucide-react'
+import { buildMapSegments, TYPE_COLORS } from '@/lib/buildMapSegments'
 import { useTimelineGroups } from '@/lib/useTimelineGroups'
 import TimelineDateHeader from '@/components/TimelineDateHeader'
 import GapWarningCard from '@/components/GapWarningCard'
-import type { TripEvent } from '@/types/trip'
+import type { TripEvent, EventType } from '@/types/trip'
 import type { GapWarning } from '@/lib/gapDetection'
+
+const TYPE_ICONS: Record<EventType, React.FC<{ size?: number; color?: string }>> = {
+  transport: Plane,
+  accommodation: BedDouble,
+  ticket: Ticket,
+  restaurant: Utensils,
+  walking: Footprints,
+}
+
+const DARK_MAP_STYLES: google.maps.MapTypeStyle[] = [
+  { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#38414e' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#212a37' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#17263c' }] },
+]
 
 interface Props {
   events: TripEvent[]
@@ -21,6 +39,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
   const polylinesRef = useRef<google.maps.Polyline[]>([])
   const onEditRef = useRef(onEdit)
   const [error, setError] = useState(false)
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'))
 
   const positionedEvents = events.filter(
     (e): e is TripEvent & { lat: number; lng: number } =>
@@ -31,6 +50,19 @@ export default function MapView({ events, gaps, onEdit }: Props) {
   const groups = useTimelineGroups(events, gaps)
 
   useEffect(() => { onEditRef.current = onEdit }, [onEdit])
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'))
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!mapInstanceRef.current) return
+    mapInstanceRef.current.setOptions({ styles: isDark ? DARK_MAP_STYLES : [] })
+  }, [isDark])
 
   const handleSidebarClick = (event: TripEvent) => {
     if (event.lat !== undefined && event.lng !== undefined && mapInstanceRef.current) {
@@ -111,34 +143,33 @@ export default function MapView({ events, gaps, onEdit }: Props) {
         })
 
         const segments = buildMapSegments(events, gaps)
-        segments.forEach(segment => {
-          const polyline = segment.isGap
-            ? new google.maps.Polyline({
-                path: [segment.from, segment.to],
-                strokeColor: GAP_COLOR,
-                strokeWeight: 3,
-                strokeOpacity: 0,
-                icons: [{
-                  icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: GAP_COLOR,
-                    fillOpacity: 1,
-                    strokeColor: GAP_COLOR,
-                    strokeOpacity: 1,
-                    scale: 3,
-                  },
-                  offset: '0',
-                  repeat: '8px',
-                }],
-                map,
-              })
-            : new google.maps.Polyline({
-                path: [segment.from, segment.to],
-                strokeColor: segment.color,
-                strokeWeight: 3,
-                strokeOpacity: 1,
-                map,
-              })
+        segments.forEach(seg => {
+          let polyline: google.maps.Polyline
+          if (seg.isGap) {
+            polyline = new google.maps.Polyline({
+              path: [seg.from, seg.to],
+              strokeColor: seg.color,
+              strokeOpacity: 0,
+              icons: [{ icon: { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 }, offset: '0', repeat: '10px' }],
+              map,
+            })
+          } else if (seg.isWalking) {
+            polyline = new google.maps.Polyline({
+              path: [seg.from, seg.to],
+              strokeColor: seg.color,
+              strokeOpacity: 0,
+              icons: [{ icon: { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 2 }, offset: '0', repeat: '6px' }],
+              map,
+            })
+          } else {
+            polyline = new google.maps.Polyline({
+              path: [seg.from, seg.to],
+              strokeColor: seg.color,
+              strokeOpacity: 0.85,
+              strokeWeight: 3,
+              map,
+            })
+          }
           polylinesRef.current.push(polyline)
         })
 
@@ -207,9 +238,19 @@ export default function MapView({ events, gaps, onEdit }: Props) {
                   key={item.event.id}
                   aria-label={item.event.title}
                   onClick={() => handleSidebarClick(item.event)}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-input-bg transition-colors truncate"
+                  className="w-full text-left px-3 py-1 hover:bg-input-bg transition-colors"
                 >
-                  {item.event.title}
+                  <div className="flex items-center gap-2 p-2 border border-border rounded-lg bg-white dark:bg-transparent">
+                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: TYPE_COLORS[item.event.type] }} />
+                    {(() => { const Icon = TYPE_ICONS[item.event.type]; return <Icon size={14} color={TYPE_COLORS[item.event.type]} /> })()}
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] text-muted">{item.event.time}</div>
+                      <div className="text-xs font-semibold text-foreground truncate">{item.event.title}</div>
+                    </div>
+                    {item.event.value != null && (
+                      <div className="text-[10px] text-muted shrink-0">{item.event.value}</div>
+                    )}
+                  </div>
                 </button>
               )
             })}
