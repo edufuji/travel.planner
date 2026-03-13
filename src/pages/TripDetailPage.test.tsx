@@ -152,4 +152,49 @@ describe('TripDetailPage', () => {
     expect(screen.queryByTestId('map-view')).not.toBeInTheDocument()
     expect(screen.getByText('Flight GRU→NRT')).toBeInTheDocument()
   })
+
+  it('renders a date header for each distinct event date', () => {
+    useTripsStore.setState({
+      destinations: [makeDest({
+        events: [
+          makeEvent({ id: 'ev-1', title: 'Flight', date: '2026-03-15', time: '10:00' }),
+          makeEvent({ id: 'ev-2', title: 'Hotel Check-in', date: '2026-03-16', time: '14:00' }),
+        ],
+      })],
+    })
+    renderPage()
+    // "Sun, 15 Mar 2026" and "Mon, 16 Mar 2026"
+    expect(screen.getByText('Sun, 15 Mar 2026')).toBeInTheDocument()
+    expect(screen.getByText('Mon, 16 Mar 2026')).toBeInTheDocument()
+  })
+
+  it('renders date header before events in DOM order', () => {
+    useTripsStore.setState({
+      destinations: [makeDest({
+        events: [
+          makeEvent({ id: 'ev-1', title: 'Morning Flight', date: '2026-03-15', time: '08:00' }),
+        ],
+      })],
+    })
+    renderPage()
+    const header = screen.getByText('Sun, 15 Mar 2026')
+    const eventCard = screen.getByText('Morning Flight')
+    expect(header.compareDocumentPosition(eventCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('renders GAP warning inside the correct date group', () => {
+    useTripsStore.setState({
+      destinations: [makeDest({
+        events: [
+          makeEvent({ id: 'a1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+          makeEvent({ id: 'a2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+        ],
+      })],
+    })
+    renderPage()
+    const alert = screen.getByRole('alert')
+    const header15 = screen.getByText('Sun, 15 Mar 2026')
+    // GAP should be after the Mar 15 header (in the same group)
+    expect(header15.compareDocumentPosition(alert) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
 })

@@ -4,18 +4,16 @@ import { Calendar, ChevronLeft } from 'lucide-react'
 import { useTripsStore } from '@/stores/tripsStore'
 import { detectGaps } from '@/lib/gapDetection'
 import { formatDate } from '@/lib/formatDate'
+import { useTimelineGroups } from '@/lib/useTimelineGroups'
 import TimelineEvent from '@/components/TimelineEvent'
 import GapWarningCard from '@/components/GapWarningCard'
+import TimelineDateHeader from '@/components/TimelineDateHeader'
 import ViewToggle from '@/components/ViewToggle'
 import MapView from '@/components/MapView'
 import AddEventSheet from '@/components/sheets/AddEventSheet'
 import BottomNav from '@/components/BottomNav'
 import type { TripEvent } from '@/types/trip'
 import type { View } from '@/components/ViewToggle'
-
-type RenderItem =
-  | { kind: 'event'; event: TripEvent }
-  | { kind: 'gap'; message: string; key: string }
 
 export default function TripDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -45,15 +43,7 @@ export default function TripDetailPage() {
     `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`)
   )
   const gaps = detectGaps(sortedEvents)
-
-  const items: RenderItem[] = []
-  sortedEvents.forEach(event => {
-    items.push({ kind: 'event', event })
-    const gap = gaps.find(g => g.afterEventId === event.id)
-    if (gap) {
-      items.push({ kind: 'gap', message: gap.message, key: `gap-${gap.afterEventId}` })
-    }
-  })
+  const groups = useTimelineGroups(sortedEvents, gaps)
 
   function openAddSheet() {
     setEditEvent(undefined)
@@ -110,18 +100,25 @@ export default function TripDetailPage() {
           ) : (
             <div className="relative">
               <div className="absolute left-[5px] top-2 bottom-2 w-0.5 bg-border" aria-hidden="true" />
-              <div className="space-y-3 pl-5">
-                {items.map((item) =>
-                  item.kind === 'event' ? (
-                    <TimelineEvent
-                      key={item.event.id}
-                      event={item.event}
-                      onEdit={openEditSheet}
-                    />
-                  ) : (
-                    <GapWarningCard key={item.key} message={item.message} />
-                  )
-                )}
+              <div className="pl-5">
+                {groups.map(group => (
+                  <div key={group.date}>
+                    <TimelineDateHeader label={group.label} />
+                    <div className="space-y-3">
+                      {group.items.map(item =>
+                        item.kind === 'event' ? (
+                          <TimelineEvent
+                            key={item.event.id}
+                            event={item.event}
+                            onEdit={openEditSheet}
+                          />
+                        ) : (
+                          <GapWarningCard key={item.key} message={item.message} />
+                        )
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
