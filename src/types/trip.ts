@@ -1,4 +1,4 @@
-export type EventType = 'transport' | 'accommodation' | 'ticket' | 'restaurant'
+export type EventType = 'transport' | 'accommodation' | 'ticket' | 'restaurant' | 'walking'
 
 // UI label → EventType mapping (used in AddEventSheet type selector pills):
 //   "Transport" → 'transport'

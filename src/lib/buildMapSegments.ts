@@ -6,6 +6,7 @@ export interface MapSegment {
   to: { lat: number; lng: number }
   color: string    // hex — matches TYPE_COLORS of the starting event (or transport blue for legs)
   isGap: boolean   // true → render as dashed orange polyline
+  isWalking: boolean  // true → render as dotted green polyline
 }
 
 export const TYPE_COLORS: Record<EventType, string> = {
@@ -13,6 +14,7 @@ export const TYPE_COLORS: Record<EventType, string> = {
   accommodation: '#7C3AED',
   ticket: '#059669',
   restaurant: '#F59E0B',
+  walking: '#22C55E',
 }
 
 export const GAP_COLOR = '#C75B2A'
@@ -111,6 +113,7 @@ export function buildMapSegments(
       to: { lat: J.lat, lng: J.lng },
       color,
       isGap,
+      isWalking: false,
     })
   }
 
