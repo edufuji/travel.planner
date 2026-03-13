@@ -101,7 +101,7 @@ describe('TripDetailPage', () => {
     })
     renderPage()
     expect(screen.getByRole('alert')).toBeInTheDocument()
-    expect(screen.getByText(/No transport or walking route between/)).toBeInTheDocument()
+    expect(screen.getByText(/No walking route between/)).toBeInTheDocument()
   })
 
   it('does not render a GAP warning when walking exists between accommodations', () => {

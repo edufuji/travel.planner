@@ -35,7 +35,7 @@ describe('detectGaps', () => {
     expect(detectGaps(events)).toEqual([])
   })
 
-  it('returns a gap when two accommodations have no transport between them', () => {
+  it('returns a gap when two accommodations have no walking event between them', () => {
     const events = [
       makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
       makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
@@ -62,6 +62,16 @@ describe('detectGaps', () => {
     const events = [
       makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
       makeEvent({ id: 'walk-1', type: 'walking', title: 'Morning walk', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+    ]
+    expect(detectGaps(events)).toHaveLength(1)
+  })
+
+  it('does not count walking event at exactly the same time as second accommodation as "between"', () => {
+    // Walking event at B's exact timestamp is NOT strictly less than bDateTime → still a gap
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'walk-1', type: 'walking', title: 'Afternoon walk', date: '2026-03-18', time: '15:00' }),
       makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
     ]
     expect(detectGaps(events)).toHaveLength(1)
