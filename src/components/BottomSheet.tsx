@@ -31,7 +31,7 @@ export default function BottomSheet({ open, onClose, title, children }: BottomSh
       <div
         role="dialog"
         aria-modal="true"
-        className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[90vh] overflow-y-auto"
+        className="absolute bottom-0 left-0 right-0 bg-background border-t border-border rounded-t-2xl max-h-[90vh] overflow-y-auto"
       >
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1">

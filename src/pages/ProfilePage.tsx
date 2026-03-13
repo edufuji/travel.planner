@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
         {/* Upgrade card — hidden for pro */}
         {plan !== 'pro' && (
-          <div className="bg-white dark:bg-stone-800 border border-border rounded-xl p-4 w-full text-center">
+          <div className="bg-white dark:bg-transparent border border-border rounded-xl p-4 w-full text-center">
             <p className="text-xs text-muted mb-3">
               You're on the <span className="font-semibold">{badge.label}</span> plan
             </p>
@@ -45,7 +45,7 @@ export default function ProfilePage() {
         )}
 
         {/* Dark mode row */}
-        <div className="bg-white dark:bg-stone-800 border border-border rounded-xl px-4 py-3 w-full flex justify-between items-center">
+        <div className="bg-white dark:bg-transparent border border-border rounded-xl px-4 py-3 w-full flex justify-between items-center">
           <span className="text-sm font-semibold text-foreground">Dark mode</span>
           <DarkModeToggle />
         </div>

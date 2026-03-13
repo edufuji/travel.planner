@@ -37,13 +37,13 @@ export default function TimelineEvent({ event, onEdit }: Props) {
     <div className="relative">
       {/* Colored dot on the vertical line */}
       <div
-        className="absolute left-[-14px] top-[10px] w-[10px] h-[10px] rounded-full border-2 border-white z-10"
+        className="absolute left-[-14px] top-[10px] w-[10px] h-[10px] rounded-full border-2 border-white dark:border-background z-10"
         style={{ backgroundColor: TYPE_COLORS[event.type] }}
         aria-hidden="true"
       />
       {/* Card */}
       <div
-        className="bg-white border border-border rounded-lg px-3 py-2 cursor-pointer active:bg-input-bg"
+        className="bg-white dark:bg-transparent border border-border rounded-lg px-3 py-2 cursor-pointer active:bg-input-bg"
         onClick={() => onEdit(event)}
         role="button"
         aria-label={`Edit ${event.title}`}

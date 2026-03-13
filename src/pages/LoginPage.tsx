@@ -81,14 +81,14 @@ export default function LoginPage() {
         <div className="flex gap-2.5 mb-5">
           <button
             type="button"
-            className="flex-1 flex items-center justify-center gap-2 bg-white border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-transparent border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
           >
             <FcGoogle size={16} />
             Continue with Google
           </button>
           <button
             type="button"
-            className="flex-1 flex items-center justify-center gap-2 bg-white border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-transparent border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
           >
             <FaApple size={16} />
             Continue with Apple

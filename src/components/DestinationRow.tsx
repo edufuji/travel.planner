@@ -23,7 +23,7 @@ export default function DestinationRow({ destination, onDelete }: Props) {
 
   return (
     <div
-      className="bg-white border border-border rounded-[10px] p-3 flex items-center gap-3 cursor-pointer active:bg-input-bg"
+      className="bg-white dark:bg-transparent border border-border rounded-[10px] p-3 flex items-center gap-3 cursor-pointer active:bg-input-bg"
       onClick={() => navigate(`/trips/${destination.id}`)}
       onContextMenu={(e) => { e.preventDefault(); handleDelete(e) }}
       role="button"
@@ -37,12 +37,12 @@ export default function DestinationRow({ destination, onDelete }: Props) {
         </div>
       </div>
       {hasGaps && (
-        <span className="text-xs font-bold bg-[#FFF7ED] text-[#C75B2A] rounded px-1.5 py-0.5 shrink-0">
+        <span className="text-xs font-bold bg-[#FFF7ED] dark:bg-transparent dark:border dark:border-[#C75B2A] text-[#C75B2A] rounded px-1.5 py-0.5 shrink-0">
           ⚠️ GAP
         </span>
       )}
       {!hasGaps && hasEvents && (
-        <span className="text-xs font-bold bg-[#F0FDF4] text-[#059669] rounded px-1.5 py-0.5 shrink-0">
+        <span className="text-xs font-bold bg-[#F0FDF4] dark:bg-transparent dark:border dark:border-[#059669] text-[#059669] rounded px-1.5 py-0.5 shrink-0">
           ✓ OK
         </span>
       )}
