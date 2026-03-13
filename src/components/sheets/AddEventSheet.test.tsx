@@ -40,12 +40,22 @@ afterEach(() => {
 })
 
 describe('AddEventSheet', () => {
-  it('renders type selector pills: Transport, Stay, Ticket, Food', () => {
+  it('renders type selector pills: Transport, Stay, Ticket, Food, On Foot', () => {
     renderSheet()
     expect(screen.getByText('Transport')).toBeInTheDocument()
     expect(screen.getByText('Stay')).toBeInTheDocument()
     expect(screen.getByText('Ticket')).toBeInTheDocument()
     expect(screen.getByText('Food')).toBeInTheDocument()
+    expect(screen.getByText('On Foot')).toBeInTheDocument()
+  })
+
+  it('On Foot type shows single place field (no placeTo arrow)', () => {
+    renderSheet()
+    fireEvent.click(screen.getByText('On Foot'))
+    // Should NOT show the ↓ arrow (transport-only)
+    expect(screen.queryByText('↓')).not.toBeInTheDocument()
+    // Should show single place search input
+    expect(screen.getByPlaceholderText('📍 Search place')).toBeInTheDocument()
   })
 
   it('renders "Add to Timeline" button in create mode', () => {
