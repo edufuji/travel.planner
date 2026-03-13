@@ -80,9 +80,9 @@ describe('AddEventSheet', () => {
   it('shows value error when a non-positive number is entered', () => {
     renderSheet()
     fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
-    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(document.querySelector('input[type="time"]') as HTMLInputElement, { target: { value: '10:00' } })
+    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '10:00' } })
     fireEvent.change(screen.getByPlaceholderText('Cost (optional)'), { target: { value: '-5' } })
     fireEvent.click(screen.getByText('Add to Timeline'))
     expect(screen.getByText('Must be a positive number')).toBeInTheDocument()
@@ -91,9 +91,9 @@ describe('AddEventSheet', () => {
   it('does not show required errors when all required fields are filled', () => {
     renderSheet()
     fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
-    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(document.querySelector('input[type="time"]') as HTMLInputElement, { target: { value: '10:00' } })
+    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '10:00' } })
     fireEvent.click(screen.getByText('Add to Timeline'))
     expect(screen.queryByText('Title is required')).not.toBeInTheDocument()
     expect(screen.queryByText('Place is required')).not.toBeInTheDocument()
@@ -166,14 +166,68 @@ describe('AddEventSheet', () => {
     fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
     // Simulate GooglePlacesInput onChange called with lat/lng
     // The fallback input triggers onChange(value) only, so we test via store mock
-    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(document.querySelector('input[type="time"]') as HTMLInputElement, { target: { value: '10:00' } })
+    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '10:00' } })
     fireEvent.click(screen.getByText('Add to Timeline'))
 
     expect(addEvent).toHaveBeenCalledWith(
       DEST_ID,
       expect.objectContaining({ title: 'My Flight', place: 'Tokyo' })
     )
+  })
+
+  it('transport type shows two place inputs (From and To)', () => {
+    renderSheet()  // default type is transport
+    expect(screen.getByPlaceholderText(/From: departure/)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/To: arrival/)).toBeInTheDocument()
+  })
+
+  it('transport type shows arrival time field', () => {
+    renderSheet()
+    expect(screen.getByLabelText('Arrival time')).toBeInTheDocument()
+  })
+
+  it('non-transport type shows single place input, no To, no arrival time', () => {
+    renderSheet()
+    fireEvent.click(screen.getByText('Stay'))
+    expect(screen.queryByPlaceholderText(/From: departure/)).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Arrival time')).not.toBeInTheDocument()
+    expect(screen.getByTestId('places-input-fallback')).toBeInTheDocument()
+  })
+
+  it('placeTo being empty does not trigger a validation error', () => {
+    renderSheet()
+    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'GRU Airport' } })
+    fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
+    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '08:00' } })
+    // Leave To (placeTo) blank
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(screen.queryByText('Place is required')).not.toBeInTheDocument()
+  })
+
+  it('opening edit sheet for transport event pre-fills placeTo and arrivalTime', () => {
+    const editEvent: TripEvent = {
+      id: 'ev-1',
+      destinationId: DEST_ID,
+      type: 'transport',
+      title: 'Flight',
+      place: 'GRU',
+      placeId: 'gru-id',
+      lat: -23.0,
+      lng: -46.0,
+      placeTo: 'Narita',
+      placeIdTo: 'nrt-id',
+      latTo: 35.0,
+      lngTo: 139.0,
+      date: '2026-03-15',
+      time: '08:00',
+      arrivalTime: '23:00',
+      createdAt: '',
+    }
+    renderSheet({ editEvent })
+    expect(screen.getByDisplayValue('Narita')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('23:00')).toBeInTheDocument()
   })
 })

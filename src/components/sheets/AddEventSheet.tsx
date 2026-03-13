@@ -39,6 +39,11 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
   const [placeId, setPlaceId] = useState<string | undefined>()
   const [lat, setLat] = useState<number | undefined>()
   const [lng, setLng] = useState<number | undefined>()
+  const [placeTo, setPlaceTo] = useState('')
+  const [placeIdTo, setPlaceIdTo] = useState<string | undefined>()
+  const [latTo, setLatTo] = useState<number | undefined>()
+  const [lngTo, setLngTo] = useState<number | undefined>()
+  const [arrivalTime, setArrivalTime] = useState('')
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
   const [value, setValue] = useState('')
@@ -56,6 +61,11 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       setPlaceId(editEvent.placeId)
       setLat(editEvent.lat)
       setLng(editEvent.lng)
+      setPlaceTo(editEvent.placeTo ?? '')
+      setPlaceIdTo(editEvent.placeIdTo)
+      setLatTo(editEvent.latTo)
+      setLngTo(editEvent.lngTo)
+      setArrivalTime(editEvent.arrivalTime ?? '')
       setDate(editEvent.date)
       setTime(editEvent.time)
       setValue(editEvent.value?.toString() ?? '')
@@ -67,6 +77,11 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       setPlaceId(undefined)
       setLat(undefined)
       setLng(undefined)
+      setPlaceTo('')
+      setPlaceIdTo(undefined)
+      setLatTo(undefined)
+      setLngTo(undefined)
+      setArrivalTime('')
       setDate('')
       setTime('')
       setValue('')
@@ -100,6 +115,13 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       placeId,
       lat,
       lng,
+      ...(type === 'transport' ? {
+        placeTo: placeTo.trim() || undefined,
+        placeIdTo: placeTo.trim() ? placeIdTo : undefined,
+        latTo: placeTo.trim() ? latTo : undefined,
+        lngTo: placeTo.trim() ? lngTo : undefined,
+        arrivalTime: arrivalTime || undefined,
+      } : {}),
       date,
       time,
       value: value !== '' ? Number(value) : undefined,
@@ -157,18 +179,41 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
         </div>
 
-        {/* Place */}
-        <div>
-          <GooglePlacesInput
-            value={place}
-            onChange={(p, id, lat, lng) => { setPlace(p); setPlaceId(id); setLat(lat); setLng(lng) }}
-            placeholder="📍 Search place"
-            className={inputClass(errors.place)}
-          />
-          {errors.place && <p className="text-red-500 text-xs mt-1">{errors.place}</p>}
-        </div>
+        {/* Place — transport gets From + To, others get single input */}
+        {type === 'transport' ? (
+          <>
+            <div>
+              <GooglePlacesInput
+                value={place}
+                onChange={(p, id, la, ln) => { setPlace(p); setPlaceId(id); setLat(la); setLng(ln) }}
+                placeholder="🛫 From: departure place"
+                className={inputClass(errors.place)}
+              />
+              {errors.place && <p className="text-red-500 text-xs mt-1">{errors.place}</p>}
+            </div>
+            <div className="text-center text-[#C75B2A] text-lg leading-none" aria-hidden="true">↓</div>
+            <div>
+              <GooglePlacesInput
+                value={placeTo}
+                onChange={(p, id, la, ln) => { setPlaceTo(p); setPlaceIdTo(id); setLatTo(la); setLngTo(ln) }}
+                placeholder="🛬 To: arrival place"
+                className={inputClass()}
+              />
+            </div>
+          </>
+        ) : (
+          <div>
+            <GooglePlacesInput
+              value={place}
+              onChange={(p, id, la, ln) => { setPlace(p); setPlaceId(id); setLat(la); setLng(ln) }}
+              placeholder="📍 Search place"
+              className={inputClass(errors.place)}
+            />
+            {errors.place && <p className="text-red-500 text-xs mt-1">{errors.place}</p>}
+          </div>
+        )}
 
-        {/* Date + Time */}
+        {/* Date + Departure time */}
         <div className="flex gap-3">
           <div className="flex-1">
             <input
@@ -188,7 +233,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               type="time"
               value={time}
               onChange={e => setTime(e.target.value)}
-              aria-label="Event time"
+              aria-label={type === 'transport' ? 'Departure time' : 'Event time'}
               className={cn(
                 'w-full bg-input-bg border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary',
                 errors.time ? 'border-red-500' : 'border-border'
@@ -197,6 +242,20 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             {errors.time && <p className="text-red-500 text-xs mt-1">{errors.time}</p>}
           </div>
         </div>
+
+        {/* Arrival time — transport only */}
+        {type === 'transport' && (
+          <div>
+            <input
+              type="time"
+              value={arrivalTime}
+              onChange={e => setArrivalTime(e.target.value)}
+              aria-label="Arrival time"
+              className="w-full bg-input-bg border border-border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary"
+              placeholder="Arrival time (optional)"
+            />
+          </div>
+        )}
 
         {/* Value */}
         <div>
