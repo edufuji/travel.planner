@@ -15,6 +15,13 @@ export interface TripEvent {
   placeId?: string      // Google Place ID (optional, for future map use)
   lat?: number          // WGS84 latitude, from Google Places geometry.location.lat()
   lng?: number          // WGS84 longitude, from Google Places geometry.location.lng()
+  // Transport-only: destination (arrival) location
+  placeTo?: string      // display name of destination
+  placeIdTo?: string    // Google Place ID of destination
+  latTo?: number        // WGS84 latitude of destination
+  lngTo?: number        // WGS84 longitude of destination
+  // Transport-only: arrival time
+  arrivalTime?: string  // HH:mm (24h); separate from `time` (departure)
   date: string          // YYYY-MM-DD
   time: string          // HH:mm (24h)
   value?: number        // optional cost
