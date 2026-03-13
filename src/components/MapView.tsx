@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
 import { buildMapSegments, GAP_COLOR, TYPE_COLORS } from '@/lib/buildMapSegments'
 import { useTimelineGroups } from '@/lib/useTimelineGroups'
+import TimelineDateHeader from '@/components/TimelineDateHeader'
+import GapWarningCard from '@/components/GapWarningCard'
 import type { TripEvent } from '@/types/trip'
 import type { GapWarning } from '@/lib/gapDetection'
 
@@ -158,6 +160,8 @@ export default function MapView({ events, gaps, onEdit }: Props) {
         google.maps.event.clearInstanceListeners(p)
         p.setMap(null)
       })
+      markersRef.current = []
+      polylinesRef.current = []
     }
   }, [events, gaps])  // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -191,15 +195,11 @@ export default function MapView({ events, gaps, onEdit }: Props) {
       <div className="w-[38%] min-h-0 overflow-y-auto bg-surface border-r border-border flex flex-col">
         {groups.map(group => (
           <div key={group.date}>
-            <div className="px-3 py-1 text-xs font-semibold text-muted bg-input-bg sticky top-0">
-              {group.label}
-            </div>
+            <TimelineDateHeader label={group.label} />
             {group.items.map(item => {
               if (item.kind === 'gap') {
                 return (
-                  <div key={item.key} className="px-3 py-1 text-xs text-warning">
-                    {item.message}
-                  </div>
+                  <GapWarningCard key={item.key} message={item.message} />
                 )
               }
               return (
