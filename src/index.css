@@ -34,6 +34,15 @@
     --muted: #78716C;
     --input-bg: #F5F0EB;
     --border: #E5E0DB;
+    --primary-foreground: #FFFFFF;
+  }
+
+  .dark {
+    --background: #1C1917;
+    --foreground: #FAFAF9;
+    --muted: #A8A29E;
+    --input-bg: #292524;
+    --border: #44403C;
   }
 }
 
