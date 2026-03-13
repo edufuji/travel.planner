@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildMapSegments, GAP_COLOR } from './buildMapSegments'
+import { buildMapSegments, GAP_COLOR, TYPE_COLORS } from './buildMapSegments'
 import type { TripEvent } from '../types/trip'
 import type { GapWarning } from './gapDetection'
 
@@ -110,6 +110,42 @@ describe('buildMapSegments', () => {
     expect(segments).toHaveLength(2)
     expect(segments[0].isGap).toBe(false)  // a→b: no gap
     expect(segments[1].isGap).toBe(true)   // b→c: gap
+  })
+
+  it('transport event with latTo/lngTo expands into 3 segments: before-origin, origin→dest, dest-after', () => {
+    const events = [
+      makeEvent({ id: 'hotel-a', type: 'accommodation', lat: 10.0, lng: 10.0, date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'flight', type: 'transport', lat: 20.0, lng: 20.0, latTo: 30.0, lngTo: 30.0, date: '2026-03-18', time: '08:00', arrivalTime: '23:00' }),
+      makeEvent({ id: 'hotel-b', type: 'accommodation', lat: 31.0, lng: 31.0, date: '2026-03-19', time: '14:00' }),
+    ]
+    const segments = buildMapSegments(events, [])
+    expect(segments).toHaveLength(3)
+    // origin→destination segment is always transport blue, never a gap
+    expect(segments[1].color).toBe('#4A90D9')
+    expect(segments[1].isGap).toBe(false)
+    expect(segments[1].from).toEqual({ lat: 20.0, lng: 20.0 })
+    expect(segments[1].to).toEqual({ lat: 30.0, lng: 30.0 })
+  })
+
+  it('transport event without latTo/lngTo behaves as single-point event (no expansion)', () => {
+    const events = [
+      makeEvent({ id: 'a', type: 'transport', lat: 10.0, lng: 10.0, date: '2026-03-15', time: '08:00' }),
+      makeEvent({ id: 'b', type: 'accommodation', lat: 20.0, lng: 20.0, date: '2026-03-15', time: '22:00' }),
+    ]
+    const segments = buildMapSegments(events, [])
+    expect(segments).toHaveLength(1)
+  })
+
+  it('gap color applied correctly when transport has no latTo/lngTo and accommodations lack transport', () => {
+    const events = [
+      makeEvent({ id: 'a1', type: 'accommodation', lat: 10.0, lng: 10.0, date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'a2', type: 'accommodation', lat: 20.0, lng: 20.0, date: '2026-03-18', time: '15:00' }),
+    ]
+    const gaps: GapWarning[] = [{ afterEventId: 'a1', beforeEventId: 'a2', message: 'No transport' }]
+    const segments = buildMapSegments(events, gaps)
+    expect(segments).toHaveLength(1)
+    expect(segments[0].isGap).toBe(true)
+    expect(segments[0].color).toBe(GAP_COLOR)
   })
 
   it('unpositioned event in gap range does NOT cause false gap when no gap warning exists', () => {
