@@ -30,7 +30,7 @@ The page is a vertically centered column on the cream background (`bg-background
 ### 2.1 Avatar
 
 - 80×80px circle (`w-20 h-20 rounded-full`)
-- Background: `bg-input-bg`, border: `border-2 border-border`
+- Background: `bg-input-bg` (custom TripMate token — defined in `tailwind.config.js` as `'var(--input-bg)'`; not a standard Tailwind palette class), border: `border-2 border-border`
 - Contains the `👤` emoji at `text-3xl`
 - No image upload in this phase
 
@@ -60,6 +60,21 @@ A white card (`bg-white dark:bg-stone-800`) with `border border-border rounded-x
   - Free → label `"⬆ Upgrade to Premium"`
   - Premium → label `"⬆ Upgrade to Pro"`
   - The button has **no `onClick` handler** — wired up in a future Stripe/backend phase
+  - `variant="default"` uses `bg-primary text-primary-foreground`. The `tailwind.config.js` does not currently map `primary.foreground` as a Tailwind color token, so `text-primary-foreground` produces no utility CSS. As part of this task:
+    1. In `src/index.css`, override the shadcn-style `--primary-foreground` HSL channel value with a direct hex in the TripMate tokens section (inside `:root`):
+       ```css
+       --primary-foreground: #FFFFFF;
+       ```
+    2. In `tailwind.config.js`, add `foreground` to the `primary` object using the same `var(--token)` pattern as all other tokens:
+       ```js
+       primary: {
+         DEFAULT: 'var(--primary)',
+         dark: 'var(--primary-dark)',
+         light: 'var(--primary-light)',
+         foreground: 'var(--primary-foreground)',  // white text on orange button
+       },
+       ```
+    This keeps all Tailwind color tokens consistently variable-backed. `--primary-foreground` stays white in dark mode (white on orange is readable in both modes), so no `.dark` override is needed.
 
 ### 2.5 Dark Mode Toggle Row
 
@@ -75,6 +90,7 @@ A white card (`bg-white dark:bg-stone-800`) with `border border-border rounded-x
 ### 3.1 Behavior
 
 - Reads initial state from `localStorage.getItem('theme')` on mount (`useEffect`)
+- **First visit default:** always light mode — system `prefers-color-scheme` is intentionally ignored for simplicity; a future phase may add OS preference detection
 - Toggling adds/removes the `dark` class on `document.documentElement`
 - Writes `'dark'` or `'light'` to `localStorage.setItem('theme', ...)`
 - The toggle is a **self-contained component** `DarkModeToggle` in `src/components/DarkModeToggle.tsx`
@@ -83,17 +99,18 @@ A white card (`bg-white dark:bg-stone-800`) with `border border-border rounded-x
 
 Custom pill switch (no external library):
 
-- Container: `w-10 h-[22px] rounded-full transition-colors cursor-pointer`
+- Container: `relative w-10 h-[22px] rounded-full transition-colors cursor-pointer`
   - OFF: `bg-border` (gray)
   - ON: `bg-primary` (orange)
-- Thumb: `w-[18px] h-[18px] rounded-full bg-white shadow-sm absolute transition-transform`
-  - OFF: `translate-x-0` (left)
-  - ON: `translate-x-[18px]` (right)
+- Thumb: `absolute left-[2px] top-[2px] w-[18px] h-[18px] rounded-full bg-white shadow-sm transition-transform`
+  - OFF: `translate-x-0` (thumb at left, 2px inset)
+  - ON: `translate-x-[18px]` (thumb at right, 2px inset — 2+18+2 = 22px ≤ 40px container ✓)
+  - `bg-white` is intentional in both light and dark mode — white circle against the colored track provides clear contrast regardless of theme
 - Accessible: `role="switch"`, `aria-checked={isDark}`, `aria-label="Toggle dark mode"`
 
-### 3.3 Initialization
+### 3.3 Initialization (FOUC prevention)
 
-`main.tsx` (or a small inline script tag in `index.html`) must apply the saved theme before React hydrates to avoid a flash of unstyled content (FOUC). Add to `index.html` `<head>` before any stylesheet:
+Add the following **immediately after `<meta charset="UTF-8" />`** in `index.html` (not before it — charset must be parsed first):
 
 ```html
 <script>
@@ -103,34 +120,43 @@ Custom pill switch (no external library):
 </script>
 ```
 
+This applies the `dark` class synchronously before React loads, preventing a flash of light-mode styles on users who have dark mode saved.
+
 ---
 
 ## 4. Dark Mode CSS Variables
 
-Add a `.dark` block to `src/index.css` immediately after the `:root` block:
+Add a `.dark` block to `src/index.css` **inside the `@layer base { }` block**, immediately after the `:root` block (alongside it within the same `@layer base`):
 
 ```css
-.dark {
-  --background: #1C1917;       /* stone-900 */
-  --foreground: #FAFAF9;       /* stone-50 */
-  --muted: #A8A29E;            /* stone-400 */
-  --input-bg: #292524;         /* stone-800 */
-  --border: #44403C;           /* stone-700 */
+@layer base {
+  :root {
+    /* ... existing variables unchanged ... */
+  }
+
+  .dark {
+    --background: #1C1917;       /* stone-900 */
+    --foreground: #FAFAF9;       /* stone-50 */
+    --muted: #A8A29E;            /* stone-400 */
+    --input-bg: #292524;         /* stone-800 */
+    --border: #44403C;           /* stone-700 */
+  }
 }
 ```
 
-Primary orange (`#FF6B35`) stays the same in both modes — it's the brand color.
+This block overrides only the **TripMate custom design tokens** (the hex values at the bottom of `:root`). It does not touch the shadcn-style HSL channel variables in the upper portion of `:root`. `--primary` (`#FF6B35`) is intentionally omitted — the brand orange stays the same in both modes.
 
 ---
 
 ## 5. BottomNav Dark Mode
 
-`BottomNav.tsx` currently has hardcoded `bg-white`. Add dark variants:
+`BottomNav.tsx` currently has `bg-white border-t border-border`. Only the background needs changing:
 
-- `bg-white dark:bg-stone-900`
-- `border-t border-border dark:border-stone-700`
+- Replace `bg-white` → `bg-background`
 
-The `text-primary` / `text-muted` classes already use CSS variables so they pick up dark values automatically.
+`bg-background` resolves to `var(--background)`, which the `.dark` block sets to `#1C1917`. The `border-border` class is already correct and requires no change — the `.dark` block overrides `--border` to `#44403C` automatically.
+
+The `text-primary` / `text-muted` nav link classes use CSS variables and require no changes.
 
 ---
 
@@ -140,9 +166,10 @@ The `text-primary` / `text-muted` classes already use CSS variables so they pick
 |------|--------|
 | `src/pages/ProfilePage.tsx` | Full replacement with centered card layout |
 | `src/components/DarkModeToggle.tsx` | New component |
-| `src/index.css` | Add `.dark` CSS variable block |
-| `src/components/BottomNav.tsx` | Add `dark:` classes |
-| `index.html` | Add FOUC-prevention script in `<head>` |
+| `src/index.css` | Add `.dark` block inside `@layer base` after `:root`; add `--primary-foreground: #FFFFFF` to TripMate tokens in `:root` |
+| `src/components/BottomNav.tsx` | `bg-white` → `bg-background` |
+| `tailwind.config.js` | Add `primary.foreground: 'var(--primary-foreground)'` |
+| `index.html` | Add FOUC-prevention script immediately after `<meta charset>` |
 
 ---
 
@@ -152,5 +179,6 @@ The `text-primary` / `text-muted` classes already use CSS variables so they pick
 - Editable name
 - Actual Stripe/payment integration (button renders but has no `onClick`)
 - Auth/user store (mock constant only)
+- System `prefers-color-scheme` detection (first-visit always light)
 - Tests for `ProfilePage` (purely presentational, mock data — tested via visual review)
 - Tests for `DarkModeToggle` (DOM manipulation via `document.documentElement` — integration tested manually)
