@@ -80,12 +80,18 @@ export function buildMapSegments(
     const isTransportLeg =
       !I.isArrival && J.isArrival && I.sourceEventId === J.sourceEventId
 
+    const isWalkingSegment = J.eventType === 'walking' && !J.isArrival
+
     let color: string
     let isGap = false
+    let isWalking = false
 
     if (isTransportLeg) {
       // Origin → arrival of same transport event: always transport blue, never a gap
       color = TYPE_COLORS['transport']
+    } else if (isWalkingSegment) {
+      color = TYPE_COLORS['walking']
+      isWalking = true
     } else if (I.isArrival) {
       // Segment from arrival point — skip gap detection (already transported)
       color = TYPE_COLORS[I.eventType]
@@ -113,7 +119,7 @@ export function buildMapSegments(
       to: { lat: J.lat, lng: J.lng },
       color,
       isGap,
-      isWalking: false,
+      isWalking,
     })
   }
 

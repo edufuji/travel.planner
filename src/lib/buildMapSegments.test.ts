@@ -160,4 +160,43 @@ describe('buildMapSegments', () => {
     expect(segments).toHaveLength(1)
     expect(segments[0].isGap).toBe(false)
   })
+
+  it('produces isWalking: true segment when next point is a walking event', () => {
+    const events: TripEvent[] = [
+      {
+        id: 'acc-1', destinationId: 'd1', type: 'accommodation', title: 'Hotel A',
+        place: 'Tokyo', lat: 35.6762, lng: 139.6503,
+        date: '2026-03-15', time: '14:00', createdAt: '',
+      },
+      {
+        id: 'walk-1', destinationId: 'd1', type: 'walking', title: 'Walk to park',
+        place: 'Shinjuku Park', lat: 35.6851, lng: 139.7100,
+        date: '2026-03-16', time: '09:00', createdAt: '',
+      },
+    ]
+    const segments = buildMapSegments(events, [])
+    expect(segments).toHaveLength(1)
+    expect(segments[0].isWalking).toBe(true)
+    expect(segments[0].color).toBe('#22C55E')
+    expect(segments[0].isGap).toBe(false)
+  })
+
+  it('segment FROM a walking event to the next is solid (isWalking: false)', () => {
+    const events: TripEvent[] = [
+      {
+        id: 'walk-1', destinationId: 'd1', type: 'walking', title: 'Walk to hotel',
+        place: 'Shinjuku Park', lat: 35.6851, lng: 139.7100,
+        date: '2026-03-16', time: '09:00', createdAt: '',
+      },
+      {
+        id: 'acc-1', destinationId: 'd1', type: 'accommodation', title: 'Hotel B',
+        place: 'Shinjuku', lat: 35.6896, lng: 139.6917,
+        date: '2026-03-16', time: '15:00', createdAt: '',
+      },
+    ]
+    const segments = buildMapSegments(events, [])
+    expect(segments).toHaveLength(1)
+    expect(segments[0].isWalking).toBe(false)
+    expect(segments[0].color).toBe('#22C55E')  // still green (walking color for I.eventType)
+  })
 })
