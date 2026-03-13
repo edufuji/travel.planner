@@ -155,7 +155,15 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             <button
               key={t.value}
               type="button"
-              onClick={() => { setType(t.value); setTitle('') }}
+              onClick={() => {
+                setType(t.value)
+                setTitle('')
+                setPlaceTo('')
+                setPlaceIdTo(undefined)
+                setLatTo(undefined)
+                setLngTo(undefined)
+                setArrivalTime('')
+              }}
               className={cn(
                 'rounded-full px-3 py-1 text-xs font-semibold transition-colors',
                 type === t.value ? 'bg-primary text-white' : 'bg-input-bg text-muted'

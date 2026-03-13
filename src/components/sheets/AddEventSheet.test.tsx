@@ -207,6 +207,32 @@ describe('AddEventSheet', () => {
     expect(screen.queryByText('Place is required')).not.toBeInTheDocument()
   })
 
+  it('non-transport submit does not include placeTo or arrivalTime keys', () => {
+    const addEvent = vi.fn()
+    useTripsStore.setState({
+      destinations: [{
+        id: DEST_ID,
+        title: 'Japan',
+        emoji: '✈️',
+        startDate: '2026-03-15',
+        endDate: '2026-04-02',
+        events: [],
+        createdAt: '',
+      }],
+      addEvent,
+    })
+    renderSheet()
+    fireEvent.click(screen.getByText('Stay'))
+    fireEvent.change(screen.getByPlaceholderText('Hotel name'), { target: { value: 'Hilton' } })
+    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
+    fireEvent.change(screen.getByLabelText('Event time'), { target: { value: '14:00' } })
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    const payload = addEvent.mock.calls[0][1]
+    expect(payload).not.toHaveProperty('placeTo')
+    expect(payload).not.toHaveProperty('arrivalTime')
+  })
+
   it('opening edit sheet for transport event pre-fills placeTo and arrivalTime', () => {
     const editEvent: TripEvent = {
       id: 'ev-1',
