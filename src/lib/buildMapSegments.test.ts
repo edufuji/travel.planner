@@ -121,7 +121,7 @@ describe('buildMapSegments', () => {
     const segments = buildMapSegments(events, [])
     expect(segments).toHaveLength(3)
     // origin→destination segment is always transport blue, never a gap
-    expect(segments[1].color).toBe('#4A90D9')
+    expect(segments[1].color).toBe(TYPE_COLORS['transport'])
     expect(segments[1].isGap).toBe(false)
     expect(segments[1].from).toEqual({ lat: 20.0, lng: 20.0 })
     expect(segments[1].to).toEqual({ lat: 30.0, lng: 30.0 })
