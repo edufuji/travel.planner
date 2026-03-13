@@ -24,18 +24,18 @@ export function detectGaps(events: TripEvent[]): GapWarning[] {
     const aDateTime = toDateTime(a.date, a.time)
     const bDateTime = toDateTime(b.date, b.time)
 
-    const hasTransport = sorted.some(
+    const hasResolution = sorted.some(
       e =>
-        e.type === 'transport' &&
+        e.type === 'walking' &&
         toDateTime(e.date, e.time) > aDateTime &&
         toDateTime(e.date, e.time) < bDateTime
     )
 
-    if (!hasTransport) {
+    if (!hasResolution) {
       gaps.push({
         afterEventId: a.id,
         beforeEventId: b.id,
-        message: `No transport between "${a.title}" check-in and "${b.title}" check-in`,
+        message: `No transport or walking route between "${a.title}" check-in and "${b.title}" check-in`,
       })
     }
   }

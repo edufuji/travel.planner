@@ -57,7 +57,7 @@ describe('TripsPage', () => {
       destinations: [makeDestination({
         events: [
           { id: 'a1', destinationId: 'dest-1', type: 'accommodation', title: 'Hotel A', place: 'Tokyo', date: '2026-03-15', time: '14:00', createdAt: '' },
-          { id: 't1', destinationId: 'dest-1', type: 'transport', title: 'Train', place: 'Station', date: '2026-03-18', time: '09:00', createdAt: '' },
+          { id: 'w1', destinationId: 'dest-1', type: 'walking', title: 'Walk to hotel', place: 'Street', date: '2026-03-18', time: '09:00', createdAt: '' },
           { id: 'a2', destinationId: 'dest-1', type: 'accommodation', title: 'Hotel B', place: 'Osaka', date: '2026-03-18', time: '15:00', createdAt: '' },
         ],
       })],

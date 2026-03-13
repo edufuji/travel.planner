@@ -26,10 +26,10 @@ describe('detectGaps', () => {
     expect(detectGaps(events)).toEqual([])
   })
 
-  it('returns no gaps when two accommodations have transport between them', () => {
+  it('returns no gaps when two accommodations have a walking event between them', () => {
     const events = [
       makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
-      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train', date: '2026-03-18', time: '09:00' }),
+      makeEvent({ id: 'walk-1', type: 'walking', title: 'Walk to hotel', date: '2026-03-18', time: '09:00' }),
       makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
     ]
     expect(detectGaps(events)).toEqual([])
@@ -57,11 +57,11 @@ describe('detectGaps', () => {
     expect(detectGaps(events)).toHaveLength(2)
   })
 
-  it('does not count transport at exactly the same time as first accommodation as "between"', () => {
-    // Transport at A's exact timestamp is NOT strictly greater → still a gap
+  it('does not count walking event at exactly the same time as first accommodation as "between"', () => {
+    // Walking event at A's exact timestamp is NOT strictly greater → still a gap
     const events = [
       makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
-      makeEvent({ id: 'tr-1', type: 'transport', title: 'Bus', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'walk-1', type: 'walking', title: 'Morning walk', date: '2026-03-15', time: '14:00' }),
       makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
     ]
     expect(detectGaps(events)).toHaveLength(1)
@@ -79,9 +79,18 @@ describe('detectGaps', () => {
   it('works correctly when events are given out of order', () => {
     const events = [
       makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
-      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train', date: '2026-03-18', time: '09:00' }),
+      makeEvent({ id: 'walk-1', type: 'walking', title: 'Walk to hotel', date: '2026-03-18', time: '09:00' }),
       makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
     ]
     expect(detectGaps(events)).toEqual([])
+  })
+
+  it('transport event between two accommodations does NOT clear the gap', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train', date: '2026-03-18', time: '09:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+    ]
+    expect(detectGaps(events)).toHaveLength(1)
   })
 })

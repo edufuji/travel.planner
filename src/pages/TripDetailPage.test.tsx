@@ -101,15 +101,15 @@ describe('TripDetailPage', () => {
     })
     renderPage()
     expect(screen.getByRole('alert')).toBeInTheDocument()
-    expect(screen.getByText(/No transport between/)).toBeInTheDocument()
+    expect(screen.getByText(/No transport or walking route between/)).toBeInTheDocument()
   })
 
-  it('does not render a GAP warning when transport exists between accommodations', () => {
+  it('does not render a GAP warning when walking exists between accommodations', () => {
     useTripsStore.setState({
       destinations: [makeDest({
         events: [
           makeEvent({ id: 'a1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
-          makeEvent({ id: 't1', type: 'transport', title: 'Shinkansen', date: '2026-03-18', time: '09:00' }),
+          makeEvent({ id: 'w1', type: 'walking', title: 'Walk to hotel', date: '2026-03-18', time: '09:00' }),
           makeEvent({ id: 'a2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
         ],
       })],
