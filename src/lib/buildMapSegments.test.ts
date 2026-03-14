@@ -161,10 +161,10 @@ describe('buildMapSegments', () => {
     expect(segments[0].isGap).toBe(false)
   })
 
-  it('produces isWalking: true segment when next point is a walking event', () => {
+  it('produces isWalking: true segment when destination event has arrivedOnFoot: true', () => {
     const events = [
       makeEvent({ id: 'acc-1', type: 'accommodation', lat: 35.6762, lng: 139.6503, date: '2026-03-15', time: '14:00' }),
-      makeEvent({ id: 'walk-1', type: 'walking', lat: 35.6851, lng: 139.7100, date: '2026-03-16', time: '09:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', lat: 35.6851, lng: 139.7100, date: '2026-03-18', time: '15:00', arrivedOnFoot: true }),
     ]
     const segments = buildMapSegments(events, [])
     expect(segments).toHaveLength(1)
@@ -173,13 +173,12 @@ describe('buildMapSegments', () => {
     expect(segments[0].isGap).toBe(false)
   })
 
-  it('segment FROM a walking event to the next is solid (isWalking: false)', () => {
+  it('produces isWalking: false segment when destination event has no arrivedOnFoot flag', () => {
     const events = [
-      makeEvent({ id: 'walk-1', type: 'walking', lat: 35.6851, lng: 139.7100, date: '2026-03-16', time: '09:00' }),
-      makeEvent({ id: 'acc-1', type: 'accommodation', lat: 35.6896, lng: 139.6917, date: '2026-03-16', time: '15:00' }),
+      makeEvent({ id: 'acc-1', type: 'accommodation', lat: 35.6762, lng: 139.6503, date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', lat: 35.6851, lng: 139.7100, date: '2026-03-18', time: '15:00' }),
     ]
     const segments = buildMapSegments(events, [])
-    expect(segments).toHaveLength(1)
     expect(segments[0].isWalking).toBe(false)
   })
 })

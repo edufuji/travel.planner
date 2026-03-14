@@ -28,6 +28,7 @@ interface MapPoint {
   eventType: EventType
   eventDate: string
   eventTime: string
+  arrivedOnFoot?: boolean  // NEW
 }
 
 export function buildMapSegments(
@@ -48,6 +49,7 @@ export function buildMapSegments(
       eventType: event.type,
       eventDate: event.date,
       eventTime: event.time,
+      arrivedOnFoot: event.arrivedOnFoot,
     })
 
     // Transport events with explicit destination add a synthetic arrival point
@@ -81,7 +83,7 @@ export function buildMapSegments(
     const isTransportLeg =
       !I.isArrival && J.isArrival && I.sourceEventId === J.sourceEventId
 
-    const isWalkingSegment = J.eventType === 'walking' && !J.isArrival
+    const isWalkingSegment = J.arrivedOnFoot === true && !J.isArrival
 
     let color: string
     let isGap = false
