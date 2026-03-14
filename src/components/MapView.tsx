@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
-import { Plane, BedDouble, Ticket, Utensils, Footprints } from 'lucide-react'
+import { Plane, BedDouble, Ticket, Utensils } from 'lucide-react'
 import { buildMapSegments, TYPE_COLORS } from '@/lib/buildMapSegments'
 import { useTimelineGroups } from '@/lib/useTimelineGroups'
 import TimelineDateHeader from '@/components/TimelineDateHeader'
@@ -13,7 +13,6 @@ const TYPE_ICONS: Record<EventType, React.FC<{ size?: number; color?: string }>>
   accommodation: BedDouble,
   ticket: Ticket,
   restaurant: Utensils,
-  walking: Footprints,
 }
 
 const DARK_MAP_STYLES: google.maps.MapTypeStyle[] = [

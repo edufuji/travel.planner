@@ -9,12 +9,13 @@ export interface MapSegment {
   isWalking: boolean  // true → render as dotted green polyline
 }
 
+const WALKING_COLOR = '#22C55E'
+
 export const TYPE_COLORS: Record<EventType, string> = {
   transport: '#4A90D9',
   accommodation: '#7C3AED',
   ticket: '#059669',
   restaurant: '#F59E0B',
-  walking: '#22C55E',
 }
 
 export const GAP_COLOR = '#C75B2A'
@@ -90,7 +91,7 @@ export function buildMapSegments(
       // Origin → arrival of same transport event: always transport blue, never a gap
       color = TYPE_COLORS['transport']
     } else if (isWalkingSegment) {
-      color = TYPE_COLORS['walking']
+      color = WALKING_COLOR
       isWalking = true
     } else if (I.isArrival) {
       // Segment from arrival point — skip gap detection (already transported)

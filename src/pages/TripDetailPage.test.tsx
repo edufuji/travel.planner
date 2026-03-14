@@ -104,13 +104,12 @@ describe('TripDetailPage', () => {
     expect(screen.getByText(/No walking route between/)).toBeInTheDocument()
   })
 
-  it('does not render a GAP warning when walking exists between accommodations', () => {
+  it('does not render a GAP warning when destination stay has arrivedOnFoot: true', () => {
     useTripsStore.setState({
       destinations: [makeDest({
         events: [
           makeEvent({ id: 'a1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00' }),
-          makeEvent({ id: 'w1', type: 'walking', title: 'Walk to hotel', date: '2026-03-18', time: '09:00' }),
-          makeEvent({ id: 'a2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00' }),
+          makeEvent({ id: 'a2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00', arrivedOnFoot: true }),
         ],
       })],
     })

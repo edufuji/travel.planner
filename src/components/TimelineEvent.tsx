@@ -6,7 +6,6 @@ const TYPE_COLORS: Record<EventType, string> = {
   accommodation: '#7C3AED',
   ticket: '#059669',
   restaurant: '#F59E0B',
-  walking: '#22C55E',
 }
 
 const TYPE_LABELS: Record<EventType, string> = {
@@ -14,7 +13,6 @@ const TYPE_LABELS: Record<EventType, string> = {
   accommodation: 'Accommodation',
   ticket: 'Ticket',
   restaurant: 'Restaurant',
-  walking: 'On Foot',
 }
 
 interface Props {

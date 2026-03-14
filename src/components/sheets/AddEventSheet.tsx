@@ -10,7 +10,6 @@ const EVENT_TYPES: { value: EventType; label: string }[] = [
   { value: 'accommodation', label: 'Stay' },
   { value: 'ticket', label: 'Ticket' },
   { value: 'restaurant', label: 'Food' },
-  { value: 'walking', label: 'On Foot' },
 ]
 
 const TYPE_PLACEHOLDERS: Record<EventType, string> = {
@@ -18,7 +17,6 @@ const TYPE_PLACEHOLDERS: Record<EventType, string> = {
   accommodation: 'Hotel name',
   ticket: 'Museum or experience',
   restaurant: 'Restaurant name',
-  walking: 'e.g. Walk to hotel',
 }
 
 interface Props {

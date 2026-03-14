@@ -21,15 +21,8 @@ export function detectGaps(events: TripEvent[]): GapWarning[] {
   for (let i = 0; i < accommodations.length - 1; i++) {
     const a = accommodations[i]
     const b = accommodations[i + 1]
-    const aDateTime = toDateTime(a.date, a.time)
-    const bDateTime = toDateTime(b.date, b.time)
 
-    const hasWalkingRoute = sorted.some(
-      e =>
-        e.type === 'walking' &&
-        toDateTime(e.date, e.time) > aDateTime &&
-        toDateTime(e.date, e.time) < bDateTime
-    )
+    const hasWalkingRoute = b.arrivedOnFoot === true
 
     if (!hasWalkingRoute) {
       gaps.push({

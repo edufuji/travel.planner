@@ -1,4 +1,4 @@
-export type EventType = 'transport' | 'accommodation' | 'ticket' | 'restaurant' | 'walking'
+export type EventType = 'transport' | 'accommodation' | 'ticket' | 'restaurant'
 
 // UI label → EventType mapping (used in AddEventSheet type selector pills):
 //   "Transport" → 'transport'
@@ -26,6 +26,7 @@ export interface TripEvent {
   time: string          // HH:mm (24h)
   value?: number        // optional cost
   notes?: string        // optional free text
+  arrivedOnFoot?: boolean  // true = user arrived at this event's location on foot
   createdAt: string     // ISO timestamp
 }
 
