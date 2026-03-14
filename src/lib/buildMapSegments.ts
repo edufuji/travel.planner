@@ -9,7 +9,7 @@ export interface MapSegment {
   isWalking: boolean  // true → render as dotted green polyline
 }
 
-const WALKING_COLOR = '#22C55E'
+export const WALKING_COLOR = '#22C55E'
 
 export const TYPE_COLORS: Record<EventType, string> = {
   transport: '#4A90D9',

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildMapSegments, GAP_COLOR, TYPE_COLORS } from './buildMapSegments'
+import { buildMapSegments, GAP_COLOR, TYPE_COLORS, WALKING_COLOR } from './buildMapSegments'
 import type { TripEvent } from '../types/trip'
 import type { GapWarning } from './gapDetection'
 
@@ -169,13 +169,22 @@ describe('buildMapSegments', () => {
     const segments = buildMapSegments(events, [])
     expect(segments).toHaveLength(1)
     expect(segments[0].isWalking).toBe(true)
-    expect(segments[0].color).toBe('#22C55E')
+    expect(segments[0].color).toBe(WALKING_COLOR)
     expect(segments[0].isGap).toBe(false)
   })
 
   it('produces isWalking: false segment when destination event has no arrivedOnFoot flag', () => {
     const events = [
       makeEvent({ id: 'acc-1', type: 'accommodation', lat: 35.6762, lng: 139.6503, date: '2026-03-15', time: '14:00' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', lat: 35.6851, lng: 139.7100, date: '2026-03-18', time: '15:00' }),
+    ]
+    const segments = buildMapSegments(events, [])
+    expect(segments[0].isWalking).toBe(false)
+  })
+
+  it('arrivedOnFoot: true on the origin event (point I) has no effect on segment rendering', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', lat: 35.6762, lng: 139.6503, date: '2026-03-15', time: '14:00', arrivedOnFoot: true }),
       makeEvent({ id: 'acc-2', type: 'accommodation', lat: 35.6851, lng: 139.7100, date: '2026-03-18', time: '15:00' }),
     ]
     const segments = buildMapSegments(events, [])
