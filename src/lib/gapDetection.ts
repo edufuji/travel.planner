@@ -6,13 +6,9 @@ export interface GapWarning {
   message: string        // human-readable description, built from event titles
 }
 
-function toDateTime(date: string, time: string): string {
-  return `${date} ${time}`
-}
-
 export function detectGaps(events: TripEvent[]): GapWarning[] {
   const sorted = [...events].sort((a, b) =>
-    toDateTime(a.date, a.time).localeCompare(toDateTime(b.date, b.time))
+    `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`)
   )
 
   const accommodations = sorted.filter(e => e.type === 'accommodation')

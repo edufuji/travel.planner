@@ -82,7 +82,7 @@ describe('detectGaps', () => {
     expect(detectGaps(events)).toHaveLength(1)
   })
 
-  it('works correctly when events are given out of order', () => {
+  it('works correctly when accommodation events are given out of order', () => {
     const events = [
       makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00', arrivedOnFoot: true }),
       makeEvent({ id: 'tick-1', type: 'ticket', title: 'Museum', date: '2026-03-17', time: '10:00' }),
