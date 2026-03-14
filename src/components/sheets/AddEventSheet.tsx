@@ -50,6 +50,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
   const [notes, setNotes] = useState('')
   const [errors, setErrors] = useState<FormErrors>({})
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [arrivedOnFoot, setArrivedOnFoot] = useState(false)
 
   const isEdit = !!editEvent
 
@@ -70,6 +71,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       setTime(editEvent.time)
       setValue(editEvent.value?.toString() ?? '')
       setNotes(editEvent.notes ?? '')
+      setArrivedOnFoot(editEvent.arrivedOnFoot ?? false)
     } else if (open && !editEvent) {
       setType('transport')
       setTitle('')
@@ -86,6 +88,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       setTime('')
       setValue('')
       setNotes('')
+      setArrivedOnFoot(false)
     }
     setErrors({})
     setConfirmDelete(false)
@@ -126,6 +129,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
       time,
       value: value !== '' ? Number(value) : undefined,
       notes: notes.trim() || undefined,
+      arrivedOnFoot: arrivedOnFoot || undefined,
     }
 
     if (isEdit) {
@@ -220,6 +224,17 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             {errors.place && <p className="text-red-500 text-xs mt-1">{errors.place}</p>}
           </div>
         )}
+
+        {/* Arrived on foot toggle */}
+        <label className="flex items-center gap-2 text-sm text-foreground">
+          <input
+            type="checkbox"
+            checked={arrivedOnFoot}
+            onChange={e => setArrivedOnFoot(e.target.checked)}
+            aria-label="Arrived on foot"
+          />
+          Arrived on foot
+        </label>
 
         {/* Date + Departure time */}
         <div className="flex gap-3">

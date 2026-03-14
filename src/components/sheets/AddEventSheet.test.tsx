@@ -49,6 +49,83 @@ describe('AddEventSheet', () => {
     expect(screen.queryByText('On Foot')).not.toBeInTheDocument()
   })
 
+  it('Arrived on foot checkbox is unchecked by default', () => {
+    renderSheet()
+    const checkbox = screen.getByLabelText('Arrived on foot') as HTMLInputElement
+    expect(checkbox.checked).toBe(false)
+  })
+
+  it('checking Arrived on foot submits arrivedOnFoot: true', () => {
+    const addEvent = vi.fn()
+    useTripsStore.setState({
+      destinations: [{
+        id: DEST_ID,
+        title: 'Japan',
+        emoji: '✈️',
+        startDate: '2026-03-15',
+        endDate: '2026-04-02',
+        events: [],
+        createdAt: '',
+      }],
+      addEvent,
+    })
+    renderSheet()
+    fireEvent.click(screen.getByText('Stay'))
+    fireEvent.change(screen.getByPlaceholderText('Hotel name'), { target: { value: 'Hilton' } })
+    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
+    fireEvent.change(screen.getByLabelText('Event time'), { target: { value: '14:00' } })
+    fireEvent.click(screen.getByLabelText('Arrived on foot'))
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    expect(addEvent).toHaveBeenCalledWith(
+      DEST_ID,
+      expect.objectContaining({ arrivedOnFoot: true })
+    )
+  })
+
+  it('editing event with arrivedOnFoot: true shows checkbox checked', () => {
+    const editEvent: TripEvent = {
+      id: 'ev-1',
+      destinationId: DEST_ID,
+      type: 'accommodation',
+      title: 'Hilton',
+      place: 'Tokyo',
+      date: '2026-03-15',
+      time: '14:00',
+      arrivedOnFoot: true,
+      createdAt: '',
+    }
+    renderSheet({ editEvent })
+    const checkbox = screen.getByLabelText('Arrived on foot') as HTMLInputElement
+    expect(checkbox.checked).toBe(true)
+  })
+
+  it('leaving Arrived on foot unchecked does not submit arrivedOnFoot: true', () => {
+    const addEvent = vi.fn()
+    useTripsStore.setState({
+      destinations: [{
+        id: DEST_ID,
+        title: 'Japan',
+        emoji: '✈️',
+        startDate: '2026-03-15',
+        endDate: '2026-04-02',
+        events: [],
+        createdAt: '',
+      }],
+      addEvent,
+    })
+    renderSheet()
+    fireEvent.click(screen.getByText('Stay'))
+    fireEvent.change(screen.getByPlaceholderText('Hotel name'), { target: { value: 'Hilton' } })
+    fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
+    fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
+    fireEvent.change(screen.getByLabelText('Event time'), { target: { value: '14:00' } })
+    // Do NOT click the checkbox
+    fireEvent.click(screen.getByText('Add to Timeline'))
+    const payload = addEvent.mock.calls[0][1]
+    expect(payload.arrivedOnFoot).not.toBe(true)
+  })
+
   it('renders "Add to Timeline" button in create mode', () => {
     renderSheet()
     expect(screen.getByText('Add to Timeline')).toBeInTheDocument()
