@@ -1,18 +1,29 @@
+import { useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import DarkModeToggle from '@/components/DarkModeToggle'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/contexts/AuthContext'
 
-const USER = { name: 'John Doe', plan: 'free' as 'free' | 'premium' | 'pro' }
+type Plan = 'free' | 'premium' | 'pro'
 
-const PLAN_BADGE: Record<typeof USER.plan, { label: string; className: string }> = {
+const PLAN_BADGE: Record<Plan, { label: string; className: string }> = {
   free: { label: 'Free', className: 'bg-stone-500' },
   premium: { label: 'Premium', className: 'bg-blue-500' },
   pro: { label: 'Pro ✦', className: 'bg-gradient-to-r from-amber-400 to-amber-600' },
 }
 
 export default function ProfilePage() {
-  const { name, plan } = USER
+  const navigate = useNavigate()
+  const { user, signOut } = useAuth()
+
+  // Plan 4 will replace this with real data from the profile store
+  const plan: Plan = 'free'
   const badge = PLAN_BADGE[plan]
+
+  async function handleLogout() {
+    await signOut()
+    navigate('/login')
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20 flex flex-col items-center justify-center px-6">
@@ -22,8 +33,10 @@ export default function ProfilePage() {
           <span className="text-3xl">👤</span>
         </div>
 
-        {/* Name */}
-        <h1 className="text-xl font-extrabold text-foreground">{name}</h1>
+        {/* Email (full_name available after Plan 4 adds profile store) */}
+        <h1 className="text-xl font-extrabold text-foreground">
+          {user?.email ?? 'Unknown'}
+        </h1>
 
         {/* Plan badge */}
         <span
@@ -49,6 +62,14 @@ export default function ProfilePage() {
           <span className="text-sm font-semibold text-foreground">Dark mode</span>
           <DarkModeToggle />
         </div>
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="w-full border border-red-400 text-red-500 rounded-xl py-3 text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+        >
+          Log out
+        </button>
       </div>
 
       <BottomNav />
