@@ -48,6 +48,7 @@ export default function LoginPage() {
       setLoading(false)
       return
     }
+    setLoading(false)
     navigate('/trips')
   }
 
