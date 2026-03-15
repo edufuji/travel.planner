@@ -1,4 +1,19 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
+
+vi.mock('../src/lib/stripe.ts', () => ({
+  default: {
+    customers: { create: vi.fn() },
+    checkout: { sessions: { create: vi.fn() } },
+  },
+}))
+
+vi.mock('../src/lib/supabase.ts', () => ({
+  default: {
+    auth: { getUser: vi.fn() },
+    from: vi.fn(),
+  },
+}))
+
 import app from '../src/index.ts'
 
 describe('GET /health', () => {

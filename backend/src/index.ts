@@ -2,12 +2,14 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import health from './routes/health.ts'
+import checkout from './routes/checkout.ts'
 
 const app = new Hono()
 
 app.use('*', cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173' }))
 
 app.route('/health', health)
+app.route('/checkout', checkout)
 
 const port = Number(process.env.PORT ?? 3000)
 
