@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import stripe from '../lib/stripe.ts'
 import supabase from '../lib/supabase.ts'
+import { PRICE_TO_PLAN } from '../lib/plans.ts'
 
 const RATE_LIMIT = 10
 const RATE_WINDOW_MS = 60_000
@@ -42,13 +43,30 @@ checkout.post('/', async (c) => {
     return c.json({ error: 'Too many requests' }, 429)
   }
 
-  const { plan, successUrl, cancelUrl } = await c.req.json<{
-    plan: string
-    successUrl: string
-    cancelUrl: string
-  }>()
+  let body: { plan?: string; successUrl?: string; cancelUrl?: string }
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json({ error: 'Invalid JSON body' }, 400)
+  }
+
+  const { plan, successUrl, cancelUrl } = body
 
   if (!plan || !['premium', 'pro'].includes(plan)) {
+    return c.json({ error: 'plan must be "premium" or "pro"' }, 400)
+  }
+
+  if (!successUrl || typeof successUrl !== 'string') {
+    return c.json({ error: 'successUrl must be a non-empty string' }, 400)
+  }
+
+  if (!cancelUrl || typeof cancelUrl !== 'string') {
+    return c.json({ error: 'cancelUrl must be a non-empty string' }, 400)
+  }
+
+  // Find the price ID for the plan by reversing the PRICE_TO_PLAN map
+  const priceId = Object.entries(PRICE_TO_PLAN).find(([, p]) => p === plan)?.[0]
+  if (!priceId) {
     return c.json({ error: 'plan must be "premium" or "pro"' }, 400)
   }
 
@@ -58,34 +76,34 @@ checkout.post('/', async (c) => {
     .eq('id', user.id)
     .single()
 
-  let customerId: string = profile?.stripe_customer_id
+  let customerId: string | null | undefined = profile?.stripe_customer_id
 
-  if (!customerId) {
-    const customer = await stripe.customers.create({
-      email: user.email,
-      metadata: { supabase_user_id: user.id },
+  try {
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: { supabase_user_id: user.id },
+      })
+      customerId = customer.id
+      await supabase
+        .from('profiles')
+        .update({ stripe_customer_id: customerId })
+        .eq('id', user.id)
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      metadata: { plan },
+      success_url: successUrl,
+      cancel_url: cancelUrl,
     })
-    customerId = customer.id
-    await supabase
-      .from('profiles')
-      .update({ stripe_customer_id: customerId })
-      .eq('id', user.id)
+
+    return c.json({ url: session.url })
+  } catch {
+    return c.json({ error: 'Payment service unavailable' }, 503)
   }
-
-  const priceId = plan === 'premium'
-    ? process.env.STRIPE_PRICE_ID_PREMIUM!
-    : process.env.STRIPE_PRICE_ID_PRO!
-
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
-    customer: customerId,
-    line_items: [{ price: priceId, quantity: 1 }],
-    metadata: { plan },
-    success_url: successUrl,
-    cancel_url: cancelUrl,
-  })
-
-  return c.json({ url: session.url })
 })
 
 export default checkout

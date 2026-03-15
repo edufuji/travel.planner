@@ -14,6 +14,13 @@ vi.mock('../src/lib/supabase.ts', () => ({
   },
 }))
 
+vi.mock('../src/lib/plans.ts', () => ({
+  PRICE_TO_PLAN: {
+    'price_test_premium': 'premium',
+    'price_test_pro': 'pro',
+  },
+}))
+
 import app from '../src/index.ts'
 
 describe('GET /health', () => {

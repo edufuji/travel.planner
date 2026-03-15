@@ -16,8 +16,16 @@ vi.mock('../src/lib/stripe.ts', () => ({
   },
 }))
 
+vi.mock('../src/lib/plans.ts', () => ({
+  PRICE_TO_PLAN: {
+    'price_test_premium': 'premium',
+    'price_test_pro': 'pro',
+  },
+}))
+
 import supabase from '../src/lib/supabase.ts'
 import stripe from '../src/lib/stripe.ts'
+import { resetRateLimitForTesting } from '../src/routes/checkout.ts'
 
 const mockSupabase = supabase as unknown as {
   auth: { getUser: ReturnType<typeof vi.fn> }
@@ -38,7 +46,7 @@ beforeEach(() => {
 
 afterEach(() => {
   // Reset the in-memory rate limit map between tests
-  import('../src/routes/checkout.ts').then(m => m.resetRateLimitForTesting?.())
+  resetRateLimitForTesting()
 })
 
 describe('POST /checkout', () => {
