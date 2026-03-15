@@ -20,7 +20,16 @@ export function detectGaps(events: TripEvent[]): GapWarning[] {
 
     const hasWalkingRoute = b.arrivedOnFoot === true
 
-    if (!hasWalkingRoute) {
+    const hasTransportToB = sorted.some(
+      e =>
+        e.type === 'transport' &&
+        e.date >= a.date &&
+        e.date <= b.date &&
+        e.placeIdTo !== undefined &&
+        e.placeIdTo === b.placeId,
+    )
+
+    if (!hasWalkingRoute && !hasTransportToB) {
       gaps.push({
         afterEventId: a.id,
         beforeEventId: b.id,

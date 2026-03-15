@@ -99,4 +99,40 @@ describe('detectGaps', () => {
     ]
     expect(detectGaps(events)).toHaveLength(1)
   })
+
+  it('transport whose placeIdTo matches destination accommodation placeId clears the gap', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00', placeId: 'place-hotel-a' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Airport B → Hotel', date: '2026-03-18', time: '10:00', placeIdTo: 'place-hotel-b' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00', placeId: 'place-hotel-b' }),
+    ]
+    expect(detectGaps(events)).toEqual([])
+  })
+
+  it('transport with matching placeIdTo on the same date as acc-A still clears the gap', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00', placeId: 'place-hotel-a' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train → Hotel B', date: '2026-03-15', time: '16:00', placeIdTo: 'place-hotel-b' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00', placeId: 'place-hotel-b' }),
+    ]
+    expect(detectGaps(events)).toEqual([])
+  })
+
+  it('transport with matching placeIdTo on the same date as acc-B still clears the gap', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00', placeId: 'place-hotel-a' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train → Hotel B', date: '2026-03-18', time: '06:00', placeIdTo: 'place-hotel-b' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00', placeId: 'place-hotel-b' }),
+    ]
+    expect(detectGaps(events)).toEqual([])
+  })
+
+  it('transport whose placeIdTo does NOT match destination accommodation placeId does NOT clear the gap', () => {
+    const events = [
+      makeEvent({ id: 'acc-1', type: 'accommodation', title: 'Hotel A', date: '2026-03-15', time: '14:00', placeId: 'place-hotel-a' }),
+      makeEvent({ id: 'tr-1', type: 'transport', title: 'Train → Airport', date: '2026-03-18', time: '10:00', placeIdTo: 'place-airport-x' }),
+      makeEvent({ id: 'acc-2', type: 'accommodation', title: 'Hotel B', date: '2026-03-18', time: '15:00', placeId: 'place-hotel-b' }),
+    ]
+    expect(detectGaps(events)).toHaveLength(1)
+  })
 })
