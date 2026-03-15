@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import { FaApple } from 'react-icons/fa'
 import { Loader2 } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { supabase } from '@/lib/supabase'
 
 interface FormErrors {
   email?: string
@@ -10,9 +12,11 @@ interface FormErrors {
 }
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<FormErrors>({})
+  const [authError, setAuthError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   function validate(): FormErrors {
@@ -28,7 +32,7 @@ export default function LoginPage() {
     return errs
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length > 0) {
@@ -36,8 +40,22 @@ export default function LoginPage() {
       return
     }
     setErrors({})
+    setAuthError(null)
     setLoading(true)
-    setTimeout(() => setLoading(false), 1000)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      setAuthError('Invalid email or password')
+      setLoading(false)
+      return
+    }
+    navigate('/trips')
+  }
+
+  async function handleOAuth(provider: 'google' | 'apple') {
+    await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: window.location.origin + '/trips' },
+    })
   }
 
   return (
@@ -81,6 +99,7 @@ export default function LoginPage() {
         <div className="flex gap-2.5 mb-5">
           <button
             type="button"
+            onClick={() => handleOAuth('google')}
             className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-transparent border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
           >
             <FcGoogle size={16} />
@@ -88,6 +107,7 @@ export default function LoginPage() {
           </button>
           <button
             type="button"
+            onClick={() => handleOAuth('apple')}
             className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-transparent border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
           >
             <FaApple size={16} />
@@ -150,6 +170,11 @@ export default function LoginPage() {
             </a>
           </div>
 
+          {/* Auth error */}
+          {authError && (
+            <p className="text-red-500 text-sm text-center mb-3">{authError}</p>
+          )}
+
           {/* Submit */}
           <button
             type="submit"
@@ -168,9 +193,9 @@ export default function LoginPage() {
         {/* Sign up link */}
         <p className="text-center text-sm text-muted mt-5">
           Don't have an account?{' '}
-          <a href="#" className="text-primary font-semibold">
+          <Link to="/signup" className="text-primary font-semibold">
             Create one
-          </a>
+          </Link>
         </p>
       </GlassCard>
     </div>
