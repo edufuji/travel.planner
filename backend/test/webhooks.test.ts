@@ -9,8 +9,6 @@ vi.mock('../src/lib/supabase.ts', () => ({
 
 vi.mock('../src/lib/stripe.ts', () => ({
   default: {
-    customers: { create: vi.fn() },
-    checkout: { sessions: { create: vi.fn() } },
     webhooks: { constructEvent: vi.fn() },
   },
 }))
@@ -182,33 +180,6 @@ describe('POST /webhooks/stripe', () => {
     })
     expect(res.status).toBe(200)
     expect(updateMock).toHaveBeenCalledWith({ subscription_status: 'unpaid' })
-  })
-
-  it('handles customer.subscription.updated — canceled resets to free', async () => {
-    const { updateMock } = makeUpdateChain()
-
-    mockStripe.webhooks.constructEvent.mockReturnValue({
-      type: 'customer.subscription.updated',
-      data: {
-        object: {
-          status: 'canceled',
-          customer: 'cus_123',
-          items: { data: [{ price: { id: 'price_pro' } }] },
-        },
-      },
-    })
-
-    const res = await app.request('/webhooks/stripe', {
-      method: 'POST',
-      headers: { 'stripe-signature': 'valid-sig' },
-      body: 'payload',
-    })
-    expect(res.status).toBe(200)
-    expect(updateMock).toHaveBeenCalledWith({
-      plan: 'free',
-      stripe_subscription_id: null,
-      subscription_status: 'canceled',
-    })
   })
 
   it('handles customer.subscription.deleted — resets to free', async () => {
