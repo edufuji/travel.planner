@@ -52,7 +52,9 @@ checkout.post('/', async (c) => {
 
   const { plan, successUrl, cancelUrl } = body
 
-  if (!plan || !['premium', 'pro'].includes(plan)) {
+  // Find the price ID for the plan by reversing the PRICE_TO_PLAN map
+  const priceId = Object.entries(PRICE_TO_PLAN).find(([, p]) => p === plan)?.[0]
+  if (!plan || !priceId) {
     return c.json({ error: 'plan must be "premium" or "pro"' }, 400)
   }
 
@@ -64,17 +66,23 @@ checkout.post('/', async (c) => {
     return c.json({ error: 'cancelUrl must be a non-empty string' }, 400)
   }
 
-  // Find the price ID for the plan by reversing the PRICE_TO_PLAN map
-  const priceId = Object.entries(PRICE_TO_PLAN).find(([, p]) => p === plan)?.[0]
-  if (!priceId) {
-    return c.json({ error: 'plan must be "premium" or "pro"' }, 400)
+  if (!successUrl.startsWith('http://') && !successUrl.startsWith('https://')) {
+    return c.json({ error: 'Invalid URL' }, 400)
   }
 
-  const { data: profile } = await supabase
+  if (!cancelUrl.startsWith('http://') && !cancelUrl.startsWith('https://')) {
+    return c.json({ error: 'Invalid URL' }, 400)
+  }
+
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('stripe_customer_id')
     .eq('id', user.id)
     .single()
+
+  if (profileError) {
+    return c.json({ error: 'Service unavailable' }, 503)
+  }
 
   let customerId: string | null | undefined = profile?.stripe_customer_id
 
@@ -85,10 +93,13 @@ checkout.post('/', async (c) => {
         metadata: { supabase_user_id: user.id },
       })
       customerId = customer.id
-      await supabase
+      const { error: updateError } = await supabase
         .from('profiles')
-        .update({ stripe_customer_id: customerId })
+        .update({ stripe_customer_id: customer.id })
         .eq('id', user.id)
+      if (updateError) {
+        console.error('Failed to persist stripe_customer_id:', updateError)
+      }
     }
 
     const session = await stripe.checkout.sessions.create({

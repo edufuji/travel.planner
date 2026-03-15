@@ -69,17 +69,43 @@ describe('POST /checkout', () => {
   it('returns 400 when plan is invalid', async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: 'user-1', email: 'a@b.com' } }, error: null })
 
-    const selectMock = { data: { stripe_customer_id: 'cus_existing' }, error: null }
-    mockSupabase.from.mockReturnValue({
-      select: vi.fn().mockReturnValue({ eq: vi.fn().mockReturnValue({ single: vi.fn().mockResolvedValue(selectMock) }) }),
-    })
-
     const res = await app.request('/checkout', {
       method: 'POST',
       headers: { ...authHeader(), 'Content-Type': 'application/json' },
       body: JSON.stringify({ plan: 'business', successUrl: 'http://x/success', cancelUrl: 'http://x/cancel' }),
     })
     expect(res.status).toBe(400)
+  })
+
+  it('returns 400 when successUrl is not a valid HTTP/HTTPS URL', async () => {
+    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: 'user-1', email: 'a@b.com' } }, error: null })
+
+    const res = await app.request('/checkout', {
+      method: 'POST',
+      headers: { ...authHeader(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: 'premium', successUrl: 'ftp://bad/success', cancelUrl: 'http://x/cancel' }),
+    })
+    expect(res.status).toBe(400)
+    const body = await res.json() as { error: string }
+    expect(body.error).toBe('Invalid URL')
+  })
+
+  it('returns 503 when Stripe checkout creation fails', async () => {
+    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: 'user-1', email: 'a@b.com' } }, error: null })
+
+    const selectMock = { data: { stripe_customer_id: 'cus_existing' }, error: null }
+    mockSupabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({ eq: vi.fn().mockReturnValue({ single: vi.fn().mockResolvedValue(selectMock) }) }),
+    })
+
+    mockStripe.checkout.sessions.create.mockRejectedValue(new Error('Stripe error'))
+
+    const res = await app.request('/checkout', {
+      method: 'POST',
+      headers: { ...authHeader(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: 'premium', successUrl: 'http://x/success', cancelUrl: 'http://x/cancel' }),
+    })
+    expect(res.status).toBe(503)
   })
 
   it('returns 200 with url when user already has a stripe_customer_id', async () => {
