@@ -138,6 +138,79 @@ describe('POST /webhooks/stripe', () => {
     expect(updateMock).toHaveBeenCalledWith({ subscription_status: 'past_due' })
   })
 
+  it('handles customer.subscription.updated — trialing status updates plan', async () => {
+    const { updateMock } = makeUpdateChain()
+
+    mockStripe.webhooks.constructEvent.mockReturnValue({
+      type: 'customer.subscription.updated',
+      data: {
+        object: {
+          status: 'trialing',
+          customer: 'cus_123',
+          items: { data: [{ price: { id: 'price_premium' } }] },
+        },
+      },
+    })
+
+    const res = await app.request('/webhooks/stripe', {
+      method: 'POST',
+      headers: { 'stripe-signature': 'valid-sig' },
+      body: 'payload',
+    })
+    expect(res.status).toBe(200)
+    expect(updateMock).toHaveBeenCalledWith({ plan: 'premium', subscription_status: 'trialing' })
+  })
+
+  it('handles customer.subscription.updated — unpaid keeps plan, updates status only', async () => {
+    const { updateMock } = makeUpdateChain()
+
+    mockStripe.webhooks.constructEvent.mockReturnValue({
+      type: 'customer.subscription.updated',
+      data: {
+        object: {
+          status: 'unpaid',
+          customer: 'cus_123',
+          items: { data: [{ price: { id: 'price_pro' } }] },
+        },
+      },
+    })
+
+    const res = await app.request('/webhooks/stripe', {
+      method: 'POST',
+      headers: { 'stripe-signature': 'valid-sig' },
+      body: 'payload',
+    })
+    expect(res.status).toBe(200)
+    expect(updateMock).toHaveBeenCalledWith({ subscription_status: 'unpaid' })
+  })
+
+  it('handles customer.subscription.updated — canceled resets to free', async () => {
+    const { updateMock } = makeUpdateChain()
+
+    mockStripe.webhooks.constructEvent.mockReturnValue({
+      type: 'customer.subscription.updated',
+      data: {
+        object: {
+          status: 'canceled',
+          customer: 'cus_123',
+          items: { data: [{ price: { id: 'price_pro' } }] },
+        },
+      },
+    })
+
+    const res = await app.request('/webhooks/stripe', {
+      method: 'POST',
+      headers: { 'stripe-signature': 'valid-sig' },
+      body: 'payload',
+    })
+    expect(res.status).toBe(200)
+    expect(updateMock).toHaveBeenCalledWith({
+      plan: 'free',
+      stripe_subscription_id: null,
+      subscription_status: 'canceled',
+    })
+  })
+
   it('handles customer.subscription.deleted — resets to free', async () => {
     const { updateMock } = makeUpdateChain()
 
