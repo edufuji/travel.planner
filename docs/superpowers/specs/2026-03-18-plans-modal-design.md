@@ -56,7 +56,7 @@ PlansModal
 interface PlansModalProps {
   open: boolean
   onClose: () => void
-  currentPlan: 'free' | 'premium' | 'pro'
+  currentPlan: 'free' | 'premium'  // 'pro' excluded — modal is never opened for Pro users
 }
 ```
 
@@ -77,16 +77,27 @@ interface PlansModalProps {
 | Premium | `#0d1f3f` | `2px solid #4f8ef7` | blue `#4f8ef7` |
 | Pro | `#1e1408` | `1px solid #92400e` | amber `#d97706` |
 
-**"MOST POPULAR" badge:** absolute positioned, centered on top edge of Premium card, blue background.
+**"MOST POPULAR" badge:** absolute positioned (`top: -11px`, `left: 50%`, `translateX(-50%)`), centered on top edge of Premium card, blue background. The cards row must have `overflow: visible` and `padding-top: 16px` to prevent clipping.
 
 **CTA button behavior:**
-- Free card: disabled "Current plan" button (shown only when `currentPlan === 'free'`; otherwise hidden)
-- Premium card: "Get Premium" → `console.log('checkout: premium')` for now (Stripe wiring is Plan 4)
-- Pro card: "Get Pro" → `console.log('checkout: pro')` for now
+
+| Card | `currentPlan='free'` | `currentPlan='premium'` |
+|------|---------------------|------------------------|
+| Free | Disabled "Current plan" gray button | No button (downgrade path is not surfaced — intentional) |
+| Premium | "Get Premium" → `console.log('checkout: premium')` | Disabled "Current plan" blue button |
+| Pro | "Get Pro" → `console.log('checkout: pro')` | "Get Pro" → `console.log('checkout: pro')` |
+
+No downgrade path is exposed anywhere in the modal. This is intentional.
 
 **Footer:** "Secure payment via Stripe · Cancel anytime" — small, centered, muted text.
 
-**Closing:** clicking the backdrop or ✕ button calls `onClose()`.
+**Closing:** clicking the backdrop or ✕ button calls `onClose()`. `Escape` key also closes the modal. Focus is trapped inside the modal while open (focus returns to the trigger button on close).
+
+**Mounting:** the modal is conditionally rendered — `{showPlans && <PlansModal ... />}`. This means local state (billing toggle) resets to `'annual'` every time the modal is opened. This is intentional.
+
+**Responsive layout:** on screens narrower than 480px the three cards stack vertically (Free on top, Premium in middle, Pro at bottom). The "MOST POPULAR" badge and card size differences are removed in the stacked layout — all cards are equal width. The modal itself is full-width with `mx-4` padding on mobile.
+
+**Billing toggle "−30%":** this is a fixed label string, not dynamically computed.
 
 ---
 
@@ -94,7 +105,7 @@ interface PlansModalProps {
 
 **Button changes:**
 - Label: always `"Plans"` (was `"Upgrade to Premium"` / `"Upgrade to Pro"`)
-- Shown for: `free` and `premium` plans (hidden for `pro`, same as before)
+- Shown for: `free` and `premium` plans only — hidden for `pro` (Pro users have no upgrade path in the UI)
 - On click: sets `showPlans = true` (local `useState`)
 
 **PlansModal integration:**
@@ -137,13 +148,16 @@ None required for this scope — the CTA buttons are stubs. Plan 4 will add erro
 
 ## Testing
 
-- `PlansModal.test.tsx`:
+- `PlansModal.test.tsx` (all tests use `currentPlan='free'` unless stated):
   - Renders all three plan cards
-  - Billing toggle switches displayed prices
-  - Close button calls `onClose`
+  - Billing toggle switches displayed prices (annual by default, monthly on toggle click)
+  - Close button (✕) calls `onClose`
   - Backdrop click calls `onClose`
-  - Free card shows "Current plan" when `currentPlan='free'`
-  - Premium/Pro cards show CTA buttons
+  - Escape key calls `onClose`
+  - Free card shows disabled "Current plan" button when `currentPlan='free'`
+  - Premium card shows disabled "Current plan" button when `currentPlan='premium'`
+  - Free card shows no CTA button when `currentPlan='premium'`
+  - Pro card CTA "Get Pro" visible for both `currentPlan='free'` and `currentPlan='premium'`
 
 ---
 
