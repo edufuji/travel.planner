@@ -3,6 +3,7 @@ import { useTripsStore } from '@/stores/tripsStore'
 import DestinationRow from '@/components/DestinationRow'
 import NewDestinationSheet from '@/components/sheets/NewDestinationSheet'
 import BottomNav from '@/components/BottomNav'
+import LocalDataImport from '@/components/LocalDataImport'
 
 export default function TripsPage() {
   const destinations = useTripsStore(s => s.destinations)
@@ -62,6 +63,7 @@ export default function TripsPage() {
       </div>
 
       <NewDestinationSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
+      <LocalDataImport />
       <BottomNav />
     </div>
   )
