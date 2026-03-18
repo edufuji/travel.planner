@@ -5,6 +5,8 @@ import TripDetailPage from './TripDetailPage'
 import { useTripsStore } from '@/stores/tripsStore'
 import type { Destination, TripEvent } from '@/types/trip'
 
+vi.mock('@/lib/supabase', () => ({ supabase: { from: vi.fn() } }))
+
 vi.mock('@/components/MapView', () => ({
   default: () => <div data-testid="map-view">MapView</div>,
 }))

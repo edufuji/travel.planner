@@ -5,6 +5,8 @@ import AddEventSheet from './AddEventSheet'
 import { useTripsStore } from '@/stores/tripsStore'
 import type { TripEvent } from '@/types/trip'
 
+vi.mock('@/lib/supabase', () => ({ supabase: { from: vi.fn() } }))
+
 const DEST_ID = 'dest-1'
 
 function renderSheet(props: Partial<React.ComponentProps<typeof AddEventSheet>> = {}) {

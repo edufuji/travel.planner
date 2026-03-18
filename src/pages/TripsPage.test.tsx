@@ -1,8 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import TripsPage from './TripsPage'
 import { useTripsStore } from '@/stores/tripsStore'
+
+vi.mock('@/lib/supabase', () => ({ supabase: { from: vi.fn() } }))
 import type { Destination } from '@/types/trip'
 
 function makeDestination(overrides: Partial<Destination> = {}): Destination {
