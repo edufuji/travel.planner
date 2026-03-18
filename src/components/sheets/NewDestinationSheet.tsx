@@ -2,6 +2,7 @@ import { useState } from 'react'
 import BottomSheet from '@/components/BottomSheet'
 import { useTripsStore } from '@/stores/tripsStore'
 import { assignEmoji } from '@/lib/travelEmojis'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface Props {
   open: boolean
@@ -11,6 +12,7 @@ interface Props {
 export default function NewDestinationSheet({ open, onClose }: Props) {
   const addDestination = useTripsStore(s => s.addDestination)
   const destinations = useTripsStore(s => s.destinations)
+  const { user } = useAuth()
 
   const [title, setTitle] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -19,19 +21,23 @@ export default function NewDestinationSheet({ open, onClose }: Props) {
 
   const previewEmoji = assignEmoji(destinations.length)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const errs: typeof errors = {}
     if (!title.trim()) errs.title = 'Title is required'
     if (endDate && startDate && endDate < startDate) errs.endDate = 'End date must be after start date'
     if (Object.keys(errs).length) { setErrors(errs); return }
 
-    addDestination({ title: title.trim(), startDate, endDate, emoji: '' })
-    setTitle('')
-    setStartDate('')
-    setEndDate('')
-    setErrors({})
-    onClose()
+    try {
+      await addDestination(user!.id, { title: title.trim(), startDate, endDate, emoji: '' })
+      setTitle('')
+      setStartDate('')
+      setEndDate('')
+      setErrors({})
+      onClose()
+    } catch (err) {
+      setErrors({ title: err instanceof Error ? err.message : 'Failed to create destination' })
+    }
   }
 
   return (

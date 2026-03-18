@@ -64,7 +64,7 @@ describe('dbDestinationToDestination', () => {
 
   it('does not include user_id in the result', () => {
     const result = dbDestinationToDestination(dbDest, [])
-    expect((result as Record<string, unknown>).user_id).toBeUndefined()
+    expect((result as unknown as Record<string, unknown>).user_id).toBeUndefined()
   })
 })
 
@@ -123,7 +123,7 @@ describe('dbEventToTripEvent', () => {
 
   it('does not include user_id in the result', () => {
     const result = dbEventToTripEvent(dbEvent)
-    expect((result as Record<string, unknown>).user_id).toBeUndefined()
+    expect((result as unknown as Record<string, unknown>).user_id).toBeUndefined()
   })
 })
 

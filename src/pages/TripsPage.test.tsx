@@ -5,6 +5,7 @@ import TripsPage from './TripsPage'
 import { useTripsStore } from '@/stores/tripsStore'
 
 vi.mock('@/lib/supabase', () => ({ supabase: { from: vi.fn() } }))
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'user-1' } }) }))
 import type { Destination } from '@/types/trip'
 
 function makeDestination(overrides: Partial<Destination> = {}): Destination {

@@ -228,7 +228,6 @@ describe('addEvent', () => {
     mockFrom.mockReturnValueOnce(buildChain({ insertResult: { data: dbEv, error: null } }))
 
     await useTripsStore.getState().addEvent('dest-1', 'user-1', {
-      destinationId: 'dest-1',
       type: 'transport',
       title: 'Flight',
       place: 'GRU',
