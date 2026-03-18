@@ -17,7 +17,7 @@ export default function ProfilePage() {
   const { user, signOut } = useAuth()
 
   // Plan 4 will replace this with real data from the profile store
-  const plan: Plan = 'free'
+  const plan = 'free' as Plan
   const badge = PLAN_BADGE[plan]
 
   async function handleLogout() {
