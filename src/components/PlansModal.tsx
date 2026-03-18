@@ -117,7 +117,7 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
           {/* Premium card — featured center */}
           <div className="sm:flex-[1.15] relative bg-[#0d1f3f] border-2 border-[#4f8ef7] rounded-xl p-4">
             {/* Most popular badge */}
-            <div className="hidden sm:block absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4f8ef7] text-white text-[9px] font-extrabold tracking-widest rounded-full px-3 py-1 whitespace-nowrap">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4f8ef7] text-white text-[9px] font-extrabold tracking-widest rounded-full px-3 py-1 whitespace-nowrap">
               MOST POPULAR
             </div>
             <span className="text-[10px] font-bold tracking-wider text-[#4f8ef7] bg-[#1a3a6e] rounded-full px-2 py-0.5">

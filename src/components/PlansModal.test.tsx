@@ -92,4 +92,19 @@ describe('PlansModal', () => {
     rerender(<PlansModal open={true} onClose={vi.fn()} currentPlan="premium" />)
     expect(screen.getByRole('button', { name: /get pro/i })).toBeInTheDocument()
   })
+
+  it('renders nothing when open is false', () => {
+    render(<PlansModal open={false} onClose={vi.fn()} currentPlan="free" />)
+    expect(screen.queryByTestId('modal-backdrop')).not.toBeInTheDocument()
+  })
+
+  it('shows the MOST POPULAR badge', () => {
+    renderModal()
+    expect(screen.getByText('MOST POPULAR')).toBeInTheDocument()
+  })
+
+  it('shows the footer text', () => {
+    renderModal()
+    expect(screen.getByText(/Pagamento seguro via Stripe/i)).toBeInTheDocument()
+  })
 })
