@@ -25,8 +25,10 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
       // Focus the close button on open
       closeRef.current?.focus()
     } else {
-      // Return focus on close
+      // Return focus on close, then clear the ref so the keyboard-listener
+      // cleanup does not fire a redundant second .focus() call.
       ;(returnFocusRef.current as HTMLElement | null)?.focus()
+      returnFocusRef.current = null
     }
   }, [open])
 
@@ -38,7 +40,9 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
     window.addEventListener('keydown', handleKey)
     return () => {
       window.removeEventListener('keydown', handleKey)
-      // Return focus when unmounted while open
+      // Return focus when unmounted while open. On a normal close the first
+      // useEffect already called .focus() and nulled the ref, so this is a
+      // no-op in that case.
       ;(returnFocusRef.current as HTMLElement | null)?.focus()
     }
   }, [open, onClose])
