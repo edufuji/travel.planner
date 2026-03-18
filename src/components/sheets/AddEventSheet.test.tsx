@@ -5,7 +5,11 @@ import AddEventSheet from './AddEventSheet'
 import { useTripsStore } from '@/stores/tripsStore'
 import type { TripEvent } from '@/types/trip'
 
-vi.mock('@/lib/supabase', () => ({ supabase: { from: vi.fn() } }))
+const mockFrom = vi.hoisted(() => vi.fn())
+vi.mock('@/lib/supabase', () => ({ supabase: { from: mockFrom } }))
+
+const mockUseAuth = vi.hoisted(() => vi.fn())
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: mockUseAuth }))
 
 const DEST_ID = 'dest-1'
 
@@ -24,6 +28,20 @@ function renderSheet(props: Partial<React.ComponentProps<typeof AddEventSheet>> 
 
 beforeEach(() => {
   vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', '')
+  mockUseAuth.mockReturnValue({ user: { id: 'user-1' }, session: {}, loading: false, signOut: vi.fn() })
+  mockFrom.mockReturnValue({
+    insert: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        single: vi.fn().mockResolvedValue({ data: null, error: null }),
+      }),
+    }),
+    delete: vi.fn().mockReturnValue({
+      eq: vi.fn().mockResolvedValue({ error: null }),
+    }),
+    update: vi.fn().mockReturnValue({
+      eq: vi.fn().mockResolvedValue({ error: null }),
+    }),
+  })
   useTripsStore.setState({
     destinations: [{
       id: DEST_ID,
@@ -81,6 +99,7 @@ describe('AddEventSheet', () => {
     fireEvent.click(screen.getByText('Add to Timeline'))
     expect(addEvent).toHaveBeenCalledWith(
       DEST_ID,
+      'user-1',
       expect.objectContaining({ arrivedOnFoot: true })
     )
   })
@@ -124,7 +143,7 @@ describe('AddEventSheet', () => {
     fireEvent.change(screen.getByLabelText('Event time'), { target: { value: '14:00' } })
     // Do NOT click the checkbox
     fireEvent.click(screen.getByText('Add to Timeline'))
-    const payload = addEvent.mock.calls[0][1]
+    const payload = addEvent.mock.calls[0][2]
     expect(payload.arrivedOnFoot).not.toBe(true)
   })
 
@@ -253,6 +272,7 @@ describe('AddEventSheet', () => {
 
     expect(addEvent).toHaveBeenCalledWith(
       DEST_ID,
+      'user-1',
       expect.objectContaining({ title: 'My Flight', place: 'Tokyo' })
     )
   })

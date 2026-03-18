@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import BottomSheet from '@/components/BottomSheet'
 import GooglePlacesInput from '@/components/GooglePlacesInput'
 import { useTripsStore } from '@/stores/tripsStore'
+import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import type { TripEvent, EventType } from '@/types/trip'
 
@@ -28,67 +29,63 @@ interface Props {
 
 type FormErrors = Partial<Record<'title' | 'place' | 'date' | 'time' | 'value', string>>
 
+const initialFormState = {
+  type: 'transport' as EventType,
+  title: '',
+  place: '',
+  placeId: undefined as string | undefined,
+  lat: undefined as number | undefined,
+  lng: undefined as number | undefined,
+  placeTo: '',
+  placeIdTo: undefined as string | undefined,
+  latTo: undefined as number | undefined,
+  lngTo: undefined as number | undefined,
+  arrivalTime: '',
+  date: '',
+  time: '',
+  value: '',
+  notes: '',
+  arrivedOnFoot: false,
+}
+
 export default function AddEventSheet({ open, onClose, destinationId, editEvent }: Props) {
   const addEvent = useTripsStore(s => s.addEvent)
   const updateEvent = useTripsStore(s => s.updateEvent)
   const deleteEvent = useTripsStore(s => s.deleteEvent)
+  const { user } = useAuth()
 
-  const [type, setType] = useState<EventType>('transport')
-  const [title, setTitle] = useState('')
-  const [place, setPlace] = useState('')
-  const [placeId, setPlaceId] = useState<string | undefined>()
-  const [lat, setLat] = useState<number | undefined>()
-  const [lng, setLng] = useState<number | undefined>()
-  const [placeTo, setPlaceTo] = useState('')
-  const [placeIdTo, setPlaceIdTo] = useState<string | undefined>()
-  const [latTo, setLatTo] = useState<number | undefined>()
-  const [lngTo, setLngTo] = useState<number | undefined>()
-  const [arrivalTime, setArrivalTime] = useState('')
-  const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
-  const [value, setValue] = useState('')
-  const [notes, setNotes] = useState('')
+  const [formData, setFormData] = useState(initialFormState)
   const [errors, setErrors] = useState<FormErrors>({})
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const [arrivedOnFoot, setArrivedOnFoot] = useState(false)
 
   const isEdit = !!editEvent
 
+  const updateForm = (updates: Partial<typeof initialFormState>) => {
+    setFormData(prev => ({ ...prev, ...updates }))
+  }
+
   useEffect(() => {
     if (open && editEvent) {
-      setType(editEvent.type)
-      setTitle(editEvent.title)
-      setPlace(editEvent.place)
-      setPlaceId(editEvent.placeId)
-      setLat(editEvent.lat)
-      setLng(editEvent.lng)
-      setPlaceTo(editEvent.placeTo ?? '')
-      setPlaceIdTo(editEvent.placeIdTo)
-      setLatTo(editEvent.latTo)
-      setLngTo(editEvent.lngTo)
-      setArrivalTime(editEvent.arrivalTime ?? '')
-      setDate(editEvent.date)
-      setTime(editEvent.time)
-      setValue(editEvent.value?.toString() ?? '')
-      setNotes(editEvent.notes ?? '')
-      setArrivedOnFoot(editEvent.arrivedOnFoot ?? false)
+      setFormData({
+        type: editEvent.type,
+        title: editEvent.title,
+        place: editEvent.place,
+        placeId: editEvent.placeId,
+        lat: editEvent.lat,
+        lng: editEvent.lng,
+        placeTo: editEvent.placeTo ?? '',
+        placeIdTo: editEvent.placeIdTo,
+        latTo: editEvent.latTo,
+        lngTo: editEvent.lngTo,
+        arrivalTime: editEvent.arrivalTime ?? '',
+        date: editEvent.date,
+        time: editEvent.time,
+        value: editEvent.value?.toString() ?? '',
+        notes: editEvent.notes ?? '',
+        arrivedOnFoot: editEvent.arrivedOnFoot ?? false,
+      })
     } else if (open && !editEvent) {
-      setType('transport')
-      setTitle('')
-      setPlace('')
-      setPlaceId(undefined)
-      setLat(undefined)
-      setLng(undefined)
-      setPlaceTo('')
-      setPlaceIdTo(undefined)
-      setLatTo(undefined)
-      setLngTo(undefined)
-      setArrivalTime('')
-      setDate('')
-      setTime('')
-      setValue('')
-      setNotes('')
-      setArrivedOnFoot(false)
+      setFormData(initialFormState)
     }
     setErrors({})
     setConfirmDelete(false)
@@ -96,48 +93,52 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
 
   function validate(): FormErrors {
     const errs: FormErrors = {}
-    if (!title.trim()) errs.title = 'Title is required'
-    if (!place.trim()) errs.place = 'Place is required'
-    if (!date) errs.date = 'Date is required'
-    if (!time) errs.time = 'Time is required'
-    if (value !== '' && (isNaN(Number(value)) || Number(value) <= 0)) {
+    if (!formData.title.trim()) errs.title = 'Title is required'
+    if (!formData.place.trim()) errs.place = 'Place is required'
+    if (!formData.date) errs.date = 'Date is required'
+    if (!formData.time) errs.time = 'Time is required'
+    if (formData.value !== '' && (isNaN(Number(formData.value)) || Number(formData.value) <= 0)) {
       errs.value = 'Must be a positive number'
     }
     return errs
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
 
     const data = {
-      type,
-      title: title.trim(),
-      place: place.trim(),
-      placeId,
-      lat,
-      lng,
-      ...(type === 'transport' ? {
-        placeTo: placeTo.trim() || undefined,
-        placeIdTo: placeTo.trim() ? placeIdTo : undefined,
-        latTo: placeTo.trim() ? latTo : undefined,
-        lngTo: placeTo.trim() ? lngTo : undefined,
-        arrivalTime: arrivalTime || undefined,
+      type: formData.type,
+      title: formData.title.trim(),
+      place: formData.place.trim(),
+      placeId: formData.placeId,
+      lat: formData.lat,
+      lng: formData.lng,
+      ...(formData.type === 'transport' ? {
+        placeTo: formData.placeTo.trim() || undefined,
+        placeIdTo: formData.placeTo.trim() ? formData.placeIdTo : undefined,
+        latTo: formData.placeTo.trim() ? formData.latTo : undefined,
+        lngTo: formData.placeTo.trim() ? formData.lngTo : undefined,
+        arrivalTime: formData.arrivalTime || undefined,
       } : {}),
-      date,
-      time,
-      value: value !== '' ? Number(value) : undefined,
-      notes: notes.trim() || undefined,
-      arrivedOnFoot: arrivedOnFoot || undefined,
+      date: formData.date,
+      time: formData.time,
+      value: formData.value !== '' ? Number(formData.value) : undefined,
+      notes: formData.notes.trim() || undefined,
+      arrivedOnFoot: formData.arrivedOnFoot || undefined,
     }
 
-    if (isEdit) {
-      updateEvent(destinationId, editEvent!.id, data)
-    } else {
-      addEvent(destinationId, data)
+    try {
+      if (isEdit) {
+        await updateEvent(destinationId, editEvent!.id, data)
+      } else {
+        await addEvent(destinationId, user!.id, data)
+      }
+      onClose()
+    } catch (err) {
+      console.error('Failed to save event:', err)
     }
-    onClose()
   }
 
   function handleDelete() {
@@ -160,17 +161,19 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               key={t.value}
               type="button"
               onClick={() => {
-                setType(t.value)
-                setTitle('')
-                setPlaceTo('')
-                setPlaceIdTo(undefined)
-                setLatTo(undefined)
-                setLngTo(undefined)
-                setArrivalTime('')
+                updateForm({
+                  type: t.value,
+                  title: '',
+                  placeTo: '',
+                  placeIdTo: undefined,
+                  latTo: undefined,
+                  lngTo: undefined,
+                  arrivalTime: ''
+                })
               }}
               className={cn(
                 'rounded-full px-3 py-1 text-xs font-semibold transition-colors',
-                type === t.value ? 'bg-primary text-white' : 'bg-input-bg text-muted'
+                formData.type === t.value ? 'bg-primary text-white' : 'bg-input-bg text-muted'
               )}
             >
               {t.label}
@@ -182,9 +185,9 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         <div>
           <input
             type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder={TYPE_PLACEHOLDERS[type]}
+            value={formData.title}
+            onChange={e => updateForm({ title: e.target.value })}
+            placeholder={TYPE_PLACEHOLDERS[formData.type]}
             className={inputClass(errors.title)}
             aria-label="Event title"
           />
@@ -192,12 +195,12 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         </div>
 
         {/* Place — transport gets From + To, others get single input */}
-        {type === 'transport' ? (
+        {formData.type === 'transport' ? (
           <>
             <div>
               <GooglePlacesInput
-                value={place}
-                onChange={(p, id, la, ln) => { setPlace(p); setPlaceId(id); setLat(la); setLng(ln) }}
+                value={formData.place}
+                onChange={(p, id, la, ln) => updateForm({ place: p, placeId: id, lat: la, lng: ln }) }
                 placeholder="🛫 From: departure place"
                 className={inputClass(errors.place)}
               />
@@ -206,8 +209,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             <div className="text-center text-[#C75B2A] text-lg leading-none" aria-hidden="true">↓</div>
             <div>
               <GooglePlacesInput
-                value={placeTo}
-                onChange={(p, id, la, ln) => { setPlaceTo(p); setPlaceIdTo(id); setLatTo(la); setLngTo(ln) }}
+                value={formData.placeTo}
+                onChange={(p, id, la, ln) => updateForm({ placeTo: p, placeIdTo: id, latTo: la, lngTo: ln }) }
                 placeholder="🛬 To: arrival place"
                 className={inputClass()}
               />
@@ -216,8 +219,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         ) : (
           <div>
             <GooglePlacesInput
-              value={place}
-              onChange={(p, id, la, ln) => { setPlace(p); setPlaceId(id); setLat(la); setLng(ln) }}
+              value={formData.place}
+              onChange={(p, id, la, ln) => updateForm({ place: p, placeId: id, lat: la, lng: ln }) }
               placeholder="📍 Search place"
               className={inputClass(errors.place)}
             />
@@ -229,8 +232,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         <label className="flex items-center gap-2 text-sm text-foreground">
           <input
             type="checkbox"
-            checked={arrivedOnFoot}
-            onChange={e => setArrivedOnFoot(e.target.checked)}
+            checked={formData.arrivedOnFoot}
+            onChange={e => updateForm({ arrivedOnFoot: e.target.checked })}
             aria-label="Arrived on foot"
           />
           Arrived on foot
@@ -241,8 +244,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           <div className="flex-1">
             <input
               type="date"
-              value={date}
-              onChange={e => setDate(e.target.value)}
+              value={formData.date}
+              onChange={e => updateForm({ date: e.target.value })}
               aria-label="Event date"
               className={cn(
                 'w-full bg-input-bg border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary',
@@ -254,9 +257,9 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           <div className="flex-1">
             <input
               type="time"
-              value={time}
-              onChange={e => setTime(e.target.value)}
-              aria-label={type === 'transport' ? 'Departure time' : 'Event time'}
+              value={formData.time}
+              onChange={e => updateForm({ time: e.target.value })}
+              aria-label={formData.type === 'transport' ? 'Departure time' : 'Event time'}
               className={cn(
                 'w-full bg-input-bg border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary',
                 errors.time ? 'border-red-500' : 'border-border'
@@ -267,12 +270,12 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         </div>
 
         {/* Arrival time — transport only */}
-        {type === 'transport' && (
+        {formData.type === 'transport' && (
           <div>
             <input
               type="time"
-              value={arrivalTime}
-              onChange={e => setArrivalTime(e.target.value)}
+              value={formData.arrivalTime}
+              onChange={e => updateForm({ arrivalTime: e.target.value })}
               aria-label="Arrival time"
               className="w-full bg-input-bg border border-border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary"
               placeholder="Arrival time (optional)"
@@ -285,8 +288,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           <input
             type="text"
             inputMode="decimal"
-            value={value}
-            onChange={e => setValue(e.target.value)}
+            value={formData.value}
+            onChange={e => updateForm({ value: e.target.value })}
             placeholder="Cost (optional)"
             className={inputClass(errors.value)}
             aria-label="Cost"
@@ -296,8 +299,8 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
 
         {/* Notes */}
         <textarea
-          value={notes}
-          onChange={e => setNotes(e.target.value)}
+          value={formData.notes}
+          onChange={e => updateForm({ notes: e.target.value })}
           placeholder="Any notes..."
           rows={2}
           className="w-full bg-input-bg border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:border-primary resize-none"
@@ -326,7 +329,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => { deleteEvent(destinationId, editEvent!.id); onClose() }}
+              onClick={async () => { try { await deleteEvent(destinationId, editEvent!.id); onClose() } catch (err) { console.error('Failed to delete event:', err) } }}
               className="flex-1 bg-red-500 text-white rounded-xl py-3 text-sm font-bold hover:bg-red-600 transition-colors"
             >
               Confirm delete

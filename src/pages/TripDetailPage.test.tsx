@@ -6,6 +6,7 @@ import { useTripsStore } from '@/stores/tripsStore'
 import type { Destination, TripEvent } from '@/types/trip'
 
 vi.mock('@/lib/supabase', () => ({ supabase: { from: vi.fn() } }))
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'user-1' } }) }))
 
 vi.mock('@/components/MapView', () => ({
   default: () => <div data-testid="map-view">MapView</div>,
