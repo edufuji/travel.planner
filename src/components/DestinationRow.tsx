@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { detectGaps } from '@/lib/gapDetection'
@@ -8,6 +9,9 @@ interface Props {
   destination: Destination
   onDelete: (id: string) => void
 }
+
+const snappy = { type: 'spring', stiffness: 400, damping: 17 } as const
+const badgeSpring = { type: 'spring', stiffness: 500, damping: 15 } as const
 
 export default function DestinationRow({ destination, onDelete }: Props) {
   const navigate = useNavigate()
@@ -24,12 +28,15 @@ export default function DestinationRow({ destination, onDelete }: Props) {
   }
 
   return (
-    <div
+    <motion.div
       className="bg-white dark:bg-transparent border border-border rounded-[10px] p-3 flex items-center gap-3 cursor-pointer active:bg-input-bg"
       onClick={() => navigate(`/trips/${destination.id}`)}
       onContextMenu={(e) => { e.preventDefault(); handleDelete(e) }}
       role="button"
       aria-label={destination.title}
+      whileHover={{ y: -2, scale: 1.01 }}
+      whileTap={{ scale: 0.97 }}
+      transition={snappy}
     >
       <span className="text-2xl" aria-hidden="true">{destination.emoji}</span>
       <div className="flex-1 min-w-0">
@@ -39,15 +46,25 @@ export default function DestinationRow({ destination, onDelete }: Props) {
         </div>
       </div>
       {hasGaps && (
-        <span className="text-xs font-bold bg-[#FFF7ED] dark:bg-transparent dark:border dark:border-[#C75B2A] text-[#C75B2A] rounded px-1.5 py-0.5 shrink-0">
+        <motion.span
+          className="text-xs font-bold bg-[#FFF7ED] dark:bg-transparent dark:border dark:border-[#C75B2A] text-[#C75B2A] rounded px-1.5 py-0.5 shrink-0"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={badgeSpring}
+        >
           {t('status.gap')}
-        </span>
+        </motion.span>
       )}
       {!hasGaps && hasEvents && (
-        <span className="text-xs font-bold bg-[#F0FDF4] dark:bg-transparent dark:border dark:border-[#059669] text-[#059669] rounded px-1.5 py-0.5 shrink-0">
+        <motion.span
+          className="text-xs font-bold bg-[#F0FDF4] dark:bg-transparent dark:border dark:border-[#059669] text-[#059669] rounded px-1.5 py-0.5 shrink-0"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={badgeSpring}
+        >
           {t('status.ok')}
-        </span>
+        </motion.span>
       )}
-    </div>
+    </motion.div>
   )
 }
