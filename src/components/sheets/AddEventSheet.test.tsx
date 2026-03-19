@@ -62,16 +62,16 @@ afterEach(() => {
 describe('AddEventSheet', () => {
   it('renders type selector pills: Transport, Stay, Ticket, Food', () => {
     renderSheet()
-    expect(screen.getByText('Transport')).toBeInTheDocument()
-    expect(screen.getByText('Stay')).toBeInTheDocument()
-    expect(screen.getByText('Ticket')).toBeInTheDocument()
-    expect(screen.getByText('Food')).toBeInTheDocument()
+    expect(screen.getByText('eventTypes.transport')).toBeInTheDocument()
+    expect(screen.getByText('eventTypes.accommodation')).toBeInTheDocument()
+    expect(screen.getByText('eventTypes.ticket')).toBeInTheDocument()
+    expect(screen.getByText('eventTypes.restaurant')).toBeInTheDocument()
     expect(screen.queryByText('On Foot')).not.toBeInTheDocument()
   })
 
   it('Arrived on foot checkbox is unchecked by default', () => {
     renderSheet()
-    const checkbox = screen.getByLabelText('Arrived on foot') as HTMLInputElement
+    const checkbox = screen.getByLabelText('event.arrivedOnFoot') as HTMLInputElement
     expect(checkbox.checked).toBe(false)
   })
 
@@ -90,13 +90,13 @@ describe('AddEventSheet', () => {
       addEvent,
     })
     renderSheet()
-    fireEvent.click(screen.getByText('Stay'))
-    fireEvent.change(screen.getByPlaceholderText('Hotel name'), { target: { value: 'Hilton' } })
+    fireEvent.click(screen.getByText('eventTypes.accommodation'))
+    fireEvent.change(screen.getByPlaceholderText('event.placeholderAccommodation'), { target: { value: 'Hilton' } })
     fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(screen.getByLabelText('Event time'), { target: { value: '14:00' } })
-    fireEvent.click(screen.getByLabelText('Arrived on foot'))
-    fireEvent.click(screen.getByText('Add to Timeline'))
+    fireEvent.change(screen.getByLabelText('event.timeLabel'), { target: { value: '14:00' } })
+    fireEvent.click(screen.getByLabelText('event.arrivedOnFoot'))
+    fireEvent.click(screen.getByText('event.addButton'))
     expect(addEvent).toHaveBeenCalledWith(
       DEST_ID,
       'user-1',
@@ -117,7 +117,7 @@ describe('AddEventSheet', () => {
       createdAt: '',
     }
     renderSheet({ editEvent })
-    const checkbox = screen.getByLabelText('Arrived on foot') as HTMLInputElement
+    const checkbox = screen.getByLabelText('event.arrivedOnFoot') as HTMLInputElement
     expect(checkbox.checked).toBe(true)
   })
 
@@ -136,66 +136,66 @@ describe('AddEventSheet', () => {
       addEvent,
     })
     renderSheet()
-    fireEvent.click(screen.getByText('Stay'))
-    fireEvent.change(screen.getByPlaceholderText('Hotel name'), { target: { value: 'Hilton' } })
+    fireEvent.click(screen.getByText('eventTypes.accommodation'))
+    fireEvent.change(screen.getByPlaceholderText('event.placeholderAccommodation'), { target: { value: 'Hilton' } })
     fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(screen.getByLabelText('Event time'), { target: { value: '14:00' } })
+    fireEvent.change(screen.getByLabelText('event.timeLabel'), { target: { value: '14:00' } })
     // Do NOT click the checkbox
-    fireEvent.click(screen.getByText('Add to Timeline'))
+    fireEvent.click(screen.getByText('event.addButton'))
     const payload = addEvent.mock.calls[0][2]
     expect(payload.arrivedOnFoot).not.toBe(true)
   })
 
   it('renders "Add to Timeline" button in create mode', () => {
     renderSheet()
-    expect(screen.getByText('Add to Timeline')).toBeInTheDocument()
+    expect(screen.getByText('event.addButton')).toBeInTheDocument()
   })
 
   it('shows Title required error when submitting empty form', () => {
     renderSheet()
-    fireEvent.click(screen.getByText('Add to Timeline'))
-    expect(screen.getByText('Title is required')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('event.addButton'))
+    expect(screen.getByText('event.titleRequired')).toBeInTheDocument()
   })
 
   it('shows Place required error when submitting empty form', () => {
     renderSheet()
-    fireEvent.click(screen.getByText('Add to Timeline'))
-    expect(screen.getByText('Place is required')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('event.addButton'))
+    expect(screen.getByText('event.placeRequired')).toBeInTheDocument()
   })
 
   it('shows Date required error when submitting empty form', () => {
     renderSheet()
-    fireEvent.click(screen.getByText('Add to Timeline'))
-    expect(screen.getByText('Date is required')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('event.addButton'))
+    expect(screen.getByText('event.dateRequired')).toBeInTheDocument()
   })
 
   it('shows Time required error when submitting empty form', () => {
     renderSheet()
-    fireEvent.click(screen.getByText('Add to Timeline'))
-    expect(screen.getByText('Time is required')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('event.addButton'))
+    expect(screen.getByText('event.timeRequired')).toBeInTheDocument()
   })
 
   it('shows value error when a non-positive number is entered', () => {
     renderSheet()
-    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    fireEvent.change(screen.getByPlaceholderText(/event\.placeholderTransport/), { target: { value: 'My Flight' } })
     fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '10:00' } })
-    fireEvent.change(screen.getByPlaceholderText('Cost (optional)'), { target: { value: '-5' } })
-    fireEvent.click(screen.getByText('Add to Timeline'))
-    expect(screen.getByText('Must be a positive number')).toBeInTheDocument()
+    fireEvent.change(screen.getByLabelText('event.departureTimeLabel'), { target: { value: '10:00' } })
+    fireEvent.change(screen.getByPlaceholderText('event.costPlaceholder'), { target: { value: '-5' } })
+    fireEvent.click(screen.getByText('event.addButton'))
+    expect(screen.getByText('event.costError')).toBeInTheDocument()
   })
 
   it('does not show required errors when all required fields are filled', () => {
     renderSheet()
-    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    fireEvent.change(screen.getByPlaceholderText(/event\.placeholderTransport/), { target: { value: 'My Flight' } })
     fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '10:00' } })
-    fireEvent.click(screen.getByText('Add to Timeline'))
-    expect(screen.queryByText('Title is required')).not.toBeInTheDocument()
-    expect(screen.queryByText('Place is required')).not.toBeInTheDocument()
+    fireEvent.change(screen.getByLabelText('event.departureTimeLabel'), { target: { value: '10:00' } })
+    fireEvent.click(screen.getByText('event.addButton'))
+    expect(screen.queryByText('event.titleRequired')).not.toBeInTheDocument()
+    expect(screen.queryByText('event.placeRequired')).not.toBeInTheDocument()
   })
 
   it('shows "Save Changes" and "Delete event" in edit mode', () => {
@@ -210,8 +210,8 @@ describe('AddEventSheet', () => {
       createdAt: '',
     }
     renderSheet({ editEvent })
-    expect(screen.getByText('Save Changes')).toBeInTheDocument()
-    expect(screen.getByText('Delete event')).toBeInTheDocument()
+    expect(screen.getByText('event.saveButton')).toBeInTheDocument()
+    expect(screen.getByText('event.deleteButton')).toBeInTheDocument()
   })
 
   it('deletes event when delete is confirmed', () => {
@@ -239,9 +239,9 @@ describe('AddEventSheet', () => {
       createdAt: '',
     }
     renderSheet({ editEvent })
-    fireEvent.click(screen.getByText('Delete event'))
-    expect(screen.getByText('Confirm delete')).toBeInTheDocument()
-    fireEvent.click(screen.getByText('Confirm delete'))
+    fireEvent.click(screen.getByText('event.deleteButton'))
+    expect(screen.getByText('event.confirmDeleteButton')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('event.confirmDeleteButton'))
     expect(deleteEvent).toHaveBeenCalledWith(DEST_ID, 'ev-1')
   })
 
@@ -262,13 +262,13 @@ describe('AddEventSheet', () => {
 
     renderSheet()
 
-    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    fireEvent.change(screen.getByPlaceholderText(/event\.placeholderTransport/), { target: { value: 'My Flight' } })
     // Simulate GooglePlacesInput onChange called with lat/lng
     // The fallback input triggers onChange(value) only, so we test via store mock
     fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '10:00' } })
-    fireEvent.click(screen.getByText('Add to Timeline'))
+    fireEvent.change(screen.getByLabelText('event.departureTimeLabel'), { target: { value: '10:00' } })
+    fireEvent.click(screen.getByText('event.addButton'))
 
     expect(addEvent).toHaveBeenCalledWith(
       DEST_ID,
@@ -279,8 +279,8 @@ describe('AddEventSheet', () => {
 
   it('transport type shows two place inputs (From and To)', () => {
     renderSheet()  // default type is transport
-    expect(screen.getByPlaceholderText(/From: departure/)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/To: arrival/)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('event.placeholderFrom')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('event.placeholderTo')).toBeInTheDocument()
   })
 
   it('transport type shows arrival time field', () => {
@@ -290,21 +290,21 @@ describe('AddEventSheet', () => {
 
   it('non-transport type shows single place input, no To, no arrival time', () => {
     renderSheet()
-    fireEvent.click(screen.getByText('Stay'))
-    expect(screen.queryByPlaceholderText(/From: departure/)).not.toBeInTheDocument()
+    fireEvent.click(screen.getByText('eventTypes.accommodation'))
+    expect(screen.queryByPlaceholderText('event.placeholderFrom')).not.toBeInTheDocument()
     expect(screen.queryByLabelText('Arrival time')).not.toBeInTheDocument()
     expect(screen.getByTestId('places-input-fallback')).toBeInTheDocument()
   })
 
   it('placeTo being empty does not trigger a validation error', () => {
     renderSheet()
-    fireEvent.change(screen.getByPlaceholderText(/Flight GRU/), { target: { value: 'My Flight' } })
+    fireEvent.change(screen.getByPlaceholderText(/event\.placeholderTransport/), { target: { value: 'My Flight' } })
     fireEvent.change(screen.getAllByTestId('places-input-fallback')[0], { target: { value: 'GRU Airport' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(screen.getByLabelText('Departure time'), { target: { value: '08:00' } })
+    fireEvent.change(screen.getByLabelText('event.departureTimeLabel'), { target: { value: '08:00' } })
     // Leave To (placeTo) blank
-    fireEvent.click(screen.getByText('Add to Timeline'))
-    expect(screen.queryByText('Place is required')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByText('event.addButton'))
+    expect(screen.queryByText('event.placeRequired')).not.toBeInTheDocument()
   })
 
   it('non-transport submit does not include placeTo or arrivalTime keys', () => {
@@ -322,12 +322,12 @@ describe('AddEventSheet', () => {
       addEvent,
     })
     renderSheet()
-    fireEvent.click(screen.getByText('Stay'))
-    fireEvent.change(screen.getByPlaceholderText('Hotel name'), { target: { value: 'Hilton' } })
+    fireEvent.click(screen.getByText('eventTypes.accommodation'))
+    fireEvent.change(screen.getByPlaceholderText('event.placeholderAccommodation'), { target: { value: 'Hilton' } })
     fireEvent.change(screen.getByTestId('places-input-fallback'), { target: { value: 'Tokyo' } })
     fireEvent.change(document.querySelector('input[type="date"]') as HTMLInputElement, { target: { value: '2026-03-15' } })
-    fireEvent.change(screen.getByLabelText('Event time'), { target: { value: '14:00' } })
-    fireEvent.click(screen.getByText('Add to Timeline'))
+    fireEvent.change(screen.getByLabelText('event.timeLabel'), { target: { value: '14:00' } })
+    fireEvent.click(screen.getByText('event.addButton'))
     const payload = addEvent.mock.calls[0][1]
     expect(payload).not.toHaveProperty('placeTo')
     expect(payload).not.toHaveProperty('arrivalTime')

@@ -1,24 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import BottomSheet from '@/components/BottomSheet'
 import GooglePlacesInput from '@/components/GooglePlacesInput'
 import { useTripsStore } from '@/stores/tripsStore'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import type { TripEvent, EventType } from '@/types/trip'
-
-const EVENT_TYPES: { value: EventType; label: string }[] = [
-  { value: 'transport', label: 'Transport' },
-  { value: 'accommodation', label: 'Stay' },
-  { value: 'ticket', label: 'Ticket' },
-  { value: 'restaurant', label: 'Food' },
-]
-
-const TYPE_PLACEHOLDERS: Record<EventType, string> = {
-  transport: 'e.g. Flight GRU → NRT',
-  accommodation: 'Hotel name',
-  ticket: 'Museum or experience',
-  restaurant: 'Restaurant name',
-}
 
 interface Props {
   open: boolean
@@ -49,6 +36,22 @@ const initialFormState = {
 }
 
 export default function AddEventSheet({ open, onClose, destinationId, editEvent }: Props) {
+  const { t } = useTranslation()
+
+  const EVENT_TYPES: { value: EventType; label: string }[] = [
+    { value: 'transport', label: t('eventTypes.transport') },
+    { value: 'accommodation', label: t('eventTypes.accommodation') },
+    { value: 'ticket', label: t('eventTypes.ticket') },
+    { value: 'restaurant', label: t('eventTypes.restaurant') },
+  ]
+
+  const TYPE_PLACEHOLDERS: Record<EventType, string> = {
+    transport: t('event.placeholderTransport'),
+    accommodation: t('event.placeholderAccommodation'),
+    ticket: t('event.placeholderTicket'),
+    restaurant: t('event.placeholderRestaurant'),
+  }
+
   const addEvent = useTripsStore(s => s.addEvent)
   const updateEvent = useTripsStore(s => s.updateEvent)
   const deleteEvent = useTripsStore(s => s.deleteEvent)
@@ -93,12 +96,12 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
 
   function validate(): FormErrors {
     const errs: FormErrors = {}
-    if (!formData.title.trim()) errs.title = 'Title is required'
-    if (!formData.place.trim()) errs.place = 'Place is required'
-    if (!formData.date) errs.date = 'Date is required'
-    if (!formData.time) errs.time = 'Time is required'
+    if (!formData.title.trim()) errs.title = t('event.titleRequired')
+    if (!formData.place.trim()) errs.place = t('event.placeRequired')
+    if (!formData.date) errs.date = t('event.dateRequired')
+    if (!formData.time) errs.time = t('event.timeRequired')
     if (formData.value !== '' && (isNaN(Number(formData.value)) || Number(formData.value) <= 0)) {
-      errs.value = 'Must be a positive number'
+      errs.value = t('event.costError')
     }
     return errs
   }
@@ -152,17 +155,17 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
     )
 
   return (
-    <BottomSheet open={open} onClose={onClose} title={isEdit ? 'Edit Event' : 'Add Event'}>
+    <BottomSheet open={open} onClose={onClose} title={isEdit ? t('event.editTitle') : t('event.addTitle')}>
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Type selector pills */}
         <div className="flex gap-2 flex-wrap">
-          {EVENT_TYPES.map(t => (
+          {EVENT_TYPES.map((typeItem) => (
             <button
-              key={t.value}
+              key={typeItem.value}
               type="button"
               onClick={() => {
                 updateForm({
-                  type: t.value,
+                  type: typeItem.value,
                   title: '',
                   placeTo: '',
                   placeIdTo: undefined,
@@ -173,10 +176,10 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               }}
               className={cn(
                 'rounded-full px-3 py-1 text-xs font-semibold transition-colors',
-                formData.type === t.value ? 'bg-primary text-white' : 'bg-input-bg text-muted'
+                formData.type === typeItem.value ? 'bg-primary text-white' : 'bg-input-bg text-muted'
               )}
             >
-              {t.label}
+              {typeItem.label}
             </button>
           ))}
         </div>
@@ -189,7 +192,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             onChange={e => updateForm({ title: e.target.value })}
             placeholder={TYPE_PLACEHOLDERS[formData.type]}
             className={inputClass(errors.title)}
-            aria-label="Event title"
+            aria-label={t('event.titleLabel')}
           />
           {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
         </div>
@@ -201,7 +204,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               <GooglePlacesInput
                 value={formData.place}
                 onChange={(p, id, la, ln) => updateForm({ place: p, placeId: id, lat: la, lng: ln }) }
-                placeholder="🛫 From: departure place"
+                placeholder={t('event.placeholderFrom')}
                 className={inputClass(errors.place)}
               />
               {errors.place && <p className="text-red-500 text-xs mt-1">{errors.place}</p>}
@@ -211,7 +214,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               <GooglePlacesInput
                 value={formData.placeTo}
                 onChange={(p, id, la, ln) => updateForm({ placeTo: p, placeIdTo: id, latTo: la, lngTo: ln }) }
-                placeholder="🛬 To: arrival place"
+                placeholder={t('event.placeholderTo')}
                 className={inputClass()}
               />
             </div>
@@ -221,7 +224,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             <GooglePlacesInput
               value={formData.place}
               onChange={(p, id, la, ln) => updateForm({ place: p, placeId: id, lat: la, lng: ln }) }
-              placeholder="📍 Search place"
+              placeholder={t('event.placeholderPlace')}
               className={inputClass(errors.place)}
             />
             {errors.place && <p className="text-red-500 text-xs mt-1">{errors.place}</p>}
@@ -234,9 +237,9 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             type="checkbox"
             checked={formData.arrivedOnFoot}
             onChange={e => updateForm({ arrivedOnFoot: e.target.checked })}
-            aria-label="Arrived on foot"
+            aria-label={t('event.arrivedOnFoot')}
           />
-          Arrived on foot
+          {t('event.arrivedOnFoot')}
         </label>
 
         {/* Date + Departure time */}
@@ -246,7 +249,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               type="date"
               value={formData.date}
               onChange={e => updateForm({ date: e.target.value })}
-              aria-label="Event date"
+              aria-label={t('event.dateLabel')}
               className={cn(
                 'w-full bg-input-bg border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary',
                 errors.date ? 'border-red-500' : 'border-border'
@@ -259,7 +262,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               type="time"
               value={formData.time}
               onChange={e => updateForm({ time: e.target.value })}
-              aria-label={formData.type === 'transport' ? 'Departure time' : 'Event time'}
+              aria-label={formData.type === 'transport' ? t('event.departureTimeLabel') : t('event.timeLabel')}
               className={cn(
                 'w-full bg-input-bg border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary',
                 errors.time ? 'border-red-500' : 'border-border'
@@ -278,7 +281,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               onChange={e => updateForm({ arrivalTime: e.target.value })}
               aria-label="Arrival time"
               className="w-full bg-input-bg border border-border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary"
-              placeholder="Arrival time (optional)"
+              placeholder={t('event.arrivalTimePlaceholder')}
             />
           </div>
         )}
@@ -290,9 +293,9 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             inputMode="decimal"
             value={formData.value}
             onChange={e => updateForm({ value: e.target.value })}
-            placeholder="Cost (optional)"
+            placeholder={t('event.costPlaceholder')}
             className={inputClass(errors.value)}
-            aria-label="Cost"
+            aria-label={t('event.costLabel')}
           />
           {errors.value && <p className="text-red-500 text-xs mt-1">{errors.value}</p>}
         </div>
@@ -301,10 +304,10 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
         <textarea
           value={formData.notes}
           onChange={e => updateForm({ notes: e.target.value })}
-          placeholder="Any notes..."
+          placeholder={t('event.notesPlaceholder')}
           rows={2}
           className="w-full bg-input-bg border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:border-primary resize-none"
-          aria-label="Notes"
+          aria-label={t('event.notesLabel')}
         />
 
         {/* Submit */}
@@ -312,7 +315,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           type="submit"
           className="w-full bg-primary text-white rounded-xl py-3 text-sm font-bold hover:bg-primary-dark transition-colors"
         >
-          {isEdit ? 'Save Changes' : 'Add to Timeline'}
+          {isEdit ? t('event.saveButton') : t('event.addButton')}
         </button>
 
         {/* Delete (edit mode only) */}
@@ -322,7 +325,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
             onClick={handleDelete}
             className="w-full text-red-500 text-sm font-medium py-1 hover:text-red-600 transition-colors"
           >
-            Delete event
+            {t('event.deleteButton')}
           </button>
         )}
         {isEdit && confirmDelete && (
@@ -332,14 +335,14 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               onClick={async () => { try { await deleteEvent(destinationId, editEvent!.id); onClose() } catch (err) { console.error('Failed to delete event:', err) } }}
               className="flex-1 bg-red-500 text-white rounded-xl py-3 text-sm font-bold hover:bg-red-600 transition-colors"
             >
-              Confirm delete
+              {t('event.confirmDeleteButton')}
             </button>
             <button
               type="button"
               onClick={() => setConfirmDelete(false)}
               className="flex-1 bg-input-bg text-foreground rounded-xl py-3 text-sm font-bold hover:bg-border transition-colors"
             >
-              Cancel
+              {t('event.cancelButton')}
             </button>
           </div>
         )}

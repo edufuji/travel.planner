@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { formatDate } from '@/lib/formatDate'
 import type { TripEvent, EventType } from '@/types/trip'
 
@@ -8,19 +9,21 @@ const TYPE_COLORS: Record<EventType, string> = {
   restaurant: '#F59E0B',
 }
 
-const TYPE_LABELS: Record<EventType, string> = {
-  transport: 'Transport',
-  accommodation: 'Accommodation',
-  ticket: 'Ticket',
-  restaurant: 'Restaurant',
-}
-
 interface Props {
   event: TripEvent
   onEdit: (event: TripEvent) => void
 }
 
 export default function TimelineEvent({ event, onEdit }: Props) {
+  const { t } = useTranslation()
+
+  const TYPE_LABELS: Record<EventType, string> = {
+    transport: t('eventTypes.transport'),
+    accommodation: t('eventTypes.accommodation'),
+    ticket: t('eventTypes.ticket'),
+    restaurant: t('eventTypes.restaurant'),
+  }
+
   const timeDisplay =
     event.type === 'transport' && event.arrivalTime
       ? `🛫 ${event.time} · 🛬 ${event.arrivalTime}`
@@ -46,7 +49,7 @@ export default function TimelineEvent({ event, onEdit }: Props) {
         className="bg-white dark:bg-transparent border border-border rounded-lg px-3 py-2 cursor-pointer active:bg-input-bg"
         onClick={() => onEdit(event)}
         role="button"
-        aria-label={`Edit ${event.title}`}
+        aria-label={t('event.editLabel', { title: event.title })}
       >
         <div className="text-[10px] text-muted">{formatDate(event.date)} · {timeDisplay}</div>
         <div className="font-semibold text-foreground text-sm mt-0.5">{event.title}</div>
