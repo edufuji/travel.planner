@@ -48,7 +48,7 @@ describe('MapView', () => {
     vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', '')
     render(<MapView events={[]} gaps={[]} onEdit={() => {}} />)
     expect(screen.getByTestId('map-unavailable')).toBeInTheDocument()
-    expect(screen.getByText(/Map unavailable — add VITE_GOOGLE_MAPS_API_KEY/)).toBeInTheDocument()
+    expect(screen.getByText('map.unavailable')).toBeInTheDocument()
   })
 
   describe('with API key', () => {
@@ -79,7 +79,7 @@ describe('MapView', () => {
 
       expect(screen.getByTestId('map-no-location-banner')).toBeInTheDocument()
       expect(screen.getByTestId('map-no-location-banner')).toHaveTextContent(
-        '1 event(s) not shown — no location data'
+        'map.missingCoords'
       )
     })
 
@@ -125,7 +125,7 @@ describe('MapView', () => {
       await act(async () => {})
 
       expect(screen.getByTestId('map-error')).toBeInTheDocument()
-      expect(screen.getByText('Failed to load map')).toBeInTheDocument()
+      expect(screen.getByText('map.loadError')).toBeInTheDocument()
     })
 
     it('sidebar renders event titles', async () => {
