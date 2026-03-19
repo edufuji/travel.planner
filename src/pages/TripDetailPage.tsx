@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Calendar, ChevronLeft } from 'lucide-react'
@@ -58,16 +59,25 @@ export default function TripDetailPage() {
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col">
+    <motion.div
+      className="h-screen bg-background flex flex-col"
+      initial={{ x: '100%', opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: '-30%', opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+    >
       {/* Header */}
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
-        <button
+        <motion.button
           onClick={() => navigate('/trips')}
           className="flex items-center gap-1 text-primary text-sm font-semibold shrink-0 px-2 py-1 rounded-lg hover:bg-primary/10 active:bg-primary/20 transition-colors"
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.93 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         >
           <ChevronLeft size={16} />
           {t('trip.tripsLink')}
-        </button>
+        </motion.button>
         <div className="flex-1 min-w-0">
           <h1 className="text-lg font-extrabold text-foreground truncate">
             {destination.emoji} {destination.title}
@@ -77,13 +87,16 @@ export default function TripDetailPage() {
             {formatDate(destination.startDate)} – {formatDate(destination.endDate)} · {t('trip.eventCount', { count: destination.events.length })}
           </p>
         </div>
-        <button
+        <motion.button
           onClick={openAddSheet}
           className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shrink-0 hover:bg-primary-dark transition-colors"
           aria-label={t('trip.addEvent')}
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.93 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         >
           +
-        </button>
+        </motion.button>
       </div>
 
       {/* View Toggle */}
@@ -104,7 +117,7 @@ export default function TripDetailPage() {
               <div className="absolute left-[5px] top-2 bottom-2 w-0.5 bg-border" aria-hidden="true" />
               <div className="pl-5">
                 {groups.map(group => (
-                  <div key={group.date}>
+                  <div key={group.date} className="pb-4">
                     <TimelineDateHeader label={group.label} />
                     <div className="space-y-5">
                       {group.items.map(item =>
@@ -136,6 +149,6 @@ export default function TripDetailPage() {
         editEvent={editEvent}
       />
       <BottomNav />
-    </div>
+    </motion.div>
   )
 }
