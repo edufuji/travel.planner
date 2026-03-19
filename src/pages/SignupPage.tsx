@@ -100,11 +100,12 @@ export default function SignupPage() {
               {t('auth.checkEmailConfirm')}
             </p>
             <p className="text-sm text-muted mt-2">
-              {t('auth.onceConfirmedSignIn')}{' '}
+              {t('auth.onceConfirmedSignIn')}
+            </p>
+            <p className="text-sm text-muted mt-1">
               <Link to="/login" className="text-primary font-semibold">
                 {t('auth.signInLink')}
               </Link>
-              .
             </p>
           </div>
         ) : (
