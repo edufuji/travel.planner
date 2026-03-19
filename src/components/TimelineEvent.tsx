@@ -43,7 +43,7 @@ export default function TimelineEvent({ event, onEdit }: Props) {
     <div className="relative">
       {/* Colored dot on the vertical line */}
       <div
-        className="absolute left-[-21px] top-[10px] w-[15px] h-[15px] rounded-full border-2 border-white dark:border-background z-10"
+        className="absolute left-[-14px] top-[10px] w-[10px] h-[10px] rounded-full border-2 border-white dark:border-background z-10"
         style={{ backgroundColor: TYPE_COLORS[event.type] }}
         aria-hidden="true"
       />
