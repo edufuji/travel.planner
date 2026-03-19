@@ -19,6 +19,16 @@ import type { View } from '@/components/ViewToggle'
 
 const snappy = { type: 'spring', stiffness: 400, damping: 17 } as const
 
+const listContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
+}
+
+const listItem = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
+}
+
 export default function TripDetailPage() {
   const { t, i18n } = useTranslation()
   const { id } = useParams<{ id: string }>()
@@ -117,26 +127,34 @@ export default function TripDetailPage() {
           ) : (
             <div className="relative">
               <div className="absolute left-[5px] top-2 bottom-2 w-0.5 bg-border" aria-hidden="true" />
-              <div className="pl-5">
+              <motion.div
+                className="pl-5"
+                variants={listContainer}
+                initial="hidden"
+                animate="visible"
+              >
                 {groups.map(group => (
                   <div key={group.date} className="pb-4">
                     <TimelineDateHeader label={group.label} />
                     <div className="space-y-5">
                       {group.items.map(item =>
                         item.kind === 'event' ? (
-                          <TimelineEvent
-                            key={item.event.id}
-                            event={item.event}
-                            onEdit={openEditSheet}
-                          />
+                          <motion.div key={item.event.id} variants={listItem}>
+                            <TimelineEvent
+                              event={item.event}
+                              onEdit={openEditSheet}
+                            />
+                          </motion.div>
                         ) : (
-                          <GapWarningCard key={item.key} fromTitle={item.fromTitle} toTitle={item.toTitle} />
+                          <motion.div key={item.key} variants={listItem}>
+                            <GapWarningCard fromTitle={item.fromTitle} toTitle={item.toTitle} />
+                          </motion.div>
                         )
                       )}
                     </div>
                   </div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           )}
         </div>
