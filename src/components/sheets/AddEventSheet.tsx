@@ -279,7 +279,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               type="time"
               value={formData.arrivalTime}
               onChange={e => updateForm({ arrivalTime: e.target.value })}
-              aria-label="Arrival time"
+              aria-label={t('event.arrivalTimePlaceholder')}
               className="w-full bg-input-bg border border-border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary"
               placeholder={t('event.arrivalTimePlaceholder')}
             />
