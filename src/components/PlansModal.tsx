@@ -57,7 +57,7 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
     >
       {/* Modal panel — stop click propagation so backdrop click doesn't trigger from panel */}
       <div
-        className="relative w-full max-w-md rounded-2xl bg-[#1a1a2e] p-6 shadow-2xl"
+        className="relative w-full max-w-2xl rounded-2xl bg-[#1a1a2e] p-6 shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         {/* Close button */}
@@ -98,28 +98,28 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
         </div>
 
         {/* Plan cards — desktop: 3 columns; mobile: stacked */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-start sm:pt-4 overflow-visible">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-stretch sm:pt-4 overflow-visible">
 
           {/* Free card */}
-          <div className="sm:flex-[0.8] sm:mt-6 bg-[#222236] rounded-xl p-4">
+          <div className="sm:flex-1 bg-[#222236] rounded-xl p-4 flex flex-col">
             <span className="text-[10px] font-bold tracking-wider text-gray-400 bg-gray-700 rounded-full px-2 py-0.5">
               FREE
             </span>
             <div className="text-white text-2xl font-extrabold mt-3 mb-0.5">R$0</div>
             <div className="text-gray-500 text-xs mb-4">sempre grátis</div>
-            <ul className="text-xs text-gray-400 space-y-1.5 mb-4">
+            <ul className="text-xs text-gray-400 space-y-1.5 mb-4 flex-1">
               <li>✓ 1 viagem</li>
               <li>✓ Até 10 eventos por viagem</li>
             </ul>
             {currentPlan === 'free' ? (
-              <button disabled className="w-full bg-gray-600 text-gray-400 rounded-lg py-2 text-xs font-semibold cursor-not-allowed">
+              <button disabled className="w-full bg-gray-600 text-gray-400 rounded-lg py-2 text-xs font-semibold cursor-not-allowed mt-auto">
                 Current plan
               </button>
             ) : null}
           </div>
 
           {/* Premium card — featured center */}
-          <div className="sm:flex-[1.15] relative bg-[#0d1f3f] border-2 border-[#4f8ef7] rounded-xl p-4">
+          <div className="sm:flex-1 relative bg-[#0d1f3f] border-2 border-[#4f8ef7] rounded-xl p-4 flex flex-col">
             {/* Most popular badge */}
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4f8ef7] text-white text-[9px] font-extrabold tracking-widest rounded-full px-3 py-1 whitespace-nowrap">
               MOST POPULAR
@@ -135,19 +135,19 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
               <div className="text-[#4f8ef7] text-[10px] mb-4">= {ANNUAL_EQUIV.premium} · economize R$69</div>
             )}
             {billing === 'monthly' && <div className="mb-4" />}
-            <ul className="text-xs text-gray-300 space-y-1.5 mb-4">
+            <ul className="text-xs text-gray-300 space-y-1.5 mb-4 flex-1">
               <li>✓ Até 10 viagens</li>
               <li>✓ Até 30 eventos por viagem</li>
               <li>✓ Compartilhar viagens</li>
             </ul>
             {currentPlan === 'premium' ? (
-              <button disabled className="w-full bg-[#4f8ef7]/40 text-[#4f8ef7] rounded-lg py-2 text-xs font-semibold cursor-not-allowed">
+              <button disabled className="w-full bg-[#4f8ef7]/40 text-[#4f8ef7] rounded-lg py-2 text-xs font-semibold cursor-not-allowed mt-auto">
                 Current plan
               </button>
             ) : (
               <button
                 onClick={() => console.log('checkout: premium')}
-                className="w-full bg-[#4f8ef7] text-white rounded-lg py-2 text-xs font-bold hover:bg-[#3a7de0] transition-colors"
+                className="w-full bg-[#4f8ef7] text-white rounded-lg py-2 text-xs font-bold hover:bg-[#3a7de0] transition-colors mt-auto"
               >
                 Get Premium
               </button>
@@ -155,7 +155,7 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
           </div>
 
           {/* Pro card */}
-          <div className="sm:flex-[0.8] sm:mt-6 bg-[#1e1408] border border-[#92400e] rounded-xl p-4">
+          <div className="sm:flex-1 bg-[#1e1408] border border-[#92400e] rounded-xl p-4 flex flex-col">
             <span className="text-[10px] font-bold tracking-wider text-[#d97706] bg-[#451a03] rounded-full px-2 py-0.5">
               PRO ✦
             </span>
@@ -167,14 +167,14 @@ export default function PlansModal({ open, onClose, currentPlan }: PlansModalPro
               <div className="text-[#d97706] text-[10px] mb-4">= {ANNUAL_EQUIV.pro} · economize R$139</div>
             )}
             {billing === 'monthly' && <div className="mb-4" />}
-            <ul className="text-xs text-gray-400 space-y-1.5 mb-4">
+            <ul className="text-xs text-gray-400 space-y-1.5 mb-4 flex-1">
               <li>✓ Até 30 viagens</li>
               <li>✓ Eventos ilimitados</li>
               <li>✓ Compartilhar viagens</li>
             </ul>
             <button
               onClick={() => console.log('checkout: pro')}
-              className="w-full bg-gradient-to-r from-amber-600 to-amber-400 text-white rounded-lg py-2 text-xs font-bold hover:opacity-90 transition-opacity"
+              className="w-full bg-gradient-to-r from-amber-600 to-amber-400 text-white rounded-lg py-2 text-xs font-bold hover:opacity-90 transition-opacity mt-auto"
             >
               Get Pro
             </button>
