@@ -279,7 +279,7 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
               type="time"
               value={formData.arrivalTime}
               onChange={e => updateForm({ arrivalTime: e.target.value })}
-              aria-label={t('event.arrivalTimePlaceholder')}
+              aria-label={t('event.arrivalTimeLabel')}
               className="w-full bg-input-bg border border-border rounded-xl px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary"
               placeholder={t('event.arrivalTimePlaceholder')}
             />
@@ -329,21 +329,24 @@ export default function AddEventSheet({ open, onClose, destinationId, editEvent 
           </button>
         )}
         {isEdit && confirmDelete && (
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={async () => { try { await deleteEvent(destinationId, editEvent!.id); onClose() } catch (err) { console.error('Failed to delete event:', err) } }}
-              className="flex-1 bg-red-500 text-white rounded-xl py-3 text-sm font-bold hover:bg-red-600 transition-colors"
-            >
-              {t('event.confirmDeleteButton')}
-            </button>
-            <button
-              type="button"
-              onClick={() => setConfirmDelete(false)}
-              className="flex-1 bg-input-bg text-foreground rounded-xl py-3 text-sm font-bold hover:bg-border transition-colors"
-            >
-              {t('event.cancelButton')}
-            </button>
+          <div>
+            <p className="text-sm text-foreground mb-2">{t('event.deleteConfirmLabel')}</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={async () => { try { await deleteEvent(destinationId, editEvent!.id); onClose() } catch (err) { console.error('Failed to delete event:', err) } }}
+                className="flex-1 bg-red-500 text-white rounded-xl py-3 text-sm font-bold hover:bg-red-600 transition-colors"
+              >
+                {t('event.confirmDeleteButton')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(false)}
+                className="flex-1 bg-input-bg text-foreground rounded-xl py-3 text-sm font-bold hover:bg-border transition-colors"
+              >
+                {t('event.cancelButton')}
+              </button>
+            </div>
           </div>
         )}
       </form>

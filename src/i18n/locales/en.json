@@ -93,6 +93,7 @@
     "dateRequired": "Date is required",
     "timeLabel": "Event time",
     "departureTimeLabel": "Departure time",
+    "arrivalTimeLabel": "Arrival time",
     "arrivalTimePlaceholder": "Arrival time (optional)",
     "timeRequired": "Time is required",
     "arrivedOnFoot": "Arrived on foot",

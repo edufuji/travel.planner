@@ -285,14 +285,14 @@ describe('AddEventSheet', () => {
 
   it('transport type shows arrival time field', () => {
     renderSheet()
-    expect(screen.getByLabelText('event.arrivalTimePlaceholder')).toBeInTheDocument()
+    expect(screen.getByLabelText('event.arrivalTimeLabel')).toBeInTheDocument()
   })
 
   it('non-transport type shows single place input, no To, no arrival time', () => {
     renderSheet()
     fireEvent.click(screen.getByText('eventTypes.accommodation'))
     expect(screen.queryByPlaceholderText('event.placeholderFrom')).not.toBeInTheDocument()
-    expect(screen.queryByLabelText('Arrival time')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('event.arrivalTimeLabel')).not.toBeInTheDocument()
     expect(screen.getByTestId('places-input-fallback')).toBeInTheDocument()
   })
 

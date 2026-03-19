@@ -93,6 +93,7 @@
     "dateRequired": "La fecha es obligatoria",
     "timeLabel": "Hora del evento",
     "departureTimeLabel": "Hora de salida",
+    "arrivalTimeLabel": "Hora de llegada",
     "arrivalTimePlaceholder": "Hora de llegada (opcional)",
     "timeRequired": "La hora es obligatoria",
     "arrivedOnFoot": "Llegó a pie",
