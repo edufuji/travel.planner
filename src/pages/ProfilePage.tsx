@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import BottomNav from '@/components/BottomNav'
 import DarkModeToggle from '@/components/DarkModeToggle'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 import PlansModal from '@/components/PlansModal'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
@@ -21,6 +23,8 @@ export default function ProfilePage() {
   // Plan 4 will replace this with real data from the profile store
   const plan = 'free' as Plan
   const badge = PLAN_BADGE[plan]
+
+  const { t } = useTranslation()
 
   const [showPlans, setShowPlans] = useState(false)
 
@@ -53,10 +57,10 @@ export default function ProfilePage() {
         {plan !== 'pro' && (
           <div className="bg-white dark:bg-transparent border border-border rounded-xl p-4 w-full text-center">
             <p className="text-xs text-muted mb-3">
-              You're on the <span className="font-semibold">{badge.label}</span> plan
+              {t('profile.onPlan', { plan: badge.label })}
             </p>
             <Button className="w-full" onClick={() => setShowPlans(true)}>
-              Plans
+              {t('profile.plansButton')}
             </Button>
           </div>
         )}
@@ -71,8 +75,14 @@ export default function ProfilePage() {
 
         {/* Dark mode row */}
         <div className="bg-white dark:bg-transparent border border-border rounded-xl px-4 py-3 w-full flex justify-between items-center">
-          <span className="text-sm font-semibold text-foreground">Dark mode</span>
+          <span className="text-sm font-semibold text-foreground">{t('profile.darkMode')}</span>
           <DarkModeToggle />
+        </div>
+
+        {/* Language */}
+        <div className="bg-white dark:bg-transparent border border-border rounded-xl px-4 py-3 w-full flex justify-between items-center">
+          <span className="text-sm font-semibold text-foreground">{t('lang.label')}</span>
+          <LanguageSwitcher />
         </div>
 
         {/* Logout */}
@@ -80,7 +90,7 @@ export default function ProfilePage() {
           onClick={handleLogout}
           className="w-full border border-red-400 text-red-500 rounded-xl py-3 text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
         >
-          Log out
+          {t('profile.logOut')}
         </button>
       </div>
 
