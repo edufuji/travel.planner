@@ -113,7 +113,7 @@ export default function TripDetailPage() {
                             onEdit={openEditSheet}
                           />
                         ) : (
-                          <GapWarningCard key={item.key} message={item.message} />
+                          <GapWarningCard key={item.key} fromTitle={item.fromTitle} toTitle={item.toTitle} />
                         )
                       )}
                     </div>

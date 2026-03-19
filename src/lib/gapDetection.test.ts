@@ -43,8 +43,8 @@ describe('detectGaps', () => {
     expect(gaps).toHaveLength(1)
     expect(gaps[0].afterEventId).toBe('acc-1')
     expect(gaps[0].beforeEventId).toBe('acc-2')
-    expect(gaps[0].message).toContain('Hotel A')
-    expect(gaps[0].message).toContain('Hotel B')
+    expect(gaps[0].fromTitle).toBe('Hotel A')
+    expect(gaps[0].toTitle).toBe('Hotel B')
   })
 
   it('returns multiple gaps for multiple consecutive accommodation pairs without arrivedOnFoot', () => {

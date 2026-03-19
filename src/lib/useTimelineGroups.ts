@@ -3,11 +3,11 @@ import type { GapWarning } from './gapDetection'
 
 export type RenderItem =
   | { kind: 'event'; event: TripEvent }
-  | { kind: 'gap'; message: string; key: string }
+  | { kind: 'gap'; fromTitle: string; toTitle: string; key: string }
 
 export interface TimelineGroup {
-  date: string   // YYYY-MM-DD — used as React key
-  label: string  // "Sun, 15 Mar 2026"
+  date: string
+  label: string
   items: RenderItem[]
 }
 
@@ -41,7 +41,12 @@ export function useTimelineGroups(
     group.items.push({ kind: 'event', event })
     const gap = gaps.find(g => g.afterEventId === event.id)
     if (gap) {
-      group.items.push({ kind: 'gap', message: gap.message, key: `gap-${gap.afterEventId}` })
+      group.items.push({
+        kind: 'gap',
+        fromTitle: gap.fromTitle,
+        toTitle: gap.toTitle,
+        key: `gap-${gap.afterEventId}`,
+      })
     }
   }
 

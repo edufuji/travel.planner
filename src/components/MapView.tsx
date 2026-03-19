@@ -229,7 +229,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
             {group.items.map(item => {
               if (item.kind === 'gap') {
                 return (
-                  <GapWarningCard key={item.key} message={item.message} />
+                  <GapWarningCard key={item.key} fromTitle={item.fromTitle} toTitle={item.toTitle} />
                 )
               }
               return (

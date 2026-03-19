@@ -58,7 +58,7 @@ describe('useTimelineGroups', () => {
       makeEvent({ id: 'b', date: '2026-03-15', time: '16:00' }),
       makeEvent({ id: 'c', type: 'accommodation', date: '2026-03-18', time: '15:00' }),
     ]
-    const gaps: GapWarning[] = [{ afterEventId: 'a', beforeEventId: 'c', message: 'Gap message' }]
+    const gaps: GapWarning[] = [{ afterEventId: 'a', beforeEventId: 'c', fromTitle: 'Hotel A', toTitle: 'Hotel C' }]
     const groups = useTimelineGroups(events, gaps)
     // Day 15 group: event(a), gap, event(b)
     const march15 = groups.find(g => g.date === '2026-03-15')!
@@ -72,7 +72,7 @@ describe('useTimelineGroups', () => {
       makeEvent({ id: 'a', type: 'accommodation', date: '2026-03-15', time: '14:00' }),
       makeEvent({ id: 'b', type: 'accommodation', date: '2026-03-18', time: '15:00' }),
     ]
-    const gaps: GapWarning[] = [{ afterEventId: 'a', beforeEventId: 'b', message: 'No transport' }]
+    const gaps: GapWarning[] = [{ afterEventId: 'a', beforeEventId: 'b', fromTitle: 'Hotel A', toTitle: 'Hotel B' }]
     const groups = useTimelineGroups(events, gaps)
     // Gap should be in 2026-03-15 group (afterEventId='a' is on 15th)
     const march15 = groups.find(g => g.date === '2026-03-15')!

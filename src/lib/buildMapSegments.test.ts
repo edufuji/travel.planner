@@ -54,7 +54,7 @@ describe('buildMapSegments', () => {
       makeEvent({ id: 'acc-2', type: 'accommodation', lat: 11.0, lng: 21.0, date: '2026-03-18', time: '15:00' }),
     ]
     const gaps: GapWarning[] = [
-      { afterEventId: 'acc-1', beforeEventId: 'acc-2', message: 'No transport' },
+      { afterEventId: 'acc-1', beforeEventId: 'acc-2', fromTitle: 'Hotel A', toTitle: 'Hotel B' },
     ]
     const segments = buildMapSegments(events, gaps)
     expect(segments).toHaveLength(1)
@@ -71,7 +71,7 @@ describe('buildMapSegments', () => {
       makeEvent({ id: 'acc-2', type: 'accommodation', lat: 11.0, lng: 21.0, date: '2026-03-18', time: '15:00' }),
     ]
     const gaps: GapWarning[] = [
-      { afterEventId: 'acc-1', beforeEventId: 'acc-2', message: 'No transport' },
+      { afterEventId: 'acc-1', beforeEventId: 'acc-2', fromTitle: 'Hotel A', toTitle: 'Hotel B' },
     ]
     const segments = buildMapSegments(events, gaps)
     expect(segments[0].isGap).toBe(true)
@@ -87,7 +87,7 @@ describe('buildMapSegments', () => {
       makeEvent({ id: 'acc-3', type: 'accommodation', lat: 11.0, lng: 21.0, date: '2026-03-20', time: '15:00' }),
     ]
     const gaps: GapWarning[] = [
-      { afterEventId: 'acc-1', beforeEventId: 'acc-3', message: 'No transport' },
+      { afterEventId: 'acc-1', beforeEventId: 'acc-3', fromTitle: 'Hotel A', toTitle: 'Hotel C' },
     ]
     // acc-1 datetime = '2026-03-16 14:00'
     // segment (transport-1, acc-3): aDateTime='2026-03-15 10:00', bDateTime='2026-03-20 15:00'
@@ -104,7 +104,7 @@ describe('buildMapSegments', () => {
       makeEvent({ id: 'c', type: 'accommodation', lat: 12.0, lng: 22.0, date: '2026-03-18', time: '15:00' }),
     ]
     const gaps: GapWarning[] = [
-      { afterEventId: 'b', beforeEventId: 'c', message: 'No transport' },
+      { afterEventId: 'b', beforeEventId: 'c', fromTitle: 'Hotel B', toTitle: 'Hotel C' },
     ]
     const segments = buildMapSegments(events, gaps)
     expect(segments).toHaveLength(2)
@@ -141,7 +141,7 @@ describe('buildMapSegments', () => {
       makeEvent({ id: 'a1', type: 'accommodation', lat: 10.0, lng: 10.0, date: '2026-03-15', time: '14:00' }),
       makeEvent({ id: 'a2', type: 'accommodation', lat: 20.0, lng: 20.0, date: '2026-03-18', time: '15:00' }),
     ]
-    const gaps: GapWarning[] = [{ afterEventId: 'a1', beforeEventId: 'a2', message: 'No transport' }]
+    const gaps: GapWarning[] = [{ afterEventId: 'a1', beforeEventId: 'a2', fromTitle: 'Hotel A', toTitle: 'Hotel B' }]
     const segments = buildMapSegments(events, gaps)
     expect(segments).toHaveLength(1)
     expect(segments[0].isGap).toBe(true)

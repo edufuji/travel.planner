@@ -1,9 +1,10 @@
 import type { TripEvent } from '../types/trip'
 
 export interface GapWarning {
-  afterEventId: string   // the accommodation event before the gap
-  beforeEventId: string  // the accommodation event after the gap
-  message: string        // human-readable description, built from event titles
+  afterEventId: string
+  beforeEventId: string
+  fromTitle: string  // title of the first accommodation
+  toTitle: string    // title of the second accommodation
 }
 
 export function detectGaps(events: TripEvent[]): GapWarning[] {
@@ -33,7 +34,8 @@ export function detectGaps(events: TripEvent[]): GapWarning[] {
       gaps.push({
         afterEventId: a.id,
         beforeEventId: b.id,
-        message: `No walking route between "${a.title}" check-in and "${b.title}" check-in`,
+        fromTitle: a.title,
+        toTitle: b.title,
       })
     }
   }
