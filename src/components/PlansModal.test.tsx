@@ -23,7 +23,7 @@ describe('PlansModal', () => {
 
   it('focuses the close button when opened', () => {
     renderModal()
-    expect(document.activeElement).toBe(screen.getByLabelText('Close'))
+    expect(document.activeElement).toBe(screen.getByLabelText('plans.close'))
   })
 
   it('returns focus to previously focused element on unmount', () => {
@@ -43,7 +43,7 @@ describe('PlansModal', () => {
 
     const { rerender } = renderModal({ open: true })
     // Modal is open — trigger focus was saved, close button now has focus
-    expect(document.activeElement).toBe(screen.getByLabelText('Close'))
+    expect(document.activeElement).toBe(screen.getByLabelText('plans.close'))
 
     rerender(<PlansModal open={false} onClose={vi.fn()} currentPlan="free" />)
     // Modal closed — focus should return to trigger
@@ -60,7 +60,7 @@ describe('PlansModal', () => {
 
   it('switches to monthly prices when Monthly toggle is clicked', () => {
     renderModal()
-    fireEvent.click(screen.getByText('Monthly'))
+    fireEvent.click(screen.getByText('plans.monthly'))
     expect(screen.getByText('R$19')).toBeInTheDocument()
     expect(screen.getByText('R$39')).toBeInTheDocument()
   })
@@ -68,7 +68,7 @@ describe('PlansModal', () => {
   it('calls onClose when close button is clicked', () => {
     const onClose = vi.fn()
     renderModal({ onClose })
-    fireEvent.click(screen.getByLabelText('Close'))
+    fireEvent.click(screen.getByLabelText('plans.close'))
     expect(onClose).toHaveBeenCalled()
   })
 
@@ -88,25 +88,25 @@ describe('PlansModal', () => {
 
   it('shows disabled "Current plan" on Free card when currentPlan is free', () => {
     renderModal({ currentPlan: 'free' })
-    const btn = screen.getByRole('button', { name: /current plan/i })
+    const btn = screen.getByRole('button', { name: /plans.currentPlan/i })
     expect(btn).toBeDisabled()
   })
 
   it('shows disabled "Current plan" on Premium card when currentPlan is premium', () => {
     renderModal({ currentPlan: 'premium' })
     // Premium card has "Current plan", Free card has no CTA
-    const currentPlanBtns = screen.getAllByRole('button', { name: /current plan/i })
+    const currentPlanBtns = screen.getAllByRole('button', { name: /plans.currentPlan/i })
     expect(currentPlanBtns).toHaveLength(1)
     // Free card CTA is absent
-    expect(screen.queryByRole('button', { name: /get premium/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /plans.getPremium/i })).not.toBeInTheDocument()
   })
 
   it('shows "Get Pro" button for both currentPlan values', () => {
     const { rerender } = renderModal({ currentPlan: 'free' })
-    expect(screen.getByRole('button', { name: /get pro/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /plans.getPro/i })).toBeInTheDocument()
 
     rerender(<PlansModal open={true} onClose={vi.fn()} currentPlan="premium" />)
-    expect(screen.getByRole('button', { name: /get pro/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /plans.getPro/i })).toBeInTheDocument()
   })
 
   it('renders nothing when open is false', () => {
@@ -116,11 +116,11 @@ describe('PlansModal', () => {
 
   it('shows the MOST POPULAR badge', () => {
     renderModal()
-    expect(screen.getByText('MOST POPULAR')).toBeInTheDocument()
+    expect(screen.getByText('plans.mostPopular')).toBeInTheDocument()
   })
 
   it('shows the footer text', () => {
     renderModal()
-    expect(screen.getByText(/Pagamento seguro via Stripe/i)).toBeInTheDocument()
+    expect(screen.getByText(/plans.footer/i)).toBeInTheDocument()
   })
 })
