@@ -8,9 +8,9 @@ const LANGUAGES = [
 ]
 
 export default function LanguageSwitcher() {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
   return (
-    <div className="flex gap-1" role="group" aria-label="Language">
+    <div className="flex gap-1" role="group" aria-label={t('lang.label')}>
       {LANGUAGES.map(({ code, label }) => (
         <button
           key={code}
