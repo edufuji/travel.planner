@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { formatDate } from '@/lib/formatDate'
 import type { TripEvent, EventType } from '@/types/trip'
 
+const snappy = { type: 'spring', stiffness: 400, damping: 17 } as const
+
 const TYPE_COLORS: Record<EventType, string> = {
   transport: '#4A90D9',
   accommodation: '#7C3AED',
@@ -53,7 +55,7 @@ export default function TimelineEvent({ event, onEdit }: Props) {
         aria-label={t('event.editLabel', { title: event.title })}
         whileHover={{ y: -2, scale: 1.01 }}
         whileTap={{ scale: 0.97 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+        transition={snappy}
       >
         <div className="text-[10px] text-muted">{formatDate(event.date)} · {timeDisplay}</div>
         <div className="font-semibold text-foreground text-sm mt-0.5">{event.title}</div>
