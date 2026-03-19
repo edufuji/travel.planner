@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '@/components/BottomNav'
 import DarkModeToggle from '@/components/DarkModeToggle'
+import PlansModal from '@/components/PlansModal'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -19,6 +21,8 @@ export default function ProfilePage() {
   // Plan 4 will replace this with real data from the profile store
   const plan = 'free' as Plan
   const badge = PLAN_BADGE[plan]
+
+  const [showPlans, setShowPlans] = useState(false)
 
   async function handleLogout() {
     await signOut()
@@ -51,10 +55,18 @@ export default function ProfilePage() {
             <p className="text-xs text-muted mb-3">
               You're on the <span className="font-semibold">{badge.label}</span> plan
             </p>
-            <Button className="w-full">
-              ⬆ {plan === 'free' ? 'Upgrade to Premium' : 'Upgrade to Pro'}
+            <Button className="w-full" onClick={() => setShowPlans(true)}>
+              Plans
             </Button>
           </div>
+        )}
+
+        {showPlans && (
+          <PlansModal
+            open={showPlans}
+            onClose={() => setShowPlans(false)}
+            currentPlan={plan === 'pro' ? 'free' : plan}
+          />
         )}
 
         {/* Dark mode row */}
