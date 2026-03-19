@@ -285,7 +285,7 @@ describe('AddEventSheet', () => {
 
   it('transport type shows arrival time field', () => {
     renderSheet()
-    expect(screen.getByLabelText('Arrival time')).toBeInTheDocument()
+    expect(screen.getByLabelText('event.arrivalTimePlaceholder')).toBeInTheDocument()
   })
 
   it('non-transport type shows single place input, no To, no arrival time', () => {
