@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useTripsStore } from '@/stores/tripsStore'
 import DestinationRow from '@/components/DestinationRow'
 import NewDestinationSheet from '@/components/sheets/NewDestinationSheet'
@@ -6,25 +7,27 @@ import BottomNav from '@/components/BottomNav'
 import LocalDataImport from '@/components/LocalDataImport'
 
 export default function TripsPage() {
+  const { t } = useTranslation()
   const destinations = useTripsStore(s => s.destinations)
   const deleteDestination = useTripsStore(s => s.deleteDestination)
   const [sheetOpen, setSheetOpen] = useState(false)
+
 
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <div className="px-4 pt-12 pb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-foreground">My Trips</h1>
+          <h1 className="text-2xl font-extrabold text-foreground">{t('trips.myTrips')}</h1>
           <p className="text-xs text-muted">
-            {destinations.length} destination{destinations.length !== 1 ? 's' : ''}
+            {t('trips.destinationCount', { count: destinations.length })}
           </p>
         </div>
         <button
           onClick={() => setSheetOpen(true)}
           className="bg-primary text-white rounded-full px-4 py-2 text-sm font-bold hover:bg-primary-dark transition-colors"
         >
-          + New
+          {t('trips.newButton')}
         </button>
       </div>
 
@@ -33,13 +36,13 @@ export default function TripsPage() {
         {destinations.length === 0 ? (
           <div className="flex flex-col items-center justify-center pt-24 text-center">
             <div className="text-5xl mb-4" aria-hidden="true">🗺️</div>
-            <h2 className="text-lg font-bold text-foreground mb-1">No trips yet</h2>
-            <p className="text-sm text-muted mb-6">Start planning your next adventure</p>
+            <h2 className="text-lg font-bold text-foreground mb-1">{t('trips.emptyHeading')}</h2>
+            <p className="text-sm text-muted mb-6">{t('trips.emptySubtext')}</p>
             <button
               onClick={() => setSheetOpen(true)}
               className="bg-primary text-white rounded-full px-6 py-2.5 text-sm font-bold hover:bg-primary-dark transition-colors"
             >
-              Plan your first trip
+              {t('trips.planFirstTrip')}
             </button>
           </div>
         ) : (
@@ -56,7 +59,7 @@ export default function TripsPage() {
               onClick={() => setSheetOpen(true)}
               role="button"
             >
-              <span className="text-sm text-muted">+ Plan a new destination</span>
+              <span className="text-sm text-muted">{t('trips.planNewDestination')}</span>
             </div>
           </>
         )}

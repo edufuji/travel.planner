@@ -58,13 +58,13 @@ beforeEach(() => {
 describe('TripDetailPage', () => {
   it('shows not-found message when destination does not exist', () => {
     renderPage()
-    expect(screen.getByText('Destination not found')).toBeInTheDocument()
+    expect(screen.getByText('trip.notFound')).toBeInTheDocument()
   })
 
   it('shows empty state when destination has no events', () => {
     useTripsStore.setState({ destinations: [makeDest()] })
     renderPage()
-    expect(screen.getByText(/No events yet/)).toBeInTheDocument()
+    expect(screen.getByText('trip.noEvents')).toBeInTheDocument()
   })
 
   it('renders event titles', () => {

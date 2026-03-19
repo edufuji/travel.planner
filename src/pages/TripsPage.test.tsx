@@ -32,8 +32,8 @@ beforeEach(() => {
 describe('TripsPage', () => {
   it('shows empty state when no destinations exist', () => {
     renderPage()
-    expect(screen.getByText('No trips yet')).toBeInTheDocument()
-    expect(screen.getByText('Plan your first trip')).toBeInTheDocument()
+    expect(screen.getByText('trips.emptyHeading')).toBeInTheDocument()
+    expect(screen.getByText('trips.planFirstTrip')).toBeInTheDocument()
   })
 
   it('renders a destination row when destinations exist', () => {
@@ -52,7 +52,7 @@ describe('TripsPage', () => {
       })],
     })
     renderPage()
-    expect(screen.getByText('⚠️ GAP')).toBeInTheDocument()
+    expect(screen.getByText('status.gap')).toBeInTheDocument()
   })
 
   it('shows ✓ OK badge when destination has events and no gaps', () => {
@@ -65,14 +65,14 @@ describe('TripsPage', () => {
       })],
     })
     renderPage()
-    expect(screen.getByText('✓ OK')).toBeInTheDocument()
+    expect(screen.getByText('status.ok')).toBeInTheDocument()
   })
 
   it('opens New Destination sheet when "+ New" button is clicked', () => {
     renderPage()
-    fireEvent.click(screen.getByText('+ New'))
+    fireEvent.click(screen.getByText('trips.newButton'))
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByText('New Destination')).toBeInTheDocument()
+    expect(screen.getByText('destination.newTitle')).toBeInTheDocument()
   })
 
   it('shows correct destination count', () => {
@@ -80,6 +80,6 @@ describe('TripsPage', () => {
       destinations: [makeDestination(), makeDestination({ id: 'dest-2', title: 'Italy' })],
     })
     renderPage()
-    expect(screen.getByText('2 destinations')).toBeInTheDocument()
+    expect(screen.getByText('trips.destinationCount')).toBeInTheDocument()
   })
 })

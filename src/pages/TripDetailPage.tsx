@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Calendar, ChevronLeft } from 'lucide-react'
 import { useTripsStore } from '@/stores/tripsStore'
@@ -16,6 +17,7 @@ import type { TripEvent } from '@/types/trip'
 import type { View } from '@/components/ViewToggle'
 
 export default function TripDetailPage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const destination = useTripsStore(s => s.destinations.find(d => d.id === id))
@@ -27,12 +29,12 @@ export default function TripDetailPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted">Destination not found</p>
+          <p className="text-muted">{t('trip.notFound')}</p>
           <button
             onClick={() => navigate('/trips')}
             className="text-primary text-sm font-semibold mt-2 block"
           >
-            ← Back to trips
+            {t('trip.backToTrips')}
           </button>
         </div>
       </div>
@@ -64,7 +66,7 @@ export default function TripDetailPage() {
           className="flex items-center gap-1 text-primary text-sm font-semibold shrink-0 px-2 py-1 rounded-lg hover:bg-primary/10 active:bg-primary/20 transition-colors"
         >
           <ChevronLeft size={16} />
-          Trips
+          {t('trip.tripsLink')}
         </button>
         <div className="flex-1 min-w-0">
           <h1 className="text-lg font-extrabold text-foreground truncate">
@@ -72,13 +74,13 @@ export default function TripDetailPage() {
           </h1>
           <p className="text-xs text-muted flex items-center gap-1">
             <Calendar size={11} aria-hidden="true" />
-            {formatDate(destination.startDate)} – {formatDate(destination.endDate)} · {destination.events.length} event{destination.events.length !== 1 ? 's' : ''}
+            {formatDate(destination.startDate)} – {formatDate(destination.endDate)} · {t('trip.eventCount', { count: destination.events.length })}
           </p>
         </div>
         <button
           onClick={openAddSheet}
           className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shrink-0 hover:bg-primary-dark transition-colors"
-          aria-label="Add event"
+          aria-label={t('trip.addEvent')}
         >
           +
         </button>
@@ -95,7 +97,7 @@ export default function TripDetailPage() {
           {sortedEvents.length === 0 ? (
             <div className="flex flex-col items-center justify-center pt-20 text-center">
               <div className="text-4xl mb-3" aria-hidden="true">📅</div>
-              <p className="text-sm text-muted">No events yet. Tap + to add your first.</p>
+              <p className="text-sm text-muted">{t('trip.noEvents')}</p>
             </div>
           ) : (
             <div className="relative">
