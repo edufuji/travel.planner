@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { formatDate } from '@/lib/formatDate'
 import type { TripEvent, EventType } from '@/types/trip'
@@ -40,16 +41,19 @@ export default function TimelineEvent({ event, onEdit }: Props) {
     <div className="relative">
       {/* Colored dot on the vertical line */}
       <div
-        className="absolute left-[-14px] top-[10px] w-[10px] h-[10px] rounded-full border-2 border-white dark:border-background z-10"
+        className="absolute left-[-21px] top-[10px] w-[15px] h-[15px] rounded-full border-2 border-white dark:border-background z-10"
         style={{ backgroundColor: TYPE_COLORS[event.type] }}
         aria-hidden="true"
       />
       {/* Card */}
-      <div
+      <motion.div
         className="bg-white dark:bg-transparent border border-border rounded-lg px-3 py-2 cursor-pointer active:bg-input-bg"
         onClick={() => onEdit(event)}
         role="button"
         aria-label={t('event.editLabel', { title: event.title })}
+        whileHover={{ y: -2, scale: 1.01 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
       >
         <div className="text-[10px] text-muted">{formatDate(event.date)} · {timeDisplay}</div>
         <div className="font-semibold text-foreground text-sm mt-0.5">{event.title}</div>
@@ -60,7 +64,7 @@ export default function TimelineEvent({ event, onEdit }: Props) {
           {TYPE_LABELS[event.type]}
           {event.value != null ? ` · ${event.value}` : ''}
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }
