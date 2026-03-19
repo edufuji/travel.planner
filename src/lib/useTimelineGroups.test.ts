@@ -81,9 +81,11 @@ describe('useTimelineGroups', () => {
     expect(march18.items.some(i => i.kind === 'gap')).toBe(false)
   })
 
-  it('group label has correct format — "Sun, 15 Mar 2026" for 2026-03-15', () => {
+  it('group label uses Intl locale format for 2026-03-15', () => {
     const events = [makeEvent({ date: '2026-03-15' })]
-    const groups = useTimelineGroups(events, [])
-    expect(groups[0].label).toBe('Sun, 15 Mar 2026')
+    const groups = useTimelineGroups(events, [], 'en')
+    expect(groups[0].label).toBe(
+      new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(2026, 2, 15))
+    )
   })
 })

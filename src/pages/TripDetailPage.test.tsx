@@ -165,9 +165,9 @@ describe('TripDetailPage', () => {
       })],
     })
     renderPage()
-    // "Sun, 15 Mar 2026" and "Mon, 16 Mar 2026"
-    expect(screen.getByText('Sun, 15 Mar 2026')).toBeInTheDocument()
-    expect(screen.getByText('Mon, 16 Mar 2026')).toBeInTheDocument()
+    const fmt = (d: Date) => new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(d)
+    expect(screen.getByText(fmt(new Date(2026, 2, 15)))).toBeInTheDocument()
+    expect(screen.getByText(fmt(new Date(2026, 2, 16)))).toBeInTheDocument()
   })
 
   it('renders date header before events in DOM order', () => {
@@ -179,7 +179,7 @@ describe('TripDetailPage', () => {
       })],
     })
     renderPage()
-    const header = screen.getByText('Sun, 15 Mar 2026')
+    const header = screen.getByText(new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(2026, 2, 15)))
     const eventCard = screen.getByText('Morning Flight')
     expect(header.compareDocumentPosition(eventCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
@@ -195,7 +195,7 @@ describe('TripDetailPage', () => {
     })
     renderPage()
     const alert = screen.getByRole('alert')
-    const header15 = screen.getByText('Sun, 15 Mar 2026')
+    const header15 = screen.getByText(new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(2026, 2, 15)))
     // GAP should be after the Mar 15 header (in the same group)
     expect(header15.compareDocumentPosition(alert) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })

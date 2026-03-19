@@ -11,18 +11,21 @@ export interface TimelineGroup {
   items: RenderItem[]
 }
 
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-function formatGroupLabel(date: string): string {
+function formatGroupLabel(date: string, locale: string): string {
   const [y, m, d] = date.split('-').map(Number)
   const dt = new Date(y, m - 1, d)
-  return `${WEEKDAYS[dt.getDay()]}, ${d} ${MONTHS[m - 1]} ${y}`
+  return new Intl.DateTimeFormat(locale, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(dt)
 }
 
 export function useTimelineGroups(
   sortedEvents: TripEvent[],
-  gaps: GapWarning[]
+  gaps: GapWarning[],
+  locale = 'en'
 ): TimelineGroup[] {
   const groups: TimelineGroup[] = []
   const groupByDate = new Map<string, TimelineGroup>()
@@ -31,7 +34,7 @@ export function useTimelineGroups(
     if (!groupByDate.has(event.date)) {
       const group: TimelineGroup = {
         date: event.date,
-        label: formatGroupLabel(event.date),
+        label: formatGroupLabel(event.date, locale),
         items: [],
       }
       groupByDate.set(event.date, group)

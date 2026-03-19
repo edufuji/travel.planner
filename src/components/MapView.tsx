@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
 import { Plane, BedDouble, Ticket, Utensils } from 'lucide-react'
 import { buildMapSegments, TYPE_COLORS } from '@/lib/buildMapSegments'
@@ -31,6 +32,7 @@ interface Props {
 }
 
 export default function MapView({ events, gaps, onEdit }: Props) {
+  const { t, i18n } = useTranslation()
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
@@ -46,7 +48,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
   )
   const missingCoordCount = events.length - positionedEvents.length
 
-  const groups = useTimelineGroups(events, gaps)
+  const groups = useTimelineGroups(events, gaps, i18n.language)
 
   useEffect(() => { onEditRef.current = onEdit }, [onEdit])
 
@@ -202,7 +204,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
         className="flex-1 min-h-0 flex items-center justify-center bg-input-bg text-center px-6"
       >
         <p className="text-sm text-muted">
-          Map unavailable — add VITE_GOOGLE_MAPS_API_KEY to .env to enable.
+          {t('map.unavailable')}
         </p>
       </div>
     )
@@ -214,7 +216,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
         data-testid="map-error"
         className="flex-1 min-h-0 flex items-center justify-center bg-input-bg text-center px-6"
       >
-        <p className="text-sm text-muted">Failed to load map</p>
+        <p className="text-sm text-muted">{t('map.loadError')}</p>
       </div>
     )
   }
@@ -265,7 +267,7 @@ export default function MapView({ events, gaps, onEdit }: Props) {
             data-testid="map-no-location-banner"
             className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs text-center py-2"
           >
-            {missingCoordCount} event(s) not shown — no location data
+            {t('map.missingCoords', { count: missingCoordCount })}
           </div>
         )}
       </div>

@@ -17,7 +17,7 @@ import type { TripEvent } from '@/types/trip'
 import type { View } from '@/components/ViewToggle'
 
 export default function TripDetailPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const destination = useTripsStore(s => s.destinations.find(d => d.id === id))
@@ -45,7 +45,7 @@ export default function TripDetailPage() {
     `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`)
   )
   const gaps = detectGaps(sortedEvents)
-  const groups = useTimelineGroups(sortedEvents, gaps)
+  const groups = useTimelineGroups(sortedEvents, gaps, i18n.language)
 
   function openAddSheet() {
     setEditEvent(undefined)
