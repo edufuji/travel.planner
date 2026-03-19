@@ -9,6 +9,16 @@ import LocalDataImport from '@/components/LocalDataImport'
 
 const snappy = { type: 'spring', stiffness: 400, damping: 17 } as const
 
+const listContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
+}
+
+const listItem = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
+}
+
 export default function TripsPage() {
   const { t } = useTranslation()
   const destinations = useTripsStore(s => s.destinations)
@@ -61,13 +71,21 @@ export default function TripsPage() {
           </div>
         ) : (
           <>
-            {destinations.map(d => (
-              <DestinationRow
-                key={d.id}
-                destination={d}
-                onDelete={deleteDestination}
-              />
-            ))}
+            <motion.div
+              className="space-y-2"
+              variants={listContainer}
+              initial="hidden"
+              animate="visible"
+            >
+              {destinations.map(d => (
+                <motion.div key={d.id} variants={listItem}>
+                  <DestinationRow
+                    destination={d}
+                    onDelete={deleteDestination}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
             <motion.div
               className="border-2 border-dashed border-border rounded-[10px] p-3 text-center cursor-pointer hover:border-primary/40 transition-colors"
               onClick={() => setSheetOpen(true)}
