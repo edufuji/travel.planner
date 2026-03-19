@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Loader2 } from 'lucide-react'
@@ -68,12 +69,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div
+    <motion.div
       className="relative min-h-screen flex items-center justify-center px-4"
       style={{
         background:
           'linear-gradient(rgba(26,10,0,0.45), rgba(26,10,0,0.55)), linear-gradient(135deg, #C75B2A, #FF8C42, #F7C59F, #EFEFD0)',
       }}
+      initial={{ x: '100%', opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: '-30%', opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
     >
       {/* Logo */}
       <div className="absolute top-5 left-6 flex items-center gap-2">
@@ -219,6 +224,6 @@ export default function SignupPage() {
           </Link>
         </p>
       </GlassCard>
-    </div>
+    </motion.div>
   )
 }

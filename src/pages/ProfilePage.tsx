@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import BottomNav from '@/components/BottomNav'
@@ -34,7 +35,13 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 flex flex-col items-center justify-center px-6">
+    <motion.div
+      className="min-h-screen bg-background pb-20 flex flex-col items-center justify-center px-6"
+      initial={{ x: '100%', opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: '-30%', opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+    >
       <div className="w-full max-w-sm flex flex-col items-center gap-4">
         {/* Avatar */}
         <div className="w-20 h-20 rounded-full bg-input-bg border-2 border-border flex items-center justify-center">
@@ -95,6 +102,6 @@ export default function ProfilePage() {
       </div>
 
       <BottomNav />
-    </div>
+    </motion.div>
   )
 }
