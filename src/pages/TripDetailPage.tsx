@@ -17,6 +17,8 @@ import BottomNav from '@/components/BottomNav'
 import type { TripEvent } from '@/types/trip'
 import type { View } from '@/components/ViewToggle'
 
+const snappy = { type: 'spring', stiffness: 400, damping: 17 } as const
+
 export default function TripDetailPage() {
   const { t, i18n } = useTranslation()
   const { id } = useParams<{ id: string }>()
@@ -73,7 +75,7 @@ export default function TripDetailPage() {
           className="flex items-center gap-1 text-primary text-sm font-semibold shrink-0 px-2 py-1 rounded-lg hover:bg-primary/10 active:bg-primary/20 transition-colors"
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.93 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          transition={snappy}
         >
           <ChevronLeft size={16} />
           {t('trip.tripsLink')}
@@ -93,7 +95,7 @@ export default function TripDetailPage() {
           aria-label={t('trip.addEvent')}
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.93 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          transition={snappy}
         >
           +
         </motion.button>
