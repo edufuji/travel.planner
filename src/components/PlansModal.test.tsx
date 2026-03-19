@@ -36,6 +36,22 @@ describe('PlansModal', () => {
     document.body.removeChild(trigger)
   })
 
+  it('returns focus to previously focused element when open changes to false', () => {
+    const trigger = document.createElement('button')
+    document.body.appendChild(trigger)
+    trigger.focus()
+
+    const { rerender } = renderModal({ open: true })
+    // Modal is open — trigger focus was saved, close button now has focus
+    expect(document.activeElement).toBe(screen.getByLabelText('Close'))
+
+    rerender(<PlansModal open={false} onClose={vi.fn()} currentPlan="free" />)
+    // Modal closed — focus should return to trigger
+    expect(document.activeElement).toBe(trigger)
+
+    document.body.removeChild(trigger)
+  })
+
   it('shows annual prices by default', () => {
     renderModal()
     expect(screen.getByText('R$159')).toBeInTheDocument()
