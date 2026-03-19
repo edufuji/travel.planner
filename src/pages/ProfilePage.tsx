@@ -61,11 +61,11 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {showPlans && (
+        {plan !== 'pro' && showPlans && (
           <PlansModal
             open={showPlans}
             onClose={() => setShowPlans(false)}
-            currentPlan={plan === 'pro' ? 'free' : plan}
+            currentPlan={plan}
           />
         )}
 
