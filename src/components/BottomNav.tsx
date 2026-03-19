@@ -1,8 +1,10 @@
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Map, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export default function BottomNav() {
+  const { t } = useTranslation()
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-40">
       <div className="flex justify-around items-center py-2">
@@ -16,7 +18,7 @@ export default function BottomNav() {
           }
         >
           <Map size={20} />
-          Trips
+          {t('nav.trips')}
         </NavLink>
         <NavLink
           to="/profile"
@@ -28,7 +30,7 @@ export default function BottomNav() {
           }
         >
           <User size={20} />
-          Profile
+          {t('nav.profile')}
         </NavLink>
       </div>
     </nav>

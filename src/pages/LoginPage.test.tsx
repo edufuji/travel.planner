@@ -33,13 +33,13 @@ function renderLoginPage() {
 }
 
 function fillAndSubmit(email = 'test@example.com', password = 'password123') {
-  fireEvent.change(screen.getByPlaceholderText('you@example.com'), {
+  fireEvent.change(screen.getByPlaceholderText('auth.emailPlaceholder'), {
     target: { value: email },
   })
   fireEvent.change(screen.getByPlaceholderText('••••••••'), {
     target: { value: password },
   })
-  fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
+  fireEvent.click(screen.getByRole('button', { name: 'auth.signIn' }))
 }
 
 // ── Tests ────────────────────────────────────────────────────────────────────
@@ -51,51 +51,51 @@ describe('LoginPage', () => {
 
   it('renders "Welcome back" heading', () => {
     renderLoginPage()
-    expect(screen.getByText('Welcome back')).toBeInTheDocument()
+    expect(screen.getByText('auth.welcomeBack')).toBeInTheDocument()
   })
 
   it('renders subheading copy', () => {
     renderLoginPage()
-    expect(screen.getByText('Sign in to continue planning your adventures')).toBeInTheDocument()
+    expect(screen.getByText('auth.signInSubtitle')).toBeInTheDocument()
   })
 
   it('renders email and password inputs', () => {
     renderLoginPage()
-    expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('auth.emailPlaceholder')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument()
   })
 
   it('renders social login buttons', () => {
     renderLoginPage()
-    expect(screen.getByText('Continue with Google')).toBeInTheDocument()
-    expect(screen.getByText('Continue with Apple')).toBeInTheDocument()
+    expect(screen.getByText('auth.continueWithGoogle')).toBeInTheDocument()
+    expect(screen.getByText('auth.continueWithApple')).toBeInTheDocument()
   })
 
   it('shows errors when submitting with empty fields', () => {
     renderLoginPage()
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
-    expect(screen.getByText('Email is required')).toBeInTheDocument()
-    expect(screen.getByText('Password is required')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'auth.signIn' }))
+    expect(screen.getByText('auth.emailRequired')).toBeInTheDocument()
+    expect(screen.getByText('auth.passwordRequired')).toBeInTheDocument()
   })
 
   it('shows error for invalid email format', () => {
     renderLoginPage()
-    fireEvent.change(screen.getByPlaceholderText('you@example.com'), {
+    fireEvent.change(screen.getByPlaceholderText('auth.emailPlaceholder'), {
       target: { value: 'notanemail' },
     })
     fireEvent.change(screen.getByPlaceholderText('••••••••'), {
       target: { value: 'password123' },
     })
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
-    expect(screen.getByText('Enter a valid email address')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'auth.signIn' }))
+    expect(screen.getByText('auth.emailInvalid')).toBeInTheDocument()
   })
 
   it('does not show errors on valid input', async () => {
     mockSignInWithPassword.mockResolvedValue({ data: { session: {} }, error: null })
     renderLoginPage()
     fillAndSubmit()
-    expect(screen.queryByText('Email is required')).not.toBeInTheDocument()
-    expect(screen.queryByText('Password is required')).not.toBeInTheDocument()
+    expect(screen.queryByText('auth.emailRequired')).not.toBeInTheDocument()
+    expect(screen.queryByText('auth.passwordRequired')).not.toBeInTheDocument()
   })
 
   it('calls signInWithPassword with correct email and password on submit', async () => {
@@ -127,7 +127,7 @@ describe('LoginPage', () => {
     renderLoginPage()
     fillAndSubmit()
     await waitFor(() => {
-      expect(screen.getByText('Invalid email or password')).toBeInTheDocument()
+      expect(screen.getByText('auth.invalidCredentials')).toBeInTheDocument()
     })
   })
 
@@ -135,13 +135,13 @@ describe('LoginPage', () => {
     mockSignInWithPassword.mockReturnValue(new Promise(() => {}))
     renderLoginPage()
     fillAndSubmit()
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'auth.signIn' })).toBeDisabled()
   })
 
   it('calls signInWithOAuth with google when Google button clicked', async () => {
     mockSignInWithOAuth.mockResolvedValue({ data: {}, error: null })
     renderLoginPage()
-    fireEvent.click(screen.getByText('Continue with Google'))
+    fireEvent.click(screen.getByText('auth.continueWithGoogle'))
     await waitFor(() => {
       expect(mockSignInWithOAuth).toHaveBeenCalledWith({
         provider: 'google',
@@ -153,7 +153,7 @@ describe('LoginPage', () => {
   it('calls signInWithOAuth with apple when Apple button clicked', async () => {
     mockSignInWithOAuth.mockResolvedValue({ data: {}, error: null })
     renderLoginPage()
-    fireEvent.click(screen.getByText('Continue with Apple'))
+    fireEvent.click(screen.getByText('auth.continueWithApple'))
     await waitFor(() => {
       expect(mockSignInWithOAuth).toHaveBeenCalledWith({
         provider: 'apple',

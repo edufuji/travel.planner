@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Loader2 } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { supabase } from '@/lib/supabase'
@@ -12,6 +13,7 @@ interface FormErrors {
 }
 
 export default function SignupPage() {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,20 +26,20 @@ export default function SignupPage() {
   function validate(): FormErrors {
     const errs: FormErrors = {}
     if (!name.trim()) {
-      errs.name = 'Full name is required'
+      errs.name = t('auth.fullNameRequired')
     }
     if (!email) {
-      errs.email = 'Email is required'
+      errs.email = t('auth.emailRequired')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errs.email = 'Enter a valid email address'
+      errs.email = t('auth.emailInvalid')
     }
     if (!password) {
-      errs.password = 'Password is required'
+      errs.password = t('auth.passwordRequired')
     } else if (password.length < 6) {
-      errs.password = 'Password must be at least 6 characters'
+      errs.password = t('auth.passwordTooShort')
     }
     if (password && confirm !== password) {
-      errs.confirm = 'Passwords do not match'
+      errs.confirm = t('auth.passwordMismatch')
     }
     return errs
   }
@@ -85,22 +87,22 @@ export default function SignupPage() {
       <GlassCard className="w-full max-w-[400px] p-9 sm:rounded-[20px] rounded-none sm:min-h-0 min-h-screen sm:pt-9 pt-20 px-6 sm:px-9 pb-8">
         <div className="text-center mb-6">
           <h1 className="text-[22px] font-extrabold text-foreground">
-            Create account
+            {t('auth.createAccount')}
           </h1>
           <p className="text-sm text-muted mt-1">
-            Join TripMate and start planning your adventures
+            {t('auth.createAccountSubtitle')}
           </p>
         </div>
 
         {success ? (
           <div className="text-center py-6">
             <p className="text-sm text-foreground font-medium">
-              Check your email to confirm your account.
+              {t('auth.checkEmailConfirm')}
             </p>
             <p className="text-sm text-muted mt-2">
-              Once confirmed,{' '}
+              {t('auth.onceConfirmedSignIn')}{' '}
               <Link to="/login" className="text-primary font-semibold">
-                sign in here
+                {t('auth.signInLink')}
               </Link>
               .
             </p>
@@ -110,14 +112,14 @@ export default function SignupPage() {
             {/* Full Name */}
             <div className="mb-3">
               <label htmlFor="name" className="block text-xs font-semibold text-foreground mb-1.5">
-                Full name
+                {t('auth.fullName')}
               </label>
               <input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your full name"
+                placeholder={t('auth.fullNamePlaceholder')}
                 className={`w-full bg-input-bg border rounded-xl px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 ${
                   errors.name ? 'border-red-500' : 'border-border'
                 }`}
@@ -130,14 +132,14 @@ export default function SignupPage() {
             {/* Email */}
             <div className="mb-3">
               <label htmlFor="email" className="block text-xs font-semibold text-foreground mb-1.5">
-                Email address
+                {t('auth.emailAddress')}
               </label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t('auth.emailPlaceholder')}
                 className={`w-full bg-input-bg border rounded-xl px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 ${
                   errors.email ? 'border-red-500' : 'border-border'
                 }`}
@@ -150,14 +152,14 @@ export default function SignupPage() {
             {/* Password */}
             <div className="mb-3">
               <label htmlFor="password" className="block text-xs font-semibold text-foreground mb-1.5">
-                Password
+                {t('auth.password')}
               </label>
               <input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min. 6 characters"
+                placeholder={t('auth.passwordMinPlaceholder')}
                 className={`w-full bg-input-bg border rounded-xl px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 ${
                   errors.password ? 'border-red-500' : 'border-border'
                 }`}
@@ -170,14 +172,14 @@ export default function SignupPage() {
             {/* Confirm Password */}
             <div className="mb-5">
               <label htmlFor="confirm" className="block text-xs font-semibold text-foreground mb-1.5">
-                Confirm password
+                {t('auth.confirmPassword')}
               </label>
               <input
                 id="confirm"
                 type="password"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                placeholder="Repeat your password"
+                placeholder={t('auth.confirmPasswordPlaceholder')}
                 className={`w-full bg-input-bg border rounded-xl px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 ${
                   errors.confirm ? 'border-red-500' : 'border-border'
                 }`}
@@ -196,13 +198,13 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              aria-label="Create Account"
+              aria-label={t('auth.createAccountButton')}
               className="w-full bg-primary text-white rounded-xl py-3 text-[15px] font-bold shadow-[0_4px_14px_rgba(255,107,53,0.4)] hover:bg-primary-dark transition-colors disabled:opacity-70 flex items-center justify-center"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                'Create Account'
+                t('auth.createAccountButton')
               )}
             </button>
           </form>
@@ -210,9 +212,9 @@ export default function SignupPage() {
 
         {/* Sign in link */}
         <p className="text-center text-sm text-muted mt-5">
-          Already have an account?{' '}
+          {t('auth.alreadyHaveAccount')}{' '}
           <Link to="/login" className="text-primary font-semibold">
-            Sign in
+            {t('auth.signInLink')}
           </Link>
         </p>
       </GlassCard>

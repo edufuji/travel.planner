@@ -31,16 +31,16 @@ function fillForm({
   password?: string
   confirm?: string
 } = {}) {
-  fireEvent.change(screen.getByPlaceholderText('Your full name'), {
+  fireEvent.change(screen.getByPlaceholderText('auth.fullNamePlaceholder'), {
     target: { value: name },
   })
-  fireEvent.change(screen.getByPlaceholderText('you@example.com'), {
+  fireEvent.change(screen.getByPlaceholderText('auth.emailPlaceholder'), {
     target: { value: email },
   })
-  fireEvent.change(screen.getByPlaceholderText('Min. 6 characters'), {
+  fireEvent.change(screen.getByPlaceholderText('auth.passwordMinPlaceholder'), {
     target: { value: password },
   })
-  fireEvent.change(screen.getByPlaceholderText('Repeat your password'), {
+  fireEvent.change(screen.getByPlaceholderText('auth.confirmPasswordPlaceholder'), {
     target: { value: confirm },
   })
 }
@@ -52,42 +52,42 @@ describe('SignupPage', () => {
 
   it('renders "Create account" heading', () => {
     renderSignupPage()
-    expect(screen.getByText('Create account')).toBeInTheDocument()
+    expect(screen.getByText('auth.createAccount')).toBeInTheDocument()
   })
 
   it('shows error when full name is empty', () => {
     renderSignupPage()
     fillForm({ name: '' })
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
-    expect(screen.getByText('Full name is required')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'auth.createAccountButton' }))
+    expect(screen.getByText('auth.fullNameRequired')).toBeInTheDocument()
   })
 
   it('shows error when email is invalid', () => {
     renderSignupPage()
     fillForm({ email: 'notanemail' })
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
-    expect(screen.getByText('Enter a valid email address')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'auth.createAccountButton' }))
+    expect(screen.getByText('auth.emailInvalid')).toBeInTheDocument()
   })
 
   it('shows error when password is less than 6 characters', () => {
     renderSignupPage()
     fillForm({ password: 'abc', confirm: 'abc' })
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
-    expect(screen.getByText('Password must be at least 6 characters')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'auth.createAccountButton' }))
+    expect(screen.getByText('auth.passwordTooShort')).toBeInTheDocument()
   })
 
   it('shows error when passwords do not match', () => {
     renderSignupPage()
     fillForm({ password: 'secret123', confirm: 'different' })
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
-    expect(screen.getByText('Passwords do not match')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'auth.createAccountButton' }))
+    expect(screen.getByText('auth.passwordMismatch')).toBeInTheDocument()
   })
 
   it('calls supabase.signUp with correct values on valid submit', async () => {
     mockSignUp.mockResolvedValue({ data: { user: {} }, error: null })
     renderSignupPage()
     fillForm()
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'auth.createAccountButton' }))
     await waitFor(() => {
       expect(mockSignUp).toHaveBeenCalledWith({
         email: 'alice@example.com',
@@ -101,10 +101,10 @@ describe('SignupPage', () => {
     mockSignUp.mockResolvedValue({ data: { user: {} }, error: null })
     renderSignupPage()
     fillForm()
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'auth.createAccountButton' }))
     await waitFor(() => {
       expect(
-        screen.getByText('Check your email to confirm your account.')
+        screen.getByText('auth.checkEmailConfirm')
       ).toBeInTheDocument()
     })
   })
@@ -116,7 +116,7 @@ describe('SignupPage', () => {
     })
     renderSignupPage()
     fillForm()
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'auth.createAccountButton' }))
     await waitFor(() => {
       expect(screen.getByText('User already registered')).toBeInTheDocument()
     })

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 import { FaApple } from 'react-icons/fa'
 import { Loader2 } from 'lucide-react'
@@ -13,6 +14,7 @@ interface FormErrors {
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<FormErrors>({})
@@ -22,12 +24,12 @@ export default function LoginPage() {
   function validate(): FormErrors {
     const errs: FormErrors = {}
     if (!email) {
-      errs.email = 'Email is required'
+      errs.email = t('auth.emailRequired')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errs.email = 'Enter a valid email address'
+      errs.email = t('auth.emailInvalid')
     }
     if (!password) {
-      errs.password = 'Password is required'
+      errs.password = t('auth.passwordRequired')
     }
     return errs
   }
@@ -44,7 +46,7 @@ export default function LoginPage() {
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      setAuthError('Invalid email or password')
+      setAuthError(t('auth.invalidCredentials'))
       setLoading(false)
       return
     }
@@ -78,10 +80,10 @@ export default function LoginPage() {
       {/* Tagline */}
       <div className="absolute bottom-6 left-6 hidden sm:block">
         <p className="text-white font-extrabold" style={{ fontSize: '28px' }}>
-          Plan your trip. Your way.
+          {t('auth.tagline')}
         </p>
         <p className="text-white/55 text-sm">
-          No agencies. No hassle. Just you and the world.
+          {t('auth.subtitle')}
         </p>
       </div>
 
@@ -89,10 +91,10 @@ export default function LoginPage() {
       <GlassCard className="w-full max-w-[400px] p-9 sm:rounded-[20px] rounded-none sm:min-h-0 min-h-screen sm:pt-9 pt-20 px-6 sm:px-9 pb-8">
         <div className="text-center mb-6">
           <h1 className="text-[22px] font-extrabold text-foreground">
-            Welcome back
+            {t('auth.welcomeBack')}
           </h1>
           <p className="text-sm text-muted mt-1">
-            Sign in to continue planning your adventures
+            {t('auth.signInSubtitle')}
           </p>
         </div>
 
@@ -104,7 +106,7 @@ export default function LoginPage() {
             className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-transparent border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
           >
             <FcGoogle size={16} />
-            Continue with Google
+            {t('auth.continueWithGoogle')}
           </button>
           <button
             type="button"
@@ -112,14 +114,14 @@ export default function LoginPage() {
             className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-transparent border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-input-bg transition-colors"
           >
             <FaApple size={16} />
-            Continue with Apple
+            {t('auth.continueWithApple')}
           </button>
         </div>
 
         {/* Divider */}
         <div className="flex items-center gap-3 mb-5">
           <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted">or continue with email</span>
+          <span className="text-xs text-muted">{t('auth.orContinueWithEmail')}</span>
           <div className="flex-1 h-px bg-border" />
         </div>
 
@@ -127,14 +129,14 @@ export default function LoginPage() {
           {/* Email */}
           <div className="mb-3">
             <label htmlFor="email" className="block text-xs font-semibold text-foreground mb-1.5">
-              Email address
+              {t('auth.emailAddress')}
             </label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder={t('auth.emailPlaceholder')}
               className={`w-full bg-input-bg border rounded-xl px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 ${
                 errors.email ? 'border-red-500' : 'border-border'
               }`}
@@ -147,7 +149,7 @@ export default function LoginPage() {
           {/* Password */}
           <div className="mb-2">
             <label htmlFor="password" className="block text-xs font-semibold text-foreground mb-1.5">
-              Password
+              {t('auth.password')}
             </label>
             <input
               id="password"
@@ -167,7 +169,7 @@ export default function LoginPage() {
           {/* Forgot password */}
           <div className="text-right mb-5">
             <a href="#" className="text-xs text-primary font-medium">
-              Forgot password?
+              {t('auth.forgotPassword')}
             </a>
           </div>
 
@@ -180,22 +182,22 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            aria-label="Sign In"
+            aria-label={t('auth.signIn')}
             className="w-full bg-primary text-white rounded-xl py-3 text-[15px] font-bold shadow-[0_4px_14px_rgba(255,107,53,0.4)] hover:bg-primary-dark transition-colors disabled:opacity-70 flex items-center justify-center"
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
-              'Sign In'
+              t('auth.signIn')
             )}
           </button>
         </form>
 
         {/* Sign up link */}
         <p className="text-center text-sm text-muted mt-5">
-          Don't have an account?{' '}
+          {t('auth.noAccount')}{' '}
           <Link to="/signup" className="text-primary font-semibold">
-            Create one
+            {t('auth.createOne')}
           </Link>
         </p>
       </GlassCard>
