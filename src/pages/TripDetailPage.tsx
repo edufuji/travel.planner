@@ -135,7 +135,9 @@ export default function TripDetailPage() {
               >
                 {groups.map(group => (
                   <div key={group.date} className="pb-4">
-                    <TimelineDateHeader label={group.label} />
+                    <motion.div variants={listItem}>
+                      <TimelineDateHeader label={group.label} />
+                    </motion.div>
                     <div className="space-y-5">
                       {group.items.map(item =>
                         item.kind === 'event' ? (
