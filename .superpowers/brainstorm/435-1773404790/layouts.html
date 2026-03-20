@@ -1,0 +1,88 @@
+<h2>Profile page layout — which feels right?</h2>
+<p class="subtitle">All three show the same content: name, plan badge, upgrade button, dark mode switch. Pick the layout that fits TripMate best.</p>
+
+<div class="cards">
+
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FEFAF6;padding:16px;border-bottom:1px solid #E5E0DB;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;font-family:sans-serif;">
+        <div style="width:56px;height:56px;border-radius:50%;background:#F5F0EB;border:2px solid #E5E0DB;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>
+        <div style="font-weight:800;font-size:15px;color:#1A0A00;">John Doe</div>
+        <div style="background:#FF6B35;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase;">Free</div>
+        <button style="background:#FF6B35;color:white;border:none;border-radius:8px;padding:7px 20px;font-size:12px;font-weight:700;cursor:pointer;width:100%;max-width:160px;">⬆ Upgrade to Pro</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+          <span style="font-size:11px;color:#78716C;">Dark mode</span>
+          <div style="width:36px;height:20px;background:#E5E0DB;border-radius:20px;position:relative;"><div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Centered card</h3>
+      <p>Avatar + name + plan badge stacked. Clean, profile-app feel. Everything centered above the fold.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FEFAF6;padding:16px;border-bottom:1px solid #E5E0DB;">
+      <div style="font-family:sans-serif;max-width:240px;margin:0 auto;">
+        <!-- Header row -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#F5F0EB;border:2px solid #E5E0DB;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👤</div>
+          <div>
+            <div style="font-weight:800;font-size:13px;color:#1A0A00;">John Doe</div>
+            <div style="background:#FF6B35;color:white;font-size:9px;font-weight:700;padding:1px 7px;border-radius:20px;display:inline-block;margin-top:2px;text-transform:uppercase;">Free</div>
+          </div>
+        </div>
+        <!-- Rows -->
+        <div style="background:white;border:1px solid #E5E0DB;border-radius:10px;overflow:hidden;font-size:12px;">
+          <div style="padding:10px 12px;border-bottom:1px solid #E5E0DB;display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:#78716C;">Plan</span>
+            <span style="color:#1A0A00;font-weight:600;">Free</span>
+          </div>
+          <div style="padding:10px 12px;border-bottom:1px solid #E5E0DB;display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:#78716C;">Dark mode</span>
+            <div style="width:32px;height:18px;background:#E5E0DB;border-radius:20px;position:relative;"><div style="width:14px;height:14px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+          </div>
+          <div style="padding:10px 12px;">
+            <button style="background:#FF6B35;color:white;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;width:100%;">⬆ Upgrade to Pro</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Settings rows</h3>
+      <p>Avatar + name inline at top, then card rows for plan/dark-mode/upgrade. Settings-app feel, compact.</p>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FEFAF6;padding:0;border-bottom:1px solid #E5E0DB;overflow:hidden;">
+      <div style="font-family:sans-serif;">
+        <!-- Colored header band -->
+        <div style="background:linear-gradient(135deg,#FF6B35,#C75B2A);padding:16px;display:flex;align-items:center;gap:10px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
+          <div>
+            <div style="font-weight:800;font-size:13px;color:white;">John Doe</div>
+            <div style="background:rgba(255,255,255,.25);color:white;font-size:9px;font-weight:700;padding:1px 7px;border-radius:20px;display:inline-block;margin-top:2px;text-transform:uppercase;letter-spacing:.05em;">Free plan</div>
+          </div>
+        </div>
+        <!-- Body -->
+        <div style="padding:12px;display:flex;flex-direction:column;gap:8px;">
+          <button style="background:#FF6B35;color:white;border:none;border-radius:8px;padding:8px;font-size:11px;font-weight:700;cursor:pointer;width:100%;">⬆ Upgrade to Pro</button>
+          <div style="background:white;border:1px solid #E5E0DB;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+            <span style="color:#78716C;">Dark mode</span>
+            <div style="width:32px;height:18px;background:#E5E0DB;border-radius:20px;position:relative;"><div style="width:14px;height:14px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Hero header</h3>
+      <p>Orange gradient header band with avatar + name. Upgrade button prominent below. Energetic, brand-forward.</p>
+    </div>
+  </div>
+
+</div>

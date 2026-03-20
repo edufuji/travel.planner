@@ -155,5 +155,17 @@
   },
   "lang": {
     "label": "Idioma"
+  },
+  "map": {
+    "unavailable": "Mapa indisponível — adicione VITE_GOOGLE_MAPS_API_KEY ao .env para ativar.",
+    "loadError": "Falha ao carregar mapa",
+    "missingCoords_one": "{{count}} evento não exibido — sem dados de localização",
+    "missingCoords_other": "{{count}} eventos não exibidos — sem dados de localização"
+  },
+  "view": {
+    "timeline": "Linha do Tempo",
+    "map": "Mapa",
+    "toggleLabel": "Visualização",
+    "darkModeToggle": "Alternar modo escuro"
   }
 }

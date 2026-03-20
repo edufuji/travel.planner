@@ -1,0 +1,81 @@
+<h2>Map + Timeline Sidebar — Layout Options</h2>
+<p class="subtitle">How should the sidebar and map be arranged in the Map view?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="left-sidebar" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;height:220px;border:1px solid #ddd;border-radius:6px;overflow:hidden;font-size:11px;">
+        <div style="width:38%;background:#f8f4f0;border-right:1px solid #ddd;display:flex;flex-direction:column;">
+          <div style="padding:8px 10px;font-weight:700;font-size:12px;border-bottom:1px solid #ddd;background:#fff;">📅 Timeline</div>
+          <div style="overflow:auto;padding:6px 8px;flex:1;">
+            <div style="font-size:10px;font-weight:700;color:#C75B2A;padding:4px 0 2px;">15 Mar</div>
+            <div style="background:#fff;border-radius:4px;padding:5px 6px;margin-bottom:4px;border-left:3px solid #4A90D9;cursor:pointer;">✈️ Flight GRU→NRT<br><span style="color:#999;font-size:9px;">08:00</span></div>
+            <div style="font-size:10px;font-weight:700;color:#C75B2A;padding:4px 0 2px;">16 Mar</div>
+            <div style="background:#fff;border-radius:4px;padding:5px 6px;margin-bottom:4px;border-left:3px solid #7C3AED;cursor:pointer;">🏨 Hotel Tokyo<br><span style="color:#999;font-size:9px;">14:00</span></div>
+            <div style="background:#fff;border-radius:4px;padding:5px 6px;margin-bottom:4px;border-left:3px solid #059669;cursor:pointer;">🎭 TeamLab<br><span style="color:#999;font-size:9px;">18:00</span></div>
+            <div style="font-size:10px;font-weight:700;color:#C75B2A;padding:4px 0 2px;">20 Mar</div>
+            <div style="background:#fff;border-radius:4px;padding:5px 6px;margin-bottom:4px;border-left:3px solid #4A90D9;cursor:pointer;">🚅 Shinkansen<br><span style="color:#999;font-size:9px;">09:00</span></div>
+          </div>
+        </div>
+        <div style="flex:1;background:#e8f0e8;display:flex;align-items:center;justify-content:center;position:relative;">
+          <div style="color:#666;font-size:11px;text-align:center;">🗺️<br>Google Map<br><span style="font-size:9px;color:#999;">(fills remaining space)</span></div>
+          <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.9);border-radius:4px;padding:4px 6px;font-size:10px;font-weight:600;color:#4A90D9;">📍 selected</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Left sidebar, full map</h3>
+      <p>Fixed-width timeline list on left, map fills the rest. Timeline items are clickable to pan+zoom. Works well on wider screens.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="bottom-panel" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;flex-direction:column;height:220px;border:1px solid #ddd;border-radius:6px;overflow:hidden;font-size:11px;">
+        <div style="flex:1;background:#e8f0e8;display:flex;align-items:center;justify-content:center;min-height:0;">
+          <div style="color:#666;font-size:11px;text-align:center;">🗺️<br>Google Map</div>
+        </div>
+        <div style="height:90px;background:#f8f4f0;border-top:1px solid #ddd;display:flex;flex-direction:column;">
+          <div style="padding:4px 10px;font-weight:700;font-size:11px;border-bottom:1px solid #ddd;background:#fff;flex-shrink:0;">📅 Timeline</div>
+          <div style="display:flex;gap:6px;padding:6px 8px;overflow-x:auto;flex:1;align-items:center;">
+            <div style="background:#fff;border-radius:4px;padding:4px 8px;white-space:nowrap;flex-shrink:0;border-left:3px solid #4A90D9;cursor:pointer;">✈️ Flight<br><span style="color:#999;font-size:9px;">15 Mar · 08:00</span></div>
+            <div style="background:#fff;border-radius:4px;padding:4px 8px;white-space:nowrap;flex-shrink:0;border-left:3px solid #7C3AED;cursor:pointer;">🏨 Hotel<br><span style="color:#999;font-size:9px;">16 Mar · 14:00</span></div>
+            <div style="background:#fff;border-radius:4px;padding:4px 8px;white-space:nowrap;flex-shrink:0;border-left:3px solid #059669;cursor:pointer;">🎭 TeamLab<br><span style="color:#999;font-size:9px;">16 Mar · 18:00</span></div>
+            <div style="background:#fff;border-radius:4px;padding:4px 8px;white-space:nowrap;flex-shrink:0;border-left:3px solid #4A90D9;cursor:pointer;">🚅 Shinkansen<br><span style="color:#999;font-size:9px;">20 Mar · 09:00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Bottom strip, horizontal scroll</h3>
+      <p>Map takes most of the screen, timeline cards scroll horizontally at the bottom. More map visible but less context per event. Mobile-friendly.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="overlay-panel" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="position:relative;height:220px;border:1px solid #ddd;border-radius:6px;overflow:hidden;font-size:11px;">
+        <div style="position:absolute;inset:0;background:#e8f0e8;display:flex;align-items:center;justify-content:center;">
+          <div style="color:#666;font-size:11px;text-align:center;">🗺️<br>Google Map<br><span style="font-size:9px;color:#999;">(full width)</span></div>
+        </div>
+        <div style="position:absolute;left:0;top:0;bottom:0;width:40%;background:rgba(255,255,255,0.92);backdrop-filter:blur(4px);border-right:1px solid rgba(0,0,0,0.1);display:flex;flex-direction:column;">
+          <div style="padding:6px 10px;font-weight:700;font-size:11px;border-bottom:1px solid #eee;">📅 Timeline</div>
+          <div style="overflow:auto;padding:5px 7px;flex:1;font-size:10px;">
+            <div style="font-weight:700;color:#C75B2A;padding:3px 0;">15 Mar</div>
+            <div style="padding:4px 5px;margin-bottom:3px;border-left:3px solid #4A90D9;background:rgba(255,255,255,0.7);border-radius:2px;cursor:pointer;">✈️ Flight<br><span style="color:#999;font-size:9px;">08:00</span></div>
+            <div style="font-weight:700;color:#C75B2A;padding:3px 0;">16 Mar</div>
+            <div style="padding:4px 5px;margin-bottom:3px;border-left:3px solid #7C3AED;background:rgba(255,255,255,0.7);border-radius:2px;cursor:pointer;">🏨 Hotel<br><span style="color:#999;font-size:9px;">14:00</span></div>
+            <div style="padding:4px 5px;margin-bottom:3px;border-left:3px solid #059669;background:rgba(255,255,255,0.7);border-radius:2px;cursor:pointer;">🎭 TeamLab<br><span style="color:#999;font-size:9px;">18:00</span></div>
+          </div>
+        </div>
+        <div style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.9);border-radius:4px;padding:3px 6px;font-size:10px;font-weight:600;cursor:pointer;">◁ hide</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Floating overlay panel</h3>
+      <p>Timeline overlays the map (semi-transparent). Map visible behind the panel. Panel can be hidden to see full map. Most flexible but adds complexity.</p>
+    </div>
+  </div>
+
+</div>

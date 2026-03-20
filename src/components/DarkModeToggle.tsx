@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export default function DarkModeToggle() {
+  const { t } = useTranslation()
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function DarkModeToggle() {
     <button
       role="switch"
       aria-checked={isDark}
-      aria-label="Toggle dark mode"
+      aria-label={t('view.darkModeToggle')}
       onClick={toggle}
       className={`relative w-10 h-[22px] rounded-full transition-colors cursor-pointer ${
         isDark ? 'bg-primary' : 'bg-border'

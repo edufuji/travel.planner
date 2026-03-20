@@ -1,1 +1,7 @@
 {"type":"server-started","port":53628,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:53628","screen_dir":"c:/Users/Pichau/Projetos/Teste/.superpowers/brainstorm/2213-1773233963"}
+{"type":"screen-added","file":"c:\\Users\\Pichau\\Projetos\\Teste\\.superpowers\\brainstorm\\2213-1773233963\\design-direction.html"}
+{"type":"screen-added","file":"c:\\Users\\Pichau\\Projetos\\Teste\\.superpowers\\brainstorm\\2213-1773233963\\login-layout.html"}
+{"source":"user-event","type":"click","text":"✈ TripMate\n        Plan your adventure\n        Email\n        Password\n        Sign In\n      \n    \n    \n      A — Centered Card\n      Full-screen travel photo background with a floating frosted-glass card centered on screen. Clean and focused.","choice":"centered","id":null,"timestamp":1773234257963}
+{"type":"screen-added","file":"c:\\Users\\Pichau\\Projetos\\Teste\\.superpowers\\brainstorm\\2213-1773233963\\waiting.html"}
+{"type":"screen-added","file":"c:\\Users\\Pichau\\Projetos\\Teste\\.superpowers\\brainstorm\\2213-1773233963\\design-system.html"}
+{"type":"screen-added","file":"c:\\Users\\Pichau\\Projetos\\Teste\\.superpowers\\brainstorm\\2213-1773233963\\login-mockup.html"}

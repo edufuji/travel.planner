@@ -46,8 +46,8 @@ create policy "Users can insert events within plan limit"
     )
     and (
       select count(*)
-      from public.trip_events
-      where destination_id = NEW.destination_id
+      from public.trip_events te
+      where te.destination_id = destination_id
     ) < get_plan_event_limit(
       (select plan from public.profiles where id = auth.uid())
     )

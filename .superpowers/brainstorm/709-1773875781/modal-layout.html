@@ -1,0 +1,133 @@
+<h2>Which modal layout feels right?</h2>
+<p class="subtitle">Three options for how the plans are displayed inside the modal</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f8f8f8;border-radius:8px 8px 0 0">
+      <!-- Option A mockup: 3 columns -->
+      <div style="background:#1a1a2e;border-radius:8px;padding:14px;font-family:sans-serif">
+        <div style="text-align:center;margin-bottom:10px">
+          <span style="background:#333;color:#aaa;border-radius:20px;padding:3px 12px;font-size:10px">Monthly</span>
+          <span style="background:#4f8ef7;color:#fff;border-radius:20px;padding:3px 12px;font-size:10px;margin-left:4px">Annual −30%</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <div style="flex:1;background:#2a2a3e;border-radius:6px;padding:8px;text-align:center">
+            <div style="font-size:9px;color:#888;font-weight:bold;text-transform:uppercase;margin-bottom:4px">Free</div>
+            <div style="font-size:13px;font-weight:bold;color:#eee">R$0</div>
+            <div style="margin-top:6px;font-size:8px;color:#666;text-align:left;line-height:1.6">
+              ✓ 1 trip<br>✓ 10 events/trip
+            </div>
+            <div style="margin-top:6px;background:#444;border-radius:4px;padding:3px;font-size:8px;color:#aaa">Current</div>
+          </div>
+          <div style="flex:1;background:#1a2a4e;border:1px solid #4f8ef7;border-radius:6px;padding:8px;text-align:center">
+            <div style="font-size:9px;color:#4f8ef7;font-weight:bold;text-transform:uppercase;margin-bottom:4px">Premium</div>
+            <div style="font-size:13px;font-weight:bold;color:#eee">R$19<span style="font-size:8px;color:#888">/mo</span></div>
+            <div style="margin-top:6px;font-size:8px;color:#aaa;text-align:left;line-height:1.6">
+              ✓ 10 trips<br>✓ 30 events/trip<br>✓ Share trips
+            </div>
+            <div style="margin-top:6px;background:#4f8ef7;border-radius:4px;padding:3px;font-size:8px;color:#fff">Choose</div>
+          </div>
+          <div style="flex:1;background:#2a1e10;border:1px solid #d97706;border-radius:6px;padding:8px;text-align:center">
+            <div style="font-size:9px;color:#d97706;font-weight:bold;text-transform:uppercase;margin-bottom:4px">Pro ✦</div>
+            <div style="font-size:13px;font-weight:bold;color:#eee">R$39<span style="font-size:8px;color:#888">/mo</span></div>
+            <div style="margin-top:6px;font-size:8px;color:#aaa;text-align:left;line-height:1.6">
+              ✓ 30 trips<br>✓ Unlimited events<br>✓ Share trips
+            </div>
+            <div style="margin-top:6px;background:linear-gradient(90deg,#d97706,#f59e0b);border-radius:4px;padding:3px;font-size:8px;color:#fff">Choose</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Side-by-side columns</h3>
+      <p>Classic SaaS pricing layout. All plans visible at once, easy to compare. Monthly/annual toggle at the top.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f8f8f8;border-radius:8px 8px 0 0">
+      <!-- Option B mockup: center highlight -->
+      <div style="background:#1a1a2e;border-radius:8px;padding:14px;font-family:sans-serif">
+        <div style="text-align:center;margin-bottom:10px">
+          <span style="background:#333;color:#aaa;border-radius:20px;padding:3px 12px;font-size:10px">Monthly</span>
+          <span style="background:#4f8ef7;color:#fff;border-radius:20px;padding:3px 12px;font-size:10px;margin-left:4px">Annual −30%</span>
+        </div>
+        <div style="display:flex;gap:6px;align-items:flex-start">
+          <div style="flex:0.85;background:#2a2a3e;border-radius:6px;padding:8px;text-align:center;margin-top:8px">
+            <div style="font-size:9px;color:#888;font-weight:bold;margin-bottom:4px">Free</div>
+            <div style="font-size:11px;font-weight:bold;color:#eee">R$0</div>
+            <div style="margin-top:4px;font-size:7px;color:#666;text-align:left;line-height:1.5">✓ 1 trip<br>✓ 10 events/trip</div>
+            <div style="margin-top:5px;background:#444;border-radius:3px;padding:2px;font-size:7px;color:#aaa">Current</div>
+          </div>
+          <div style="flex:1.15;background:#1a2a4e;border:2px solid #4f8ef7;border-radius:8px;padding:10px;text-align:center;position:relative">
+            <div style="background:#4f8ef7;color:#fff;font-size:7px;font-weight:bold;border-radius:10px;padding:1px 6px;position:absolute;top:-6px;left:50%;transform:translateX(-50%);white-space:nowrap">MOST POPULAR</div>
+            <div style="font-size:10px;color:#4f8ef7;font-weight:bold;margin-bottom:4px">Premium</div>
+            <div style="font-size:14px;font-weight:bold;color:#eee">R$19<span style="font-size:8px;color:#888">/mo</span></div>
+            <div style="margin-top:5px;font-size:7px;color:#aaa;text-align:left;line-height:1.5">✓ 10 trips<br>✓ 30 events/trip<br>✓ Share trips</div>
+            <div style="margin-top:6px;background:#4f8ef7;border-radius:4px;padding:3px;font-size:7px;color:#fff">Choose Plan</div>
+          </div>
+          <div style="flex:0.85;background:#2a1e10;border:1px solid #d97706;border-radius:6px;padding:8px;text-align:center;margin-top:8px">
+            <div style="font-size:9px;color:#d97706;font-weight:bold;margin-bottom:4px">Pro ✦</div>
+            <div style="font-size:11px;font-weight:bold;color:#eee">R$39<span style="font-size:8px;color:#888">/mo</span></div>
+            <div style="margin-top:4px;font-size:7px;color:#aaa;text-align:left;line-height:1.5">✓ 30 trips<br>✓ Unlimited events<br>✓ Share trips</div>
+            <div style="margin-top:5px;background:linear-gradient(90deg,#d97706,#f59e0b);border-radius:3px;padding:2px;font-size:7px;color:#fff">Choose</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Center highlight (Premium featured)</h3>
+      <p>Premium is larger and centered with a "Most Popular" badge. Guides users toward the middle tier.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f8f8f8;border-radius:8px 8px 0 0">
+      <!-- Option C mockup: stacked cards -->
+      <div style="background:#1a1a2e;border-radius:8px;padding:14px;font-family:sans-serif">
+        <div style="text-align:center;margin-bottom:8px">
+          <span style="background:#333;color:#aaa;border-radius:20px;padding:3px 10px;font-size:10px">Monthly</span>
+          <span style="background:#4f8ef7;color:#fff;border-radius:20px;padding:3px 10px;font-size:10px;margin-left:4px">Annual −30%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="background:#2a2a3e;border-radius:5px;padding:7px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:9px;color:#888;font-weight:bold">Free</div>
+              <div style="font-size:7px;color:#666;margin-top:2px">1 trip · 10 events/trip</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;font-weight:bold;color:#eee">R$0</div>
+              <div style="background:#444;border-radius:3px;padding:1px 6px;font-size:7px;color:#aaa;margin-top:2px">Current</div>
+            </div>
+          </div>
+          <div style="background:#1a2a4e;border:1px solid #4f8ef7;border-radius:5px;padding:7px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:9px;color:#4f8ef7;font-weight:bold">Premium</div>
+              <div style="font-size:7px;color:#888;margin-top:2px">10 trips · 30 events · Share</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;font-weight:bold;color:#eee">R$19<span style="font-size:7px;color:#888">/mo</span></div>
+              <div style="background:#4f8ef7;border-radius:3px;padding:1px 6px;font-size:7px;color:#fff;margin-top:2px">Choose</div>
+            </div>
+          </div>
+          <div style="background:#2a1e10;border:1px solid #d97706;border-radius:5px;padding:7px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:9px;color:#d97706;font-weight:bold">Pro ✦</div>
+              <div style="font-size:7px;color:#888;margin-top:2px">30 trips · Unlimited · Share</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;font-weight:bold;color:#eee">R$39<span style="font-size:7px;color:#888">/mo</span></div>
+              <div style="background:linear-gradient(90deg,#d97706,#f59e0b);border-radius:3px;padding:1px 6px;font-size:7px;color:#fff;margin-top:2px">Choose</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Stacked rows</h3>
+      <p>Compact horizontal rows, each plan on its own line. More mobile-friendly, less visual impact but fits in a smaller modal.</p>
+    </div>
+  </div>
+
+</div>

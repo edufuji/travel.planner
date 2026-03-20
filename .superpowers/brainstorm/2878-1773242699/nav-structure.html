@@ -1,0 +1,122 @@
+<h2>App Navigation Structure</h2>
+<p class="subtitle">After login, how should users navigate TripMate?</p>
+
+<div class="cards">
+
+  <!-- Option A: Bottom Tab Nav -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FEFAF6;padding:16px;font-family:Inter,sans-serif;">
+      <div style="border:1px solid #E5E0DB;border-radius:12px;overflow:hidden;max-width:240px;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
+        <!-- Status bar -->
+        <div style="background:#1A0A00;color:white;padding:6px 14px;font-size:10px;display:flex;justify-content:space-between">
+          <span>9:41</span><span>TripMate</span>
+        </div>
+        <!-- Content area -->
+        <div style="background:#FEFAF6;height:200px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:#1A0A00;margin-bottom:10px">My Trips</div>
+          <div style="background:white;border:1px solid #E5E0DB;border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="font-size:10px;font-weight:600;color:#1A0A00">🇯🇵 Japan 2026</div>
+            <div style="font-size:9px;color:#78716C;margin-top:2px">Mar 15 – Apr 2 · 12 events</div>
+          </div>
+          <div style="background:white;border:1px solid #E5E0DB;border-radius:8px;padding:10px">
+            <div style="font-size:10px;font-weight:600;color:#1A0A00">🇮🇹 Italy Summer</div>
+            <div style="font-size:9px;color:#78716C;margin-top:2px">Jun 10 – Jun 24 · 8 events</div>
+          </div>
+        </div>
+        <!-- Bottom tab bar -->
+        <div style="background:white;border-top:1px solid #E5E0DB;display:flex;justify-content:space-around;padding:8px 0">
+          <div style="text-align:center">
+            <div style="font-size:16px">🗺️</div>
+            <div style="font-size:8px;color:#FF6B35;font-weight:600">Trips</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:16px">🔍</div>
+            <div style="font-size:8px;color:#78716C">Explore</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:16px">🔔</div>
+            <div style="font-size:8px;color:#78716C">Alerts</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:16px">👤</div>
+            <div style="font-size:8px;color:#78716C">Profile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Bottom Tab Navigation</h3>
+      <p>Mobile-first. Tabs always visible: Trips, Explore, Alerts, Profile. Standard pattern for travel and social apps (Airbnb, Instagram).</p>
+    </div>
+  </div>
+
+  <!-- Option B: Top App Bar + Hamburger -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FEFAF6;padding:16px;font-family:Inter,sans-serif;">
+      <div style="border:1px solid #E5E0DB;border-radius:12px;overflow:hidden;max-width:240px;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
+        <!-- Top bar -->
+        <div style="background:#FF6B35;color:white;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:11px;font-weight:700">✈ TripMate</div>
+          <div style="font-size:14px">☰</div>
+        </div>
+        <!-- Content area -->
+        <div style="background:#FEFAF6;padding:14px;height:200px">
+          <div style="font-size:11px;font-weight:700;color:#1A0A00;margin-bottom:10px">My Trips</div>
+          <div style="background:white;border:1px solid #E5E0DB;border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="font-size:10px;font-weight:600;color:#1A0A00">🇯🇵 Japan 2026</div>
+            <div style="font-size:9px;color:#78716C;margin-top:2px">Mar 15 – Apr 2 · 12 events</div>
+          </div>
+          <div style="background:white;border:1px solid #E5E0DB;border-radius:8px;padding:10px">
+            <div style="font-size:10px;font-weight:600;color:#1A0A00">🇮🇹 Italy Summer</div>
+            <div style="font-size:9px;color:#78716C;margin-top:2px">Jun 10 – Jun 24 · 8 events</div>
+          </div>
+        </div>
+        <!-- Floating add button -->
+        <div style="background:#F5F0EB;border-top:1px solid #E5E0DB;padding:8px 14px;display:flex;justify-content:flex-end">
+          <div style="background:#FF6B35;color:white;border-radius:20px;padding:5px 12px;font-size:9px;font-weight:700">+ New Trip</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Top Bar + Hamburger Menu</h3>
+      <p>Header always shows the brand. Hamburger slides open a menu for navigation. More screen space for content. Common in productivity apps.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Floating Action + Minimal Chrome -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FEFAF6;padding:16px;font-family:Inter,sans-serif;">
+      <div style="border:1px solid #E5E0DB;border-radius:12px;overflow:hidden;max-width:240px;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
+        <!-- Minimal header -->
+        <div style="background:#FEFAF6;padding:14px 14px 6px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:12px;font-weight:800;color:#1A0A00">My Trips</div>
+          <div style="background:#FF6B35;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:14px">+</div>
+        </div>
+        <!-- Content area -->
+        <div style="background:#FEFAF6;padding:8px 14px;height:188px">
+          <div style="background:white;border:1px solid #E5E0DB;border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="font-size:10px;font-weight:600;color:#1A0A00">🇯🇵 Japan 2026</div>
+            <div style="font-size:9px;color:#78716C;margin-top:2px">Mar 15 – Apr 2 · 12 events</div>
+          </div>
+          <div style="background:white;border:1px solid #E5E0DB;border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="font-size:10px;font-weight:600;color:#1A0A00">🇮🇹 Italy Summer</div>
+            <div style="font-size:9px;color:#78716C;margin-top:2px">Jun 10 – Jun 24 · 8 events</div>
+          </div>
+          <div style="border:1.5px dashed #E5E0DB;border-radius:8px;padding:10px;text-align:center">
+            <div style="font-size:9px;color:#78716C">+ Plan a new trip</div>
+          </div>
+        </div>
+        <!-- Slim bottom nav -->
+        <div style="background:white;border-top:1px solid #E5E0DB;display:flex;justify-content:space-around;padding:6px 0">
+          <div style="font-size:9px;color:#FF6B35;font-weight:600;padding:2px 8px">Trips</div>
+          <div style="font-size:9px;color:#78716C;padding:2px 8px">Profile</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Minimal / Content-First</h3>
+      <p>Almost no chrome. Inline "New Trip" button, minimal 2-tab bottom nav. Maximum space for content. Works well for Phase 2 scope (no Explore/Alerts yet).</p>
+    </div>
+  </div>
+
+</div>

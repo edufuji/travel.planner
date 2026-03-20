@@ -1,0 +1,173 @@
+<h2>Phase 2 Screens</h2>
+<p class="subtitle">Full flow — login → trips home → destination detail → add event</p>
+
+<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-family:Inter,sans-serif">
+
+  <!-- Screen 1: Trips Home -->
+  <div style="flex:0 0 auto">
+    <div style="font-size:10px;font-weight:700;color:#78716C;text-align:center;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">① Home /trips</div>
+    <div style="border:1px solid #E5E0DB;border-radius:16px;overflow:hidden;width:200px;box-shadow:0 4px 12px rgba(0,0,0,0.1)">
+      <div style="background:#1A0A00;color:white;padding:6px 12px;font-size:9px;display:flex;justify-content:space-between"><span>9:41</span><span>●●●</span></div>
+      <div style="background:#FEFAF6;padding:14px;min-height:300px">
+        <!-- Header -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div>
+            <div style="font-size:15px;font-weight:800;color:#1A0A00">My Trips</div>
+            <div style="font-size:9px;color:#78716C">3 destinations</div>
+          </div>
+          <div style="background:#FF6B35;color:white;border-radius:20px;padding:5px 10px;font-size:9px;font-weight:700">+ New</div>
+        </div>
+        <!-- Trip rows -->
+        <div style="background:white;border:1px solid #E5E0DB;border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:8px">
+          <div style="font-size:20px">✈️</div>
+          <div style="flex:1">
+            <div style="font-size:11px;font-weight:700;color:#1A0A00">Japan 2026</div>
+            <div style="font-size:8px;color:#78716C">Mar 15 – Apr 2</div>
+          </div>
+          <div style="background:#FFF7ED;color:#C75B2A;border-radius:4px;padding:2px 5px;font-size:7px;font-weight:700">⚠️ GAP</div>
+        </div>
+        <div style="background:white;border:1px solid #E5E0DB;border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:8px">
+          <div style="font-size:20px">🏖️</div>
+          <div style="flex:1">
+            <div style="font-size:11px;font-weight:700;color:#1A0A00">Italy Summer</div>
+            <div style="font-size:8px;color:#78716C">Jun 10 – Jun 24</div>
+          </div>
+          <div style="background:#F0FDF4;color:#059669;border-radius:4px;padding:2px 5px;font-size:7px;font-weight:700">✓ OK</div>
+        </div>
+        <div style="background:white;border:1px solid #E5E0DB;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <div style="font-size:20px">🗽</div>
+          <div style="flex:1">
+            <div style="font-size:11px;font-weight:700;color:#1A0A00">NYC Weekend</div>
+            <div style="font-size:8px;color:#78716C">Sep 1 – Sep 7</div>
+          </div>
+          <div style="font-size:10px;color:#78716C">›</div>
+        </div>
+        <!-- Dashed add row -->
+        <div style="border:1.5px dashed #E5E0DB;border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:#78716C">+ Plan a new destination</div>
+        </div>
+      </div>
+      <!-- Bottom nav -->
+      <div style="background:white;border-top:1px solid #E5E0DB;display:flex;justify-content:space-around;padding:8px 0">
+        <div style="text-align:center"><div style="font-size:14px">🗺️</div><div style="font-size:7px;color:#FF6B35;font-weight:700">Trips</div></div>
+        <div style="text-align:center"><div style="font-size:14px">👤</div><div style="font-size:7px;color:#78716C">Profile</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Destination Detail -->
+  <div style="flex:0 0 auto">
+    <div style="font-size:10px;font-weight:700;color:#78716C;text-align:center;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">② Timeline /trips/:id</div>
+    <div style="border:1px solid #E5E0DB;border-radius:16px;overflow:hidden;width:200px;box-shadow:0 4px 12px rgba(0,0,0,0.1)">
+      <div style="background:#1A0A00;color:white;padding:6px 12px;font-size:9px;display:flex;justify-content:space-between"><span>9:41</span><span>●●●</span></div>
+      <div style="background:#FEFAF6;padding:14px;min-height:300px">
+        <!-- Header -->
+        <div style="display:flex;align-items:center;margin-bottom:12px">
+          <div style="font-size:10px;color:#78716C;margin-right:6px">‹ Trips</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:800;color:#1A0A00">✈️ Japan 2026</div>
+            <div style="font-size:8px;color:#78716C">Mar 15 – Apr 2 · 4 events</div>
+          </div>
+          <div style="background:#FF6B35;color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px">+</div>
+        </div>
+        <!-- Timeline -->
+        <div style="position:relative;padding-left:18px">
+          <div style="position:absolute;left:5px;top:0;bottom:0;width:2px;background:#E5E0DB"></div>
+          <!-- Event 1 -->
+          <div style="position:relative;margin-bottom:8px">
+            <div style="position:absolute;left:-15px;top:7px;width:8px;height:8px;border-radius:50%;background:#4A90D9;border:1.5px solid white"></div>
+            <div style="background:white;border:1px solid #E5E0DB;border-radius:7px;padding:7px 8px">
+              <div style="font-size:8px;color:#78716C">Mar 15 · 10:30</div>
+              <div style="font-size:10px;font-weight:600;color:#1A0A00">✈️ Flight GRU→NRT</div>
+              <div style="font-size:8px;color:#78716C">Transport · R$3.200</div>
+            </div>
+          </div>
+          <!-- Event 2 -->
+          <div style="position:relative;margin-bottom:8px">
+            <div style="position:absolute;left:-15px;top:7px;width:8px;height:8px;border-radius:50%;background:#7C3AED;border:1.5px solid white"></div>
+            <div style="background:white;border:1px solid #E5E0DB;border-radius:7px;padding:7px 8px">
+              <div style="font-size:8px;color:#78716C">Mar 15 · 22:00</div>
+              <div style="font-size:10px;font-weight:600;color:#1A0A00">🏨 Shinjuku Granbell</div>
+              <div style="font-size:8px;color:#78716C">Accommodation</div>
+            </div>
+          </div>
+          <!-- GAP warning -->
+          <div style="background:#FFF7ED;border:1px dashed #FF6B35;border-radius:6px;padding:5px 7px;margin-bottom:8px;font-size:8px;color:#C75B2A">
+            ⚠️ Gap: no transport after checkout (Mar 17)
+          </div>
+          <!-- Event 3 -->
+          <div style="position:relative;margin-bottom:8px">
+            <div style="position:absolute;left:-15px;top:7px;width:8px;height:8px;border-radius:50%;background:#7C3AED;border:1.5px solid white"></div>
+            <div style="background:white;border:1px solid #E5E0DB;border-radius:7px;padding:7px 8px">
+              <div style="font-size:8px;color:#78716C">Mar 18 · 15:00</div>
+              <div style="font-size:10px;font-weight:600;color:#1A0A00">🏨 Hotel Gracery</div>
+              <div style="font-size:8px;color:#78716C">Accommodation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom nav -->
+      <div style="background:white;border-top:1px solid #E5E0DB;display:flex;justify-content:space-around;padding:8px 0">
+        <div style="text-align:center"><div style="font-size:14px">🗺️</div><div style="font-size:7px;color:#FF6B35;font-weight:700">Trips</div></div>
+        <div style="text-align:center"><div style="font-size:14px">👤</div><div style="font-size:7px;color:#78716C">Profile</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Add Event bottom sheet -->
+  <div style="flex:0 0 auto">
+    <div style="font-size:10px;font-weight:700;color:#78716C;text-align:center;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">③ Add Event (drawer)</div>
+    <div style="border:1px solid #E5E0DB;border-radius:16px;overflow:hidden;width:200px;box-shadow:0 4px 12px rgba(0,0,0,0.1);position:relative">
+      <div style="background:#1A0A00;color:white;padding:6px 12px;font-size:9px;display:flex;justify-content:space-between"><span>9:41</span><span>●●●</span></div>
+      <!-- Dimmed background -->
+      <div style="background:rgba(26,10,0,0.35);padding:14px;min-height:150px"></div>
+      <!-- Bottom sheet -->
+      <div style="background:white;padding:14px;border-radius:16px 16px 0 0">
+        <div style="width:32px;height:3px;background:#E5E0DB;border-radius:2px;margin:0 auto 12px"></div>
+        <div style="font-size:12px;font-weight:700;color:#1A0A00;margin-bottom:10px">Add Event</div>
+        <!-- Type selector pills -->
+        <div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">
+          <div style="background:#FF6B35;color:white;border-radius:20px;padding:3px 8px;font-size:8px;font-weight:600">✈️ Transport</div>
+          <div style="background:#F5F0EB;color:#78716C;border-radius:20px;padding:3px 8px;font-size:8px">🏨 Stay</div>
+          <div style="background:#F5F0EB;color:#78716C;border-radius:20px;padding:3px 8px;font-size:8px">🎟️ Ticket</div>
+          <div style="background:#F5F0EB;color:#78716C;border-radius:20px;padding:3px 8px;font-size:8px">🍽️ Food</div>
+        </div>
+        <!-- Fields -->
+        <div style="background:#F5F0EB;border-radius:8px;padding:7px 10px;margin-bottom:6px;font-size:9px;color:#78716C">Title (e.g. Flight GRU → NRT)</div>
+        <div style="background:#F5F0EB;border-radius:8px;padding:7px 10px;margin-bottom:6px;font-size:9px;color:#78716C">📍 Search place (Google Maps)</div>
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <div style="flex:1;background:#F5F0EB;border-radius:8px;padding:7px 10px;font-size:9px;color:#78716C">📅 Date</div>
+          <div style="flex:1;background:#F5F0EB;border-radius:8px;padding:7px 10px;font-size:9px;color:#78716C">⏰ Time</div>
+        </div>
+        <div style="background:#F5F0EB;border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;color:#78716C">💰 Value (optional)</div>
+        <div style="background:#FF6B35;color:white;border-radius:10px;padding:8px;text-align:center;font-size:10px;font-weight:700">Add to Timeline</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: Add Destination sheet -->
+  <div style="flex:0 0 auto">
+    <div style="font-size:10px;font-weight:700;color:#78716C;text-align:center;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">④ New Destination</div>
+    <div style="border:1px solid #E5E0DB;border-radius:16px;overflow:hidden;width:200px;box-shadow:0 4px 12px rgba(0,0,0,0.1)">
+      <div style="background:#1A0A00;color:white;padding:6px 12px;font-size:9px;display:flex;justify-content:space-between"><span>9:41</span><span>●●●</span></div>
+      <div style="background:rgba(26,10,0,0.35);padding:14px;min-height:80px"></div>
+      <!-- Bottom sheet -->
+      <div style="background:white;padding:14px;border-radius:16px 16px 0 0">
+        <div style="width:32px;height:3px;background:#E5E0DB;border-radius:2px;margin:0 auto 12px"></div>
+        <div style="font-size:12px;font-weight:700;color:#1A0A00;margin-bottom:10px">New Destination</div>
+        <!-- Auto emoji display -->
+        <div style="text-align:center;font-size:28px;margin-bottom:8px">✈️</div>
+        <div style="font-size:8px;color:#78716C;text-align:center;margin-bottom:10px">Auto-assigned icon</div>
+        <div style="background:#F5F0EB;border-radius:8px;padding:7px 10px;margin-bottom:6px;font-size:9px;color:#78716C">Trip title (e.g. Japan 2026)</div>
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <div style="flex:1;background:#F5F0EB;border-radius:8px;padding:7px 10px;font-size:9px;color:#78716C">📅 Start</div>
+          <div style="flex:1;background:#F5F0EB;border-radius:8px;padding:7px 10px;font-size:9px;color:#78716C">📅 End</div>
+        </div>
+        <div style="background:#FF6B35;color:white;border-radius:10px;padding:8px;text-align:center;font-size:10px;font-weight:700;margin-top:6px">Create Destination</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center;margin-top:20px;" class="subtitle">Does this flow look right? Reply in terminal.</p>

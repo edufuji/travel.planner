@@ -1,0 +1,102 @@
+<h2>Transport Event — From / To Fields</h2>
+<p class="subtitle">How should origin and destination be captured for transport events?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="two-place-inputs" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#f8f4f0;border-radius:8px;padding:14px;font-size:12px;max-width:320px;margin:0 auto;">
+        <!-- Type pills -->
+        <div style="display:flex;gap:6px;margin-bottom:12px;">
+          <span style="background:#FF6B35;color:#fff;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;">Transport</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Stay</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Ticket</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Food</span>
+        </div>
+        <!-- Title -->
+        <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;margin-bottom:8px;color:#333;">Flight GRU → NRT</div>
+        <!-- From -->
+        <div style="position:relative;margin-bottom:4px;">
+          <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;padding-left:28px;">📍 Guarulhos Airport, São Paulo</div>
+          <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:10px;color:#999;font-weight:700;">FROM</span>
+        </div>
+        <!-- Arrow connector -->
+        <div style="text-align:center;font-size:16px;color:#C75B2A;margin:2px 0;line-height:1;">↓</div>
+        <!-- To -->
+        <div style="position:relative;margin-bottom:8px;">
+          <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;padding-left:28px;">📍 Narita International Airport</div>
+          <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:10px;color:#999;font-weight:700;">TO</span>
+        </div>
+        <!-- Date + time -->
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <div style="flex:1;background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;font-size:11px;">📅 2026-03-15</div>
+          <div style="flex:1;background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;font-size:11px;">🕐 08:00</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Two place inputs (From + To)</h3>
+      <p>Transport shows two GooglePlacesInputs: origin and destination. Both capture lat/lng. The map draws a segment directly from origin to destination. Other event types keep one place input.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="origin-only" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#f8f4f0;border-radius:8px;padding:14px;font-size:12px;max-width:320px;margin:0 auto;">
+        <div style="display:flex;gap:6px;margin-bottom:12px;">
+          <span style="background:#FF6B35;color:#fff;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;">Transport</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Stay</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Ticket</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Food</span>
+        </div>
+        <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;margin-bottom:8px;color:#333;">Flight GRU → NRT</div>
+        <!-- Single "From" place -->
+        <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;margin-bottom:4px;color:#333;">📍 From: Guarulhos Airport, São Paulo</div>
+        <!-- Destination as text only -->
+        <div style="background:#fff;border:1px solid #e0d0c8;border-radius:8px;padding:8px 10px;margin-bottom:8px;color:#999;">Destination (text): Tokyo</div>
+        <div style="display:flex;gap:6px;">
+          <div style="flex:1;background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;font-size:11px;">📅 2026-03-15</div>
+          <div style="flex:1;background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;font-size:11px;">🕐 08:00</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Origin with Places + destination as text</h3>
+      <p>From uses GooglePlacesInput (with lat/lng for map), destination is a plain text field. Simpler form, but destination won't show as a pin on the map.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="two-places-arrival-time" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#f8f4f0;border-radius:8px;padding:14px;font-size:12px;max-width:320px;margin:0 auto;">
+        <div style="display:flex;gap:6px;margin-bottom:12px;">
+          <span style="background:#FF6B35;color:#fff;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;">Transport</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Stay</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Ticket</span>
+          <span style="background:#f0ece8;color:#999;border-radius:20px;padding:4px 10px;font-size:11px;">Food</span>
+        </div>
+        <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;margin-bottom:8px;color:#333;">Flight GRU → NRT</div>
+        <div style="position:relative;margin-bottom:4px;">
+          <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;padding-left:28px;">📍 Guarulhos Airport</div>
+          <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:10px;color:#999;font-weight:700;">FROM</span>
+        </div>
+        <div style="text-align:center;font-size:16px;color:#C75B2A;margin:2px 0;line-height:1;">↓</div>
+        <div style="position:relative;margin-bottom:8px;">
+          <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;color:#333;padding-left:28px;">📍 Narita Airport</div>
+          <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:10px;color:#999;font-weight:700;">TO</span>
+        </div>
+        <!-- Departure + arrival time -->
+        <div style="display:flex;gap:6px;margin-bottom:4px;">
+          <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:6px 8px;color:#333;font-size:10px;flex:1;">🛫 Dep: 08:00</div>
+          <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:6px 8px;color:#333;font-size:10px;flex:1;">🛬 Arr: 23:00</div>
+        </div>
+        <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:6px 8px;color:#999;font-size:11px;">📅 Date: 2026-03-15</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Two places + separate departure/arrival times</h3>
+      <p>Like A but also captures arrival time separately. Useful for flights with time zones. Most complete but most complex form.</p>
+    </div>
+  </div>
+
+</div>
